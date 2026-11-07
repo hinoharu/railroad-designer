@@ -28,3 +28,11 @@
 == 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ 経路 644d255dd88f・線形 19892432be31・縦断 3b77e507d0f9
   $ rm -f branch_kuko_k_cands.json
   $ VMAX='130' TILT='0' TRAIN='130' python3 ipfit_branch.py kuko_k route_kuko_k.json fit_minami.json start > ipb_kuko_k.log 2>&1
+  $ ROUTE='route_kuko_k.json' python3 fit2route.py kuko_k > geo_kuko_k.log 2>&1
+  $ python3 ground.py route_fkuko_k.json ground_fkuko_k.json > ground_kuko_k.log 2>&1
+  高さの指定表 _free： {'start_z': 106.1} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 106.1} 2 駅を指定
+  $ GCAP='0.0333' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkuko_k.json costs_single.json design_fkuko_k.json height_spec_kuko_k.json > d_kuko_k.log 2>&1
+== 区間 tofutsu（東沸湖線（尾路久根〜東沸湖））ハッシュ 経路 50dacdd2833e・線形 b14143dcc6ff・縦断 59510eb6bea1
+  $ rm -f branch_tofutsu_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py tofutsu route_tofutsu.json fit_minami.json start > ipb_tofutsu.log 2>&1

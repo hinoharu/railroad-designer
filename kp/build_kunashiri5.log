@@ -17,3 +17,14 @@
   $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkofu.json costs_single.json design_fkofu.json height_spec_kofu.json > d_kofu.log 2>&1
 == 区間 kita_e（国後北線 東側（仁岸寄〜奔別〜国後蘂取〜遠音別〜白糠泊））ハッシュ 経路 7c0eb883932c・線形 0b2935557799・縦断 7a1a62ad03ea
   $ ROUTE='route_kita_e.json' OUT='route_kita_e_hyb.json' PREFIX='kita_e_' GDEF='0.0333' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' LAMBDA='1.0' GMAP='{"仁岸寄|奔別": 0.025, "奔別|止音別": 0.025, "止音別|南利寄": 0.025, "南利寄|利寄": 0.025, "利寄|璃瑠篠信号場": 0.025, "璃瑠篠信号場|知牽牛": 0.025, "知牽牛|翻内": 0.025, "翻内|国後蘂取": 0.025, "国後蘂取|散尺別": 0.025, "散尺別|留遠知": 0.025, "留遠知|知東": 0.025}' python3 devline_hybrid.py > hyb_kita_e.log 2>&1
+  $ rm -f branch_kita_e_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kita_e route_kita_e_hyb.json fit_kita_w.json end=fit_minami.json > ipb_kita_e.log 2>&1
+  $ ROUTE='route_kita_e_hyb.json' python3 fit2route.py kita_e > geo_kita_e.log 2>&1
+  $ python3 ground.py route_fkita_e.json ground_fkita_e.json > ground_kita_e.log 2>&1
+  高さの指定表 _free： {'end_z': 9.2, 'start_z': 21.5} 0 駅を指定
+  高さの指定表 _gs： {'end_z': 9.2, 'start_z': 21.5} 18 駅を指定
+  $ GCAP='0.0333' KYAKU25_ADD='[["仁岸寄", "知東"]]' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkita_e.json costs_single.json design_fkita_e.json height_spec_kita_e.json > d_kita_e.log 2>&1
+  問題のある駅間なし
+== 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ 経路 644d255dd88f・線形 19892432be31・縦断 3b77e507d0f9
+  $ rm -f branch_kuko_k_cands.json
+  $ VMAX='130' TILT='0' TRAIN='130' python3 ipfit_branch.py kuko_k route_kuko_k.json fit_minami.json start > ipb_kuko_k.log 2>&1

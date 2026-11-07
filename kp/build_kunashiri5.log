@@ -129,3 +129,5 @@
   問題のある駅間なし
 == 区間 onne（遠音別線（遠音別〜上遠根別〜国後蘂取））ハッシュ 経路 5d03d0c2dcde・線形 d3fc75d8fb33・縦断 a013a5212bf0
   $ ROUTE='route_onne.json' OUT='route_onne_hyb.json' PREFIX='onne_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' LAMBDA='1.0' python3 devline_hybrid.py > hyb_onne.log 2>&1
+  $ rm -f branch_onne_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py onne route_onne_hyb.json fit_kita_e.json start end > ipb_onne.log 2>&1

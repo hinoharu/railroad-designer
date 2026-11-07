@@ -56,6 +56,14 @@ def end_info(idx, w):
         v = P[idx[k]] - J0; base = t0 * tau
         side.append(np.sign(base[0] * v[1] - base[1] * v[0]))
     sig = 1.0 if sum(side) > 0 else -1.0
+    # 分かれる向きの指定（環境変数 DIR_start・DIR_end：forward＝支線を通る列車が分岐点で幹線のキロ程の増える向きに進む、backward＝減る向き。
+    # 2026-11-07、国後空港線：作図の支線が幹線とほぼ直角で、内積の符号による判定が逆向きになった。入力表 fit.dir）
+    dir_ = os.environ.get(f'DIR_{w}')
+    if dir_ in ('forward', 'backward'):
+        tau2 = 1.0 if dir_ == 'forward' else -1.0
+        if tau2 != tau:
+            print(f'  {w}：分かれる向きを指定 {dir_} に合わせる（作図から判定した向きと逆）', flush=True)
+            tau = tau2; sig = -sig   # 向きを反転すると、作図の支線がある側も左右が入れ替わる
     return idx[:m], lo, hi, tau, sig, w
 
 def junction(sj, tau, sig, w):

@@ -202,8 +202,10 @@ def build_section(s):
     if f.get('free'): ends = 'free'
     else: ends = ' '.join(w if not v else f'{w}=fit_{v}.json' for w, v in f['ends'].items())
     trunk = f'fit_{f["trunk"]}.json'
+    fit_env = dict(VMAX=run['VMAX'], TILT=run['TILT'], TRAIN=run['TRAIN'])
+    for w_, d_ in f.get('dir', {}).items(): fit_env[f'DIR_{w_}'] = d_   # 分かれる向きの指定（forward／backward。2026-11-07）
     step(b, 'fit', hf, lambda: (sh(f'rm -f branch_{b}_cands.json'),
-                                sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', dict(VMAX=run['VMAX'], TILT=run['TILT'], TRAIN=run['TRAIN']), f'ipb_{b}.log')))
+                                sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', fit_env, f'ipb_{b}.log')))
     step(b, 'geo', hf, lambda: (sh(f'python3 fit2route.py {b}', {'ROUTE': rf}, f'geo_{b}.log'),
                                 sh(f'python3 ground.py route_f{b}.json ground_f{b}.json', None, f'ground_{b}.log')))
     step(b, 'spec', h, lambda: make_spec(s))

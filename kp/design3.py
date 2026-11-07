@@ -75,6 +75,9 @@ W_BH2 = float(_os.environ.get('W_BH2', '100'))   # 境を超える高さ 1 m あ
 # 駅の深さ（2026-11-07、ユーザーの判断）：停車場中心の施工基面 z ≥（中心から EXIT_R 以内の地盤の最低の標高）− DEPTH_MAX。
 # 「深さ 40 m まで。100〜200 m の水平移動で地表に出られるなら不問」を 1 本の条件にした。DEPTH_MAX を 0 にすると切
 DEPTH_MAX = float(_os.environ.get('DEPTH_MAX', '0')); EXIT_R = float(_os.environ.get('EXIT_R', '200'))
+# 駅の構内（停車場中心の両側で水平にする長さ、m。design.py の STN_HALF 110 が既定）。2026-11-08、分岐器の規則（docs/junction.md 2.④）：
+# build.py が入力表 profile.STN_HALF（"auto" なら TRAIN ÷ 2 ＋ 72 m）から渡す。構内の端の分岐器（JMIN）とその外方 20 m まで水平にするため
+STN_HALF = float(_os.environ.get('STN_HALF', STN_HALF))
 BRIDGE_THR = None   # 節点ごとの境（lp の前に決める）
 def lp(sn, gn, lim, state, Pn, tangn):
     """Pn・tangn：節点ごとの費用の表と土工の接線（単線と複線を区間ごとに使い分ける。2026-11-04）"""

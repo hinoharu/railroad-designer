@@ -186,6 +186,11 @@ HR = {}; HF = {}   # 経路のハッシュ、線形（当てはめ・キロ程�
 #   JM_MARGIN：有効長の列車長に対する余裕 20 m（国鉄 運転取扱基準規程 1972 第 20 条 標準 2「余裕距離 20mから35mまで」の下限）。
 #   JM_CLEAR：有効長の端（車両接触限界標＝軌道中心間隔 4 m の点）から分岐器の理論交点まで。N 番分岐器で 4N m、8 番で 32 m
 JM_MARGIN, JM_CLEAR = 20.0, 32.0
+# 駅の構内の半分の長さ（停車場中心から、縦断を水平にする端まで。docs/junction.md 2.④）：構内の端の分岐器の理論交点 JMIN に、分岐器の後端まで
+# JM_TAIL と、建設規程第十五条③の最端の転轍器の外方 JM_OUTER を足す。YARD_HALF ＝ (TRAIN ＋ 20) ÷ 2 ＋ 32 ＋ 10 ＋ 20 ＝ TRAIN ÷ 2 ＋ 72 m。
+# 入力表 profile.STN_HALF が "auto" のときに使う（数値ならその値、書かなければ design.py の 110 m）
+JM_TAIL, JM_OUTER = 10.0, 20.0
+def yard_half(s): return round(s['run']['TRAIN'] / 2 + JM_MARGIN / 2 + JM_CLEAR + JM_TAIL + JM_OUTER, 1)
 def jmin_auto(s):
     trains = [s['run']['TRAIN']] + [net.SEC[t_ or s['fit']['trunk']].get('run', {}).get('TRAIN', 0) for t_ in s['fit'].get('ends', {}).values() if (t_ or s['fit']['trunk']) in net.SEC]   # 古い手順の幹線（ipg）には run がない
     return round((max(trains) + JM_MARGIN) / 2 + JM_CLEAR, 1)
@@ -225,6 +230,7 @@ def build_section(s):
     step(b, 'spec', h, lambda: make_spec(s))
     env = {'GCAP': pf['GCAP']}
     if 'KYAKU25_ADD' in pf: env['KYAKU25_ADD'] = json.dumps(pf['KYAKU25_ADD'], ensure_ascii=False)
+    if 'STN_HALF' in pf: env['STN_HALF'] = yard_half(s) if pf['STN_HALF'] == 'auto' else pf['STN_HALF']   # 構内の半分の長さ m（2026-11-08。"auto"：TRAIN ÷ 2 ＋ 72）
     env.update(pf.get('rules', {}))   # 縦断の規則の値（橋梁の高さの境 BRIDGE_H1・H2・SPAN・W_BH2、駅の深さ DEPTH_MAX・EXIT_R。2026-11-07、国後島。説明は tables/README.md）
     costs = f"costs_{pf.get('costs', 'single')}.json"
     sufs = ('',) if pf.get('only_gs') else ('_free', '')   # only_gs：駅地平化だけ（高さ指定なしは作らない。2026-11-07、ユーザー）

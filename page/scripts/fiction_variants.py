@@ -79,6 +79,26 @@ for gid, name, t, route, grade, cause in (
     GROUPS.append({"id": gid, "name": name, "t": t, "route": route, "variants": [
         {"id": gid + "_256", "dir": "V256", "name": V256 + "それまでの線", "grade": grade, "plan": "元の折れ線", "note": ""},
         {"id": gid + "_257", "dir": None, "name": "採用：最新のプログラムで作り直した線", "grade": grade, "plan": "元の折れ線", "note": cause}]})
+# 分岐器の規則の前（2026-11-08、ユーザーの指定：変更前の結果を比較できるように保持する）。kp_var/before_junction は、分岐器の位置の制限
+# （停車場中心からの最小距離 JMIN・本線の勾配の上限 GJ・端の勾配を幹線に合わせる）と、構内の長さ（±110 m → TRAIN ÷ 2 ＋ 72 m）を入れる前の
+# kp/ の写し（docs/junction.md）。古い手順の区間（ipg・sanpu）以外の全区間について、既にある群には案として足し、ない区間は新しく群を作る
+BJ_DIR = "before_junction"; BJ_NAME = "分岐器の規則の前（2026-11-08）："
+BJ_NOTE = "分岐器の位置の制限なし（作図の支線が駅の点から出ていると停車場中心が選ばれる）、構内は停車場中心 ±110 m"
+sys.path.insert(0, str(KP / "tables")); import net  # noqa: E402
+if (VAR / BJ_DIR).exists():
+    by_t = {g["t"]: g for g in GROUPS}
+    for s in net.SECTIONS:
+        if s["method"] != "branch" or not (VAR / BJ_DIR / f"fit_{s['id']}.json").exists(): continue
+        g = by_t.get(s["id"])
+        if g:
+            a = next(v for v in g["variants"] if v["dir"] is None)
+            g["variants"].insert(g["variants"].index(a), dict(a, id=s["id"] + "_bj", dir=BJ_DIR, name=BJ_NAME + a["name"].replace("採用：", ""), note=BJ_NOTE))
+            a["note"] = (a["note"] + "。" if a["note"] else "") + "分岐器の規則と構内の長さを入れて計算し直した"
+        else:
+            grade = f"{s['profile']['GCAP'] * 1000:g}‰"
+            GROUPS.append({"id": s["id"], "name": s["name"], "t": s["id"], "route": s["route"]["file"], "variants": [
+                {"id": s["id"] + "_bj", "dir": BJ_DIR, "name": BJ_NAME + "それまでの線", "grade": grade, "plan": "元の折れ線（地形から探した駅間を含む）", "note": BJ_NOTE},
+                {"id": s["id"] + "_j", "dir": None, "name": "採用：分岐器の規則と構内の長さを入れた線", "grade": grade, "plan": "同上", "note": "docs/junction.md"}]})
 SYSTEM_GROUP = {"id": "kyuko", "name": "急行 蘂取→丹根萌の性能", "variants": [
     {"id": "K1", "name": "キハ283系相当の性能（それまでの計算）", "car": "1 両 48 t に 365 kW", "len": 122},
     {"id": "K2", "name": "DD51形 単機＋客車 5 両", "car": "2,200 PS（レール 1,130 kW）、約 295 t", "len": 122},

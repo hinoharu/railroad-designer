@@ -36,21 +36,25 @@ for k, (a, b) in enumerate(zip(names, names[1:])):
         for W, R in STAGES:
             f = f"{PREFIX}{'dev4' if GS == G else 'dev7'}_{a}_{b}_{W}.json"
             if not os.path.exists(f):
-                subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W)), stdout=subprocess.DEVNULL, check=False)
-                if not os.path.exists(f): subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W), K='8000'), stdout=subprocess.DEVNULL, check=False)
+                subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W)), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+                if not os.path.exists(f) and env0['K'] != '8000':
+                    print(f'  {a}→{b}（帯 {W}）：K=1500 では見つからず、K=8000 で探す', flush=True); env0['K'] = '8000'
+                    subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W)), stdout=subprocess.DEVNULL, check=False)
             cw = json.load(open(f))['cost'] if os.path.exists(f) else None; tried.append((W, R, cw))
             if cw is not None and cw <= c0 / R:
                 use = json.load(open(f))['points']; computed.append([a, b]); how = f'探した線（帯 {W} m、費用 {cw / c0:.0%}。段 {len(tried)}）'; break
         print(f'{a}→{b}：問題の残る駅間。元の折れ線の費用 {c0:.3g}、段ごと ' + '、'.join(f'帯 {W}・1/{R}：{cw:.3g}（{cw / c0:.0%}）' if cw is not None else f'帯 {W}：なし' for W, R, cw in tried) + f' → {how}', flush=True)
     if need > Ld:
-        res = {}
+        res = {}; Kuse = '1500'
         for W in [0] + WS:
             GS = GSEG.get((a, b), G); f = f"{PREFIX}{'dev4' if GS == G else 'dev7'}_{a}_{b}_{W}.json"
             if not os.path.exists(f):
-                env = dict(os.environ, GMAX=str(GS), K='1500', MARGIN='3000', STATION_ONLY='0', HB='draw', CORRIDOR=str(W))
-                subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=env, stdout=subprocess.DEVNULL, check=False)
-                # 幅 K=1500 で見つからないとき（残した状態がすべて行き止まりに入った。2026-11-05、単冠山麓線の西映→上伏古信号場）は K=8000 でもう一度探す
-                if not os.path.exists(f):
+                env = dict(os.environ, GMAX=str(GS), K=Kuse, MARGIN='3000', STATION_ONLY='0', HB='draw', CORRIDOR=str(W))
+                subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+                # 幅 K=1500 で見つからないとき（残した状態がすべて行き止まりに入った。2026-11-05、単冠山麓線の西映→上伏古信号場）は K=8000 でもう一度探す。
+                # 一度 8000 が要った駅間は、以後の幅も 8000 から（2026-11-07、国後島の一菱内→鸚居温泉：1500 の失敗の試みに時間を使っていた）
+                if not os.path.exists(f) and Kuse != '8000':
+                    print(f'  {a}→{b}（帯 {W or "なし"}）：K=1500 では見つからず、K=8000 で探す', flush=True); Kuse = '8000'
                     subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env, K='8000'), stdout=subprocess.DEVNULL, check=False)
             res[W] = json.load(open(f)) if os.path.exists(f) else None
         if res[0] is None: raise SystemExit(f'{a}→{b}：帯の制限なしでも経路が見つからない')

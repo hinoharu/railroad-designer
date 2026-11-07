@@ -2,9 +2,8 @@
 == 区間 minami（国後南線（安渡移矢岬〜古釜布〜国後泊））ハッシュ 経路 019fc0144e60・線形 1fd0d283e30b・縦断 931cfbb6b047
   （済み）fit
   （済み）geo
-  高さの指定表 _free： {} 0 駅を指定
-  高さの指定表 _gs： {} 30 駅を指定
-  $ GCAP='0.0333' KYAKU25_ADD='[["安渡移矢岬", "安渡移矢"]]' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fminami.json costs_single.json design_fminami.json height_spec_minami.json > d_minami.log 2>&1
+  （済み）spec
+  （済み）design
 == 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
 == 区間 kita_w（国後北線 西側（国後泊〜軽別〜植尻〜仁岸寄））ハッシュ 経路 5d4f69caa8b9・線形 c50459f07596・縦断 d41e777f8eef
   $ ROUTE='route_kita_w.json' OUT='route_kita_w_hyb.json' PREFIX='kita_w_' GDEF='0.0333' GMAP='{"植尻|小田富": 0.025, "小田富|芦里": 0.025, "芦里|秩苅別": 0.025, "秩苅別|島登": 0.025, "島登|遣岱": 0.025, "遣岱|仁岸寄": 0.025}' python3 devline_hybrid.py > hyb_kita_w.log 2>&1

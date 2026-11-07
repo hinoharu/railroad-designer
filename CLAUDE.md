@@ -62,6 +62,9 @@ python3 page/scripts/fiction_variants.py kp   # 案の比較のデータ page/da
 4. **マージはユーザーが「マージして」と言った PR だけ**（承認はその PR 限り）。マージは merge commit で。
 5. 作業の状況・判断の経緯は `HANDOFF.md` にこまめに書く。「いまの状況」は 3,000 字以内、終わったことは `docs/history.md` へ。
 
+## Compact Instructions
+会話の圧縮（自動・手動とも）で作る要約は、見出し・本文・引用のすべてを日本語で書く（英語の定型の見出しを使わない。2026-11-08、ユーザーの指定：自動の圧縮が先に走って英語の要約になり、その後の手動の圧縮で直前の出来事が落ちた）。
+
 ## 圧縮のあと・新しいセッションの始めの見返し
 1. `HANDOFF.md` の「いまの状況」。
 2. `git status -sb`・`git log --oneline -10`。

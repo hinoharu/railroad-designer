@@ -1064,7 +1064,8 @@
     "hybrid": {
      "auto": true,
      "PREFIX": "kita_w_",
-     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）",
+     "LAMBDA": 1.0
     }
    },
    "fit": {
@@ -1208,7 +1209,8 @@
     "hybrid": {
      "auto": true,
      "PREFIX": "kita_e_",
-     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）",
+     "LAMBDA": 1.0
     }
    },
    "fit": {
@@ -1286,7 +1288,8 @@
     "hybrid": {
      "auto": true,
      "PREFIX": "chacha_",
-     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）",
+     "LAMBDA": 1.0
     }
    },
    "fit": {
@@ -1350,7 +1353,8 @@
     "hybrid": {
      "auto": true,
      "PREFIX": "onne_",
-     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）",
+     "LAMBDA": 1.0
     }
    },
    "fit": {
@@ -1470,7 +1474,8 @@
     "hybrid": {
      "auto": true,
      "PREFIX": "seoi_",
-     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）",
+     "LAMBDA": 1.0
     }
    },
    "fit": {
@@ -1737,7 +1742,8 @@
     "hybrid": {
      "auto": true,
      "PREFIX": "fueshima_",
-     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）",
+     "LAMBDA": 1.0
     }
    },
    "fit": {

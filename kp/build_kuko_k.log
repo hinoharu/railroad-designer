@@ -1,5 +1,5 @@
 == 区間 ipg：古い手順（計算しない）。特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py …
 == 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
-== 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ 経路 644d255dd88f・線形 79d5af50944b・縦断 647b35e41657
+== 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ 経路 644d255dd88f・線形 82da618e0edd・縦断 833e3b2c8c9b
   $ rm -f branch_kuko_k_cands.json
-  $ VMAX='130' TILT='0' TRAIN='130' DIR_start='forward' python3 ipfit_branch.py kuko_k route_kuko_k.json fit_minami.json start > ipb_kuko_k.log 2>&1
+  $ VMAX='130' TILT='0' TRAIN='130' DIR_start='backward' python3 ipfit_branch.py kuko_k route_kuko_k.json fit_minami.json start > ipb_kuko_k.log 2>&1

@@ -56,7 +56,7 @@ def end_info(idx, w):
         v = P[idx[k]] - J0; base = t0 * tau
         side.append(np.sign(base[0] * v[1] - base[1] * v[0]))
     sig = 1.0 if sum(side) > 0 else -1.0
-    # 分かれる向きの指定（環境変数 DIR_start・DIR_end：forward＝支線を通る列車が分岐点で幹線のキロ程の増える向きに進む、backward＝減る向き。
+    # 分かれる向きの指定（環境変数 DIR_start・DIR_end：支線を分岐点に向かって走ってきた列車が幹線をキロ程の増える向きに進むなら forward、減る向きなら backward。
     # 2026-11-07、国後空港線：作図の支線が幹線とほぼ直角で、内積の符号による判定が逆向きになった。入力表 fit.dir）
     dir_ = os.environ.get(f'DIR_{w}')
     if dir_ in ('forward', 'backward'):

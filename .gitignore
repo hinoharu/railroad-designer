@@ -3,3 +3,4 @@ kp/dem/
 kp/.build/
 __pycache__/
 *.pyc
+kp/devline_grid_*.npy

@@ -44,3 +44,11 @@
 == 区間 heuke（平浮線（留夜別〜平浮泊））ハッシュ 経路 8cdd8e9b65b8・線形 dd65997702e1・縦断 fe5e6de10ced
   $ rm -f branch_heuke_cands.json
   $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py heuke route_heuke.json fit_minami.json start > ipb_heuke.log 2>&1
+  $ ROUTE='route_heuke.json' python3 fit2route.py heuke > geo_heuke.log 2>&1
+  $ python3 ground.py route_fheuke.json ground_fheuke.json > ground_heuke.log 2>&1
+  高さの指定表 _free： {'start_z': 8.1} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.1} 3 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fheuke.json costs_single.json design_fheuke.json height_spec_heuke.json > d_heuke.log 2>&1
+== 区間 keromoi（計呂萌線（国後泊〜計呂萌））ハッシュ 経路 55474db46e84・線形 947a560645c3・縦断 5310942b5fde
+  $ rm -f branch_keromoi_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py keromoi route_keromoi.json fit_minami.json start > ipb_keromoi.log 2>&1

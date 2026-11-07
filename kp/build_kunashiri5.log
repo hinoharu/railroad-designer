@@ -1,0 +1,153 @@
+== 区間 ipg：古い手順（計算しない）。特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py …
+== 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
+== 区間 kita_w（国後北線 西側（国後泊〜軽別〜植尻〜仁岸寄））ハッシュ 経路 ca3819efb30d・線形 8b82544a692b・縦断 2e0c9312154a
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  問題が残る駅間 ['斜里苅別信号場・一菱内（bridge）']（勾配は下げないので、ここで止める）
+== 区間 kofu（国後北線 古釜布支線（仁岸寄〜古釜布））ハッシュ 経路 e8234fd5cd9f・線形 1ae923426cc6・縦断 5e02ec523a9e
+  $ rm -f branch_kofu_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kofu route_kofu.json fit_kita_w.json start end=fit_minami.json > ipb_kofu.log 2>&1
+  $ ROUTE='route_kofu.json' python3 fit2route.py kofu > geo_kofu.log 2>&1
+  $ python3 ground.py route_fkofu.json ground_fkofu.json > ground_kofu.log 2>&1
+  高さの指定表 _free： {'start_z': 21.5, 'end_z': 9.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 21.5, 'end_z': 9.8} 0 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkofu.json costs_single.json design_fkofu.json height_spec_kofu.json > d_kofu.log 2>&1
+== 区間 kita_e（国後北線 東側（仁岸寄〜奔別〜国後蘂取〜遠音別〜白糠泊））ハッシュ 経路 7c0eb883932c・線形 0b2935557799・縦断 7a1a62ad03ea
+  $ ROUTE='route_kita_e.json' OUT='route_kita_e_hyb.json' PREFIX='kita_e_' GDEF='0.0333' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' LAMBDA='1.0' GMAP='{"仁岸寄|奔別": 0.025, "奔別|止音別": 0.025, "止音別|南利寄": 0.025, "南利寄|利寄": 0.025, "利寄|璃瑠篠信号場": 0.025, "璃瑠篠信号場|知牽牛": 0.025, "知牽牛|翻内": 0.025, "翻内|国後蘂取": 0.025, "国後蘂取|散尺別": 0.025, "散尺別|留遠知": 0.025, "留遠知|知東": 0.025}' python3 devline_hybrid.py > hyb_kita_e.log 2>&1
+  $ rm -f branch_kita_e_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kita_e route_kita_e_hyb.json fit_kita_w.json end=fit_minami.json > ipb_kita_e.log 2>&1
+  $ ROUTE='route_kita_e_hyb.json' python3 fit2route.py kita_e > geo_kita_e.log 2>&1
+  $ python3 ground.py route_fkita_e.json ground_fkita_e.json > ground_kita_e.log 2>&1
+  高さの指定表 _free： {'end_z': 9.2, 'start_z': 21.5} 0 駅を指定
+  高さの指定表 _gs： {'end_z': 9.2, 'start_z': 21.5} 18 駅を指定
+  $ GCAP='0.0333' KYAKU25_ADD='[["仁岸寄", "知東"]]' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkita_e.json costs_single.json design_fkita_e.json height_spec_kita_e.json > d_kita_e.log 2>&1
+  問題のある駅間なし
+== 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ 経路 644d255dd88f・線形 19892432be31・縦断 3b77e507d0f9
+  $ rm -f branch_kuko_k_cands.json
+  $ VMAX='130' TILT='0' TRAIN='130' python3 ipfit_branch.py kuko_k route_kuko_k.json fit_minami.json start > ipb_kuko_k.log 2>&1
+  $ ROUTE='route_kuko_k.json' python3 fit2route.py kuko_k > geo_kuko_k.log 2>&1
+  $ python3 ground.py route_fkuko_k.json ground_fkuko_k.json > ground_kuko_k.log 2>&1
+  高さの指定表 _free： {'start_z': 106.1} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 106.1} 2 駅を指定
+  $ GCAP='0.0333' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkuko_k.json costs_single.json design_fkuko_k.json height_spec_kuko_k.json > d_kuko_k.log 2>&1
+== 区間 tofutsu（東沸湖線（尾路久根〜東沸湖））ハッシュ 経路 50dacdd2833e・線形 b14143dcc6ff・縦断 59510eb6bea1
+  $ rm -f branch_tofutsu_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py tofutsu route_tofutsu.json fit_minami.json start > ipb_tofutsu.log 2>&1
+  $ ROUTE='route_tofutsu.json' python3 fit2route.py tofutsu > geo_tofutsu.log 2>&1
+  $ python3 ground.py route_ftofutsu.json ground_ftofutsu.json > ground_tofutsu.log 2>&1
+  高さの指定表 _free： {'start_z': 79.4} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 79.4} 4 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ftofutsu.json costs_single.json design_ftofutsu.json height_spec_tofutsu.json > d_tofutsu.log 2>&1
+== 区間 heuke（平浮線（留夜別〜平浮泊））ハッシュ 経路 8cdd8e9b65b8・線形 dd65997702e1・縦断 fe5e6de10ced
+  $ rm -f branch_heuke_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py heuke route_heuke.json fit_minami.json start > ipb_heuke.log 2>&1
+  $ ROUTE='route_heuke.json' python3 fit2route.py heuke > geo_heuke.log 2>&1
+  $ python3 ground.py route_fheuke.json ground_fheuke.json > ground_heuke.log 2>&1
+  高さの指定表 _free： {'start_z': 8.1} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.1} 3 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fheuke.json costs_single.json design_fheuke.json height_spec_heuke.json > d_heuke.log 2>&1
+== 区間 keromoi（計呂萌線（国後泊〜計呂萌））ハッシュ 経路 55474db46e84・線形 947a560645c3・縦断 5310942b5fde
+  $ rm -f branch_keromoi_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py keromoi route_keromoi.json fit_minami.json start > ipb_keromoi.log 2>&1
+  $ ROUTE='route_keromoi.json' python3 fit2route.py keromoi > geo_keromoi.log 2>&1
+  $ python3 ground.py route_fkeromoi.json ground_fkeromoi.json > ground_keromoi.log 2>&1
+  高さの指定表 _free： {'start_z': 8.4} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.4} 2 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkeromoi.json costs_single.json design_fkeromoi.json height_spec_keromoi.json > d_keromoi.log 2>&1
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 f4dc05d4360a・縦断 c21e808cdf85
+  $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 東笛島: 地盤から -30.4 m（地平駅：範囲外）
+  問題のある駅間 ['新白糠信号場・南白糠（station）', '南白糠・笛島（station）', '笛島・東笛島（station）', '東笛島・歌分（station）'] を探す駅間に足し（合計 4）、探索からやり直す
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 e9c43f5715c7・縦断 6ba19f51cc92
+  $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["新白糠信号場", "南白糠"], ["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 南白糠: 地盤から +24.6 m（地平駅：範囲外）
+  駅の高さ 笛島: 地盤から -12.4 m（地平駅：範囲外）
+  駅の高さ 東笛島: 地盤から -38.2 m（地平駅：範囲外）
+  問題が残る駅間 ['新白糠信号場・南白糠', '南白糠・笛島', '笛島・東笛島', '東笛島・歌分']：探す勾配を 1‰ 下げて（{'新白糠信号場|南白糠': 0.024, '南白糠|笛島': 0.024, '笛島|東笛島': 0.024, '東笛島|歌分': 0.024}）探索からやり直す
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 05d0b2b8316c・縦断 844affc5afe6
+  $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["新白糠信号場", "南白糠"], ["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' GSEG='{"新白糠信号場|南白糠": 0.024, "南白糠|笛島": 0.024, "笛島|東笛島": 0.024, "東笛島|歌分": 0.024}' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 南白糠: 地盤から +14.4 m（地平駅：範囲外）
+  駅の高さ 東笛島: 地盤から -40.5 m（地平駅：範囲外）
+  問題が残る駅間 ['新白糠信号場・南白糠', '南白糠・笛島', '笛島・東笛島', '東笛島・歌分']：探す勾配を 1‰ 下げて（{'新白糠信号場|南白糠': 0.023, '南白糠|笛島': 0.023, '笛島|東笛島': 0.023, '東笛島|歌分': 0.023}）探索からやり直す
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 b32f7f06c695・縦断 ec3365212248
+  $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["新白糠信号場", "南白糠"], ["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' GSEG='{"新白糠信号場|南白糠": 0.023, "南白糠|笛島": 0.023, "笛島|東笛島": 0.023, "東笛島|歌分": 0.023}' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 南白糠: 地盤から +14.4 m（地平駅：範囲外）
+  駅の高さ 東笛島: 地盤から -40.5 m（地平駅：範囲外）
+  問題が残る駅間 ['新白糠信号場・南白糠', '南白糠・笛島', '笛島・東笛島', '東笛島・歌分']：探す勾配を 1‰ 下げて（{'新白糠信号場|南白糠': 0.022, '南白糠|笛島': 0.022, '笛島|東笛島': 0.022, '東笛島|歌分': 0.022}）探索からやり直す
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 32e3ad5a070a・縦断 548dfb8e1289
+  $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["新白糠信号場", "南白糠"], ["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' GSEG='{"新白糠信号場|南白糠": 0.022, "南白糠|笛島": 0.022, "笛島|東笛島": 0.022, "東笛島|歌分": 0.022}' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 南白糠: 地盤から +14.4 m（地平駅：範囲外）
+  駅の高さ 東笛島: 地盤から -40.5 m（地平駅：範囲外）
+  問題が残る駅間 ['新白糠信号場・南白糠', '南白糠・笛島', '笛島・東笛島', '東笛島・歌分']：探す勾配を 1‰ 下げて（{'新白糠信号場|南白糠': 0.021, '南白糠|笛島': 0.021, '笛島|東笛島': 0.021, '東笛島|歌分': 0.021}）探索からやり直す
+== 区間 chacha（爺爺線（岡布〜遠音別））ハッシュ 経路 baeb36cdd70b・線形 b66de3be3424・縦断 3c8467303953
+  $ ROUTE='route_chacha.json' OUT='route_chacha_hyb.json' PREFIX='chacha_' GDEF='0.0333' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' LAMBDA='1.0' python3 devline_hybrid.py > hyb_chacha.log 2>&1
+  $ rm -f branch_chacha_cands.json
+  $ VMAX='130' TILT='0' TRAIN='130' python3 ipfit_branch.py chacha route_chacha_hyb.json fit_minami.json start end=fit_kita_e.json > ipb_chacha.log 2>&1
+  $ ROUTE='route_chacha_hyb.json' python3 fit2route.py chacha > geo_chacha.log 2>&1
+  $ python3 ground.py route_fchacha.json ground_fchacha.json > ground_chacha.log 2>&1
+  高さの指定表 _free： {'start_z': 133.9, 'end_z': 8.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 133.9, 'end_z': 8.8} 3 駅を指定
+  $ GCAP='0.0333' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fchacha.json costs_single.json design_fchacha.json height_spec_chacha.json > d_chacha.log 2>&1
+  問題のある駅間なし
+== 区間 onne（遠音別線（遠音別〜上遠根別〜国後蘂取））ハッシュ 経路 5d03d0c2dcde・線形 d3fc75d8fb33・縦断 a013a5212bf0
+  $ ROUTE='route_onne.json' OUT='route_onne_hyb.json' PREFIX='onne_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' LAMBDA='1.0' python3 devline_hybrid.py > hyb_onne.log 2>&1
+  $ rm -f branch_onne_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py onne route_onne_hyb.json fit_kita_e.json start end > ipb_onne.log 2>&1
+  $ ROUTE='route_onne_hyb.json' python3 fit2route.py onne > geo_onne.log 2>&1
+  $ python3 ground.py route_fonne.json ground_fonne.json > ground_onne.log 2>&1
+  高さの指定表 _free： {'start_z': 8.8, 'end_z': 4.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.8, 'end_z': 4.8} 4 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fonne.json costs_single.json design_fonne.json height_spec_onne.json > d_onne.log 2>&1
+  駅の高さ 底吼: 地盤から -10.2 m（地平駅：範囲外）
+  問題のある駅間 ['遠音別・底吼（station）', '底吼・円山（station）'] を探す駅間に足し（合計 2）、探索からやり直す
+== 区間 onne（遠音別線（遠音別〜上遠根別〜国後蘂取））ハッシュ 経路 5d03d0c2dcde・線形 5ff2060abf09・縦断 f3550b8bd040
+  $ ROUTE='route_onne.json' OUT='route_onne_hyb.json' PREFIX='onne_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["遠音別", "底吼"], ["底吼", "円山"]]' LAMBDA='1.0' python3 devline_hybrid.py > hyb_onne.log 2>&1
+  $ rm -f branch_onne_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py onne route_onne_hyb.json fit_kita_e.json start end > ipb_onne.log 2>&1
+  $ ROUTE='route_onne_hyb.json' python3 fit2route.py onne > geo_onne.log 2>&1
+  $ python3 ground.py route_fonne.json ground_fonne.json > ground_onne.log 2>&1
+  高さの指定表 _free： {'start_z': 8.8, 'end_z': 4.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.8, 'end_z': 4.8} 4 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fonne.json costs_single.json design_fonne.json height_spec_onne.json > d_onne.log 2>&1
+  問題のある駅間なし
+== 区間 kishi（岸内線（岸内〜南利寄））ハッシュ 経路 8b81ca4ed2c7・線形 9a76dd701062・縦断 1b715f25bc58
+  $ rm -f branch_kishi_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py kishi route_kishi.json fit_minami.json start end=fit_kita_e.json > ipb_kishi.log 2>&1

@@ -1,0 +1,11 @@
+== 区間 ipg：古い手順（計算しない）。特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py …
+== 区間 minami（国後南線（安渡移矢岬〜古釜布〜国後泊））ハッシュ 6828716978f2
+  （済み）fit
+  $ ROUTE='route_minami.json' python3 fit2route.py minami > geo_minami.log 2>&1
+  $ python3 ground.py route_fminami.json ground_fminami.json > ground_minami.log 2>&1
+  高さの指定表 _free： {} 0 駅を指定
+  高さの指定表 _gs： {} 30 駅を指定
+  $ GCAP='0.0333' KYAKU25_ADD='[["安渡移矢岬", "安渡移矢"]]' python3 design3.py ground_fminami.json costs_single.json design_fminami_free.json height_spec_minami_free.json > d_minami_free.log 2>&1
+  $ GCAP='0.0333' KYAKU25_ADD='[["安渡移矢岬", "安渡移矢"]]' python3 design3.py ground_fminami.json costs_single.json design_fminami.json height_spec_minami.json > d_minami.log 2>&1
+== 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
+完了

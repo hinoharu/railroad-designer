@@ -1,0 +1,1 @@
+{"name": "特急国後空港止嬰賀", "note": "テンプレのダイヤの特急 国後空港→岡布（上下 18 本ずつ）と、岡布→止嬰賀（✈特急。上下 18 本ずつ）を 1 本として扱う", "pieces": [["kuko_k", "end", "start"], ["minami", "J:kuko_k:start", "J:chacha:start"], ["chacha", "start", "end"], ["kita_e", "J:chacha:end", "st:止嬰賀"]], "stops": ["国後空港", "狩士別", "古釜布", "沖津臼", "岸内", "留夜別", "岡布", "遠音別", "止嬰賀"]}

@@ -1,0 +1,2890 @@
+{
+ "note": "railroad-designer の書き出し（補足）。形の決まりは docs/exchange.md。駅の位置と線形は同じ名前の *_lines.geojson・*_stations.geojson",
+ "island": "択捉",
+ "files": {
+  "lines": "etorofu_lines.geojson",
+  "stations": "etorofu_stations.geojson",
+  "line_names": "etorofu_line_names.tsv",
+  "line_splits": "etorofu_line_splits.tsv",
+  "yomi": "etorofu_yomi.tsv"
+ },
+ "built_with": {
+  "repository": "hinoharu/railroad-designer",
+  "commit": "4213f41（入力表か結果に未コミットの変更あり）"
+ },
+ "source": {
+  "drawing": "作図した路線・駅（地理院地図で作図。駅レーダーサイトの data/fiction_src。この書き出しの駅の名前・読み・路線名はそれに合わせた）",
+  "elevation": "国土地理院 標高タイル（DEM10B）",
+  "method": "平面線形は交点法、縦断線形は構造物の概算費用による動的計画法（docs/align.md）"
+ },
+ "precision": {
+  "polyline_tolerance_m": 10.0,
+  "coordinate_decimals": 6
+ },
+ "profile_keys": {
+  "free": "駅の高さを指定しない縦断",
+  "gs": "駅地平化（経路の全駅を地盤 ±2 m に置く）の縦断"
+ },
+ "sections": [
+  {
+   "id": "ipg",
+   "name": "特急の経路（蘂取〜紗那〜兵至平）",
+   "feature": 0,
+   "rank": 1,
+   "grade": "乙線",
+   "parents": [],
+   "method": "legacy",
+   "stations": [
+    [
+     "蘂取",
+     0
+    ],
+    [
+     "尾渡",
+     7920
+    ],
+    [
+     "振比内",
+     14399
+    ],
+    [
+     "乙今牛",
+     20710
+    ],
+    [
+     "塘路",
+     34847
+    ],
+    [
+     "浜中",
+     42610
+    ],
+    [
+     "西山",
+     49389
+    ],
+    [
+     "標後",
+     54753
+    ],
+    [
+     "瀬石温泉",
+     67045
+    ],
+    [
+     "東紗那",
+     72878
+    ],
+    [
+     "紗那",
+     81029
+    ],
+    [
+     "沼南信号場",
+     83105
+    ],
+    [
+     "有萌",
+     86041
+    ],
+    [
+     "西碓",
+     89137
+    ],
+    [
+     "長碓",
+     94119
+    ],
+    [
+     "散布下井信号場",
+     96546
+    ],
+    [
+     "後捲",
+     98944
+    ],
+    [
+     "内保浜",
+     101003
+    ],
+    [
+     "留別",
+     106673
+    ],
+    [
+     "南留別",
+     108873
+    ],
+    [
+     "宇遠知",
+     110552
+    ],
+    [
+     "類平",
+     113213
+    ],
+    [
+     "西内保別",
+     120683
+    ],
+    [
+     "振別",
+     124753
+    ],
+    [
+     "西振別",
+     130814
+    ],
+    [
+     "老門",
+     131914
+    ],
+    [
+     "在採信号場",
+     134145
+    ],
+    [
+     "採神威",
+     138220
+    ],
+    [
+     "終里信号場",
+     141593
+    ],
+    [
+     "長生内",
+     145857
+    ],
+    [
+     "白川口",
+     150184
+    ],
+    [
+     "治部乙",
+     154875
+    ],
+    [
+     "剣鱒信号場",
+     159676
+    ],
+    [
+     "擲都",
+     165831
+    ],
+    [
+     "木匁",
+     168410
+    ],
+    [
+     "択捉神居古潭",
+     173542
+    ],
+    [
+     "伏福別",
+     178788
+    ],
+    [
+     "辺渓別",
+     184291
+    ],
+    [
+     "旧内保",
+     189587
+    ],
+    [
+     "満前",
+     199860
+    ],
+    [
+     "東六甲",
+     203954
+    ],
+    [
+     "択捉六甲",
+     208312
+    ],
+    [
+     "美容都",
+     211802
+    ],
+    [
+     "両牛",
+     217815
+    ],
+    [
+     "新布刈信号場",
+     225992
+    ],
+    [
+     "布刈",
+     230846
+    ],
+    [
+     "兵至平",
+     236816
+    ]
+   ],
+   "length_m": 236816,
+   "lines": [
+    {
+     "line": "蘂取線",
+     "from": "蘂取",
+     "to": "紗那"
+    },
+    {
+     "line": "留別線",
+     "from": "紗那",
+     "to": "南留別"
+    },
+    {
+     "line": "蘂取線",
+     "from": "南留別",
+     "to": "類平"
+    },
+    {
+     "line": "振別線",
+     "from": "類平",
+     "to": "老門"
+    },
+    {
+     "line": "老門線",
+     "from": "老門",
+     "to": "兵至平"
+    }
+   ],
+   "run": null,
+   "profile_input": {},
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_fipgh.json",
+     "max_grade_permille": 22.5,
+     "tunnel_m": 37680.0,
+     "bridge_m": 41780.0
+    },
+    "gs": {
+     "file": "design_fipgh_gs.json",
+     "max_grade_permille": 25.0,
+     "tunnel_m": 42220.0,
+     "bridge_m": 39100.0
+    }
+   },
+   "polyline": {
+    "points": 715,
+    "max_deviation_m": 9.97
+   }
+  },
+  {
+   "id": "sanpu",
+   "name": "散布線（大岬〜瀬石温泉の分岐器）",
+   "feature": 1,
+   "rank": 2,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（瀬石温泉の構内）"
+    }
+   ],
+   "method": "legacy",
+   "stations": [
+    [
+     "大岬",
+     0
+    ],
+    [
+     "散布",
+     2457
+    ],
+    [
+     "散布渓",
+     7085
+    ],
+    [
+     "紗万部",
+     13335
+    ],
+    [
+     "南散布",
+     15855
+    ],
+    [
+     "乳萌",
+     22397
+    ],
+    [
+     "別飛仮乗降場",
+     24858
+    ],
+    [
+     "瀬石温泉",
+     26185
+    ]
+   ],
+   "length_m": 26185,
+   "lines": [
+    {
+     "line": "散布線",
+     "from": "大岬",
+     "to": "瀬石温泉"
+    }
+   ],
+   "run": null,
+   "profile_input": {},
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_fsanpu_free.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 7420.0,
+     "bridge_m": 6140.0
+    },
+    "gs": {
+     "file": "design_fsanpu.json",
+     "max_grade_permille": 35.0,
+     "tunnel_m": 6780.0,
+     "bridge_m": 3660.0
+    }
+   },
+   "polyline": {
+    "points": 88,
+    "max_deviation_m": 9.96
+   }
+  },
+  {
+   "id": "shibw",
+   "name": "蘂取線（択捉六甲〜類平）",
+   "feature": 2,
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉六甲）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（類平）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "択捉六甲",
+     0
+    ],
+    [
+     "方真辺信号場",
+     12005
+    ],
+    [
+     "得茂別",
+     17822
+    ],
+    [
+     "御所釜別信号場",
+     22535
+    ],
+    [
+     "目名問",
+     26639
+    ],
+    [
+     "十五夜萌",
+     31694
+    ],
+    [
+     "入里節",
+     36776
+    ],
+    [
+     "背野津",
+     44468
+    ],
+    [
+     "野塚",
+     48997
+    ],
+    [
+     "具夜",
+     56214
+    ],
+    [
+     "碓",
+     66571
+    ],
+    [
+     "西単冠",
+     70849
+    ],
+    [
+     "黒木内",
+     74942
+    ],
+    [
+     "年萌",
+     86871
+    ],
+    [
+     "羅臼川",
+     91146
+    ],
+    [
+     "類平",
+     98022
+    ]
+   ],
+   "length_m": 98022,
+   "lines": [
+    {
+     "line": "蘂取線",
+     "from": "択捉六甲",
+     "to": "類平"
+    }
+   ],
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile_input": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "入里節",
+      "類平"
+     ]
+    ]
+   },
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_fshibw_free.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 17620.0,
+     "bridge_m": 11800.0
+    },
+    "gs": {
+     "file": "design_fshibw.json",
+     "max_grade_permille": 33.3,
+     "tunnel_m": 19360.0,
+     "bridge_m": 7680.0
+    }
+   },
+   "polyline": {
+    "points": 282,
+    "max_deviation_m": 9.97
+   }
+  },
+  {
+   "id": "shibr",
+   "name": "蘂取線（紗那〜沼田〜南留別）",
+   "feature": 3,
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（紗那の先。紗那は特急の経路の折り返しの駅）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（南留別の手前）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "紗那",
+     0
+    ],
+    [
+     "留紗那",
+     2187
+    ],
+    [
+     "三股信号場",
+     11942
+    ],
+    [
+     "沼田",
+     18890
+    ],
+    [
+     "摺鉢山",
+     21300
+    ],
+    [
+     "大小",
+     33819
+    ],
+    [
+     "奧留別",
+     39230
+    ],
+    [
+     "南留別",
+     45305
+    ]
+   ],
+   "length_m": 45305,
+   "lines": [
+    {
+     "line": "蘂取線",
+     "from": "紗那",
+     "to": "南留別"
+    }
+   ],
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile_input": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "沼田",
+      "南留別"
+     ]
+    ]
+   },
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_fshibr_free.json",
+     "max_grade_permille": 29.7,
+     "tunnel_m": 13320.0,
+     "bridge_m": 17620.0
+    },
+    "gs": {
+     "file": "design_fshibr.json",
+     "max_grade_permille": 33.3,
+     "tunnel_m": 14140.0,
+     "bridge_m": 6420.0
+    }
+   },
+   "polyline": {
+    "points": 119,
+    "max_deviation_m": 9.92
+   }
+  },
+  {
+   "id": "rakki",
+   "name": "酪別線（酪別〜蘂取）",
+   "feature": 4,
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（蘂取。特急の経路の起点）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "酪別",
+     0
+    ],
+    [
+     "恵師",
+     3490
+    ],
+    [
+     "裡縫山信号場",
+     4869
+    ],
+    [
+     "御処",
+     7419
+    ],
+    [
+     "新幌萌信号場",
+     11028
+    ],
+    [
+     "散別",
+     16698
+    ],
+    [
+     "敏音別信号場",
+     21840
+    ],
+    [
+     "蘂取",
+     24758
+    ]
+   ],
+   "length_m": 24758,
+   "lines": [
+    {
+     "line": "酪別線",
+     "from": "酪別",
+     "to": "蘂取"
+    }
+   ],
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_frakki_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 5720.0,
+     "bridge_m": 6040.0
+    },
+    "gs": {
+     "file": "design_frakki.json",
+     "max_grade_permille": 25.0,
+     "tunnel_m": 3320.0,
+     "bridge_m": 9080.0
+    }
+   },
+   "polyline": {
+    "points": 85,
+    "max_deviation_m": 9.96
+   }
+  },
+  {
+   "id": "moyoro",
+   "name": "茂世路線（茂世路〜沼田）",
+   "feature": 5,
+   "rank": 4,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "shibr",
+     "at": "終点（沼田）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "茂世路",
+     0
+    ],
+    [
+     "戸狩臼",
+     8132
+    ],
+    [
+     "浮老",
+     13939
+    ],
+    [
+     "背卸",
+     19045
+    ],
+    [
+     "牧読井",
+     24892
+    ],
+    [
+     "去家",
+     31539
+    ],
+    [
+     "背祖曽",
+     38938
+    ],
+    [
+     "応仁萌",
+     44948
+    ],
+    [
+     "四谷",
+     47789
+    ],
+    [
+     "渡刈",
+     54822
+    ],
+    [
+     "東留茶留",
+     64623
+    ],
+    [
+     "乙知志",
+     71622
+    ],
+    [
+     "磯谷",
+     80867
+    ],
+    [
+     "新指臼",
+     89355
+    ],
+    [
+     "沼田",
+     100225
+    ]
+   ],
+   "length_m": 100225,
+   "lines": [
+    {
+     "line": "茂世路線",
+     "from": "茂世路",
+     "to": "沼田"
+    }
+   ],
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile_input": {
+    "GCAP": 0.035,
+    "costs": "single",
+    "double": [
+     [
+      "背祖曽",
+      "沼田"
+     ]
+    ]
+   },
+   "min_radius_m": 200,
+   "profile": {
+    "free": {
+     "file": "design_fmoyoro_free.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 32500.0,
+     "bridge_m": 30040.0
+    },
+    "gs": {
+     "file": "design_fmoyoro.json",
+     "max_grade_permille": 35.0,
+     "tunnel_m": 31160.0,
+     "bridge_m": 21320.0
+    }
+   },
+   "polyline": {
+    "points": 297,
+    "max_deviation_m": 9.89
+   }
+  },
+  {
+   "id": "kuko",
+   "name": "択捉空港線（西単冠〜択捉空港〜植別）",
+   "feature": 6,
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（西単冠）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "西単冠",
+     0
+    ],
+    [
+     "択捉空港",
+     4290
+    ],
+    [
+     "植別",
+     6983
+    ]
+   ],
+   "length_m": 6983,
+   "lines": [
+    {
+     "line": "択捉空港線",
+     "from": "西単冠",
+     "to": "植別"
+    }
+   ],
+   "run": {
+    "VMAX": 110,
+    "TILT": 0,
+    "TRAIN": 120
+   },
+   "profile_input": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "KYAKU25_ADD": [
+     [
+      "択捉空港",
+      "植別"
+     ]
+    ],
+    "double": []
+   },
+   "min_radius_m": 210,
+   "profile": {
+    "free": {
+     "file": "design_fkuko_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    },
+    "gs": {
+     "file": "design_fkuko.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    }
+   },
+   "polyline": {
+    "points": 26,
+    "max_deviation_m": 8.75
+   }
+  },
+  {
+   "id": "sanroku_n",
+   "name": "単冠山麓線（入里節〜特掟〜単冠山口）",
+   "feature": 7,
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（入里節）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "入里節",
+     0
+    ],
+    [
+     "特掟",
+     6825
+    ],
+    [
+     "美云別",
+     10577
+    ],
+    [
+     "樺里信号場",
+     14659
+    ],
+    [
+     "単冠山口",
+     27728
+    ]
+   ],
+   "length_m": 27728,
+   "lines": [
+    {
+     "line": "単冠山麓線",
+     "from": "入里節",
+     "to": "単冠山口"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "KYAKU25_ADD": [
+     [
+      "特掟",
+      "単冠山口"
+     ]
+    ],
+    "double": []
+   },
+   "min_radius_m": 350,
+   "profile": {
+    "free": {
+     "file": "design_fsanroku_n_free.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 6000.0,
+     "bridge_m": 1040.0
+    },
+    "gs": {
+     "file": "design_fsanroku_n.json",
+     "max_grade_permille": 25.0,
+     "tunnel_m": 3400.0,
+     "bridge_m": 2340.0
+    }
+   },
+   "polyline": {
+    "points": 114,
+    "max_deviation_m": 9.9
+   }
+  },
+  {
+   "id": "sanroku_s",
+   "name": "単冠山麓線（単冠山口〜長生内）",
+   "feature": 8,
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（長生内）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "単冠山口",
+     0
+    ],
+    [
+     "西映",
+     8945
+    ],
+    [
+     "上伏古信号場",
+     12357
+    ],
+    [
+     "仲芭蕉",
+     21697
+    ],
+    [
+     "来季萌",
+     27165
+    ],
+    [
+     "長生内",
+     29802
+    ]
+   ],
+   "length_m": 29802,
+   "lines": [
+    {
+     "line": "単冠山麓線",
+     "from": "単冠山口",
+     "to": "長生内"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_fsanroku_s_free.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 13000.0,
+     "bridge_m": 2200.0
+    },
+    "gs": {
+     "file": "design_fsanroku_s.json",
+     "max_grade_permille": 25.0,
+     "tunnel_m": 7340.0,
+     "bridge_m": 2960.0
+    }
+   },
+   "polyline": {
+    "points": 110,
+    "max_deviation_m": 9.46
+   }
+  },
+  {
+   "id": "toshi",
+   "name": "茂世路線 冬知里支線（四谷〜塘路）",
+   "feature": 9,
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "moyoro",
+     "at": "始点（四谷）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（塘路の手前。特急は塘路で折り返す）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "四谷",
+     10
+    ],
+    [
+     "冬知里信号場",
+     6760
+    ],
+    [
+     "塘路",
+     12297
+    ]
+   ],
+   "length_m": 12297,
+   "lines": [
+    {
+     "line": "茂世路線(冬知里支線)",
+     "from": "四谷",
+     "to": "塘路"
+    }
+   ],
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 200,
+   "profile": {
+    "free": {
+     "file": "design_ftoshi_free.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 620.0,
+     "bridge_m": 4420.0
+    },
+    "gs": {
+     "file": "design_ftoshi.json",
+     "max_grade_permille": 20.0,
+     "tunnel_m": 820.0,
+     "bridge_m": 2720.0
+    }
+   },
+   "polyline": {
+    "points": 46,
+    "max_deviation_m": 9.84
+   }
+  },
+  {
+   "id": "otamoi",
+   "name": "小田萌線（年萌〜新指臼）",
+   "feature": 10,
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（年萌）"
+    },
+    {
+     "section": "moyoro",
+     "at": "終点（新指臼）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "年萌",
+     0
+    ],
+    [
+     "焼沼",
+     4598
+    ],
+    [
+     "礼文尻",
+     10068
+    ],
+    [
+     "鞍掛",
+     15399
+    ],
+    [
+     "小田萌",
+     23879
+    ],
+    [
+     "襲士別信号場",
+     32696
+    ],
+    [
+     "新指臼",
+     42268
+    ]
+   ],
+   "length_m": 42270,
+   "lines": [
+    {
+     "line": "小田萌線",
+     "from": "年萌",
+     "to": "新指臼"
+    }
+   ],
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 250,
+   "profile": {
+    "free": {
+     "file": "design_fotamoi_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 9200.0,
+     "bridge_m": 11640.0
+    },
+    "gs": {
+     "file": "design_fotamoi.json",
+     "max_grade_permille": 18.0,
+     "tunnel_m": 14740.0,
+     "bridge_m": 5400.0
+    }
+   },
+   "polyline": {
+    "points": 111,
+    "max_deviation_m": 9.92
+   }
+  },
+  {
+   "id": "sesibe",
+   "name": "背蘂線（蘂取〜背祖曽）",
+   "feature": 11,
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（蘂取。特急の経路の起点）"
+    },
+    {
+     "section": "moyoro",
+     "at": "終点（背祖曽）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "蘂取",
+     0
+    ],
+    [
+     "良宇仁",
+     5338
+    ],
+    [
+     "睡名",
+     13624
+    ],
+    [
+     "長根",
+     25171
+    ],
+    [
+     "天幕",
+     31392
+    ],
+    [
+     "上去家",
+     40295
+    ],
+    [
+     "中去家信号場",
+     44226
+    ],
+    [
+     "背祖曽",
+     49814
+    ]
+   ],
+   "length_m": 49814,
+   "lines": [
+    {
+     "line": "背蘂線",
+     "from": "蘂取",
+     "to": "背祖曽"
+    }
+   ],
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 122
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 160,
+   "profile": {
+    "free": {
+     "file": "design_fsesibe_free.json",
+     "max_grade_permille": 25.0,
+     "tunnel_m": 18600.0,
+     "bridge_m": 9640.0
+    },
+    "gs": {
+     "file": "design_fsesibe.json",
+     "max_grade_permille": 25.0,
+     "tunnel_m": 10420.0,
+     "bridge_m": 8600.0
+    }
+   },
+   "polyline": {
+    "points": 252,
+    "max_deviation_m": 9.99
+   }
+  },
+  {
+   "id": "tanne",
+   "name": "丹根萌線（択捉六甲〜丹根萌）",
+   "feature": 12,
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉六甲の先の分岐器）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "択捉六甲",
+     0
+    ],
+    [
+     "迂遠知信号場",
+     6960
+    ],
+    [
+     "丹根萌",
+     12548
+    ]
+   ],
+   "length_m": 12548,
+   "lines": [
+    {
+     "line": "丹根萌線",
+     "from": "択捉六甲",
+     "to": "丹根萌"
+    }
+   ],
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 122
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 310,
+   "profile": {
+    "free": {
+     "file": "design_ftanne_free.json",
+     "max_grade_permille": 17.3,
+     "tunnel_m": 0.0,
+     "bridge_m": 1300.0
+    },
+    "gs": {
+     "file": "design_ftanne.json",
+     "max_grade_permille": 17.3,
+     "tunnel_m": 0.0,
+     "bridge_m": 1300.0
+    }
+   },
+   "polyline": {
+    "points": 33,
+    "max_deviation_m": 8.55
+   }
+  },
+  {
+   "id": "furu",
+   "name": "振別線（老門〜奧羅臼）",
+   "feature": 13,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（老門）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "老門",
+     0
+    ],
+    [
+     "奧羅臼",
+     7971
+    ]
+   ],
+   "length_m": 7971,
+   "lines": [
+    {
+     "line": "振別線",
+     "from": "老門",
+     "to": "奧羅臼"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 260,
+   "profile": {
+    "free": {
+     "file": "design_ffuru_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 620.0
+    },
+    "gs": {
+     "file": "design_ffuru.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 620.0
+    }
+   },
+   "polyline": {
+    "points": 23,
+    "max_deviation_m": 9.98
+   }
+  },
+  {
+   "id": "atosa_w",
+   "name": "阿登佐線 西側（択捉神居古潭〜内保）",
+   "feature": 14,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉神居古潭）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "択捉神居古潭",
+     0
+    ],
+    [
+     "内保",
+     4411
+    ]
+   ],
+   "length_m": 4411,
+   "lines": [
+    {
+     "line": "阿登佐線",
+     "from": "択捉神居古潭",
+     "to": "内保"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 530,
+   "profile": {
+    "free": {
+     "file": "design_fatosa_w_free.json",
+     "max_grade_permille": 6.5,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    },
+    "gs": {
+     "file": "design_fatosa_w.json",
+     "max_grade_permille": 6.5,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    }
+   },
+   "polyline": {
+    "points": 8,
+    "max_deviation_m": 8.9
+   }
+  },
+  {
+   "id": "atosa_e1",
+   "name": "阿登佐線 東側（択捉神居古潭〜散布泊）",
+   "feature": 15,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉神居古潭）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "択捉神居古潭",
+     0
+    ],
+    [
+     "散布泊",
+     5287
+    ]
+   ],
+   "length_m": 5287,
+   "lines": [
+    {
+     "line": "阿登佐線",
+     "from": "択捉神居古潭",
+     "to": "散布泊"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 530,
+   "profile": {
+    "free": {
+     "file": "design_fatosa_e1_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    },
+    "gs": {
+     "file": "design_fatosa_e1.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    }
+   },
+   "polyline": {
+    "points": 16,
+    "max_deviation_m": 9.62
+   }
+  },
+  {
+   "id": "atosa_e2",
+   "name": "阿登佐線 東側（散布泊〜阿登佐岳）",
+   "feature": 16,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [],
+   "method": "branch",
+   "stations": [
+    [
+     "散布泊",
+     0
+    ],
+    [
+     "阿登佐岳",
+     6201
+    ]
+   ],
+   "length_m": 6201,
+   "lines": [
+    {
+     "line": "阿登佐線",
+     "from": "散布泊",
+     "to": "阿登佐岳"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 530,
+   "profile": {
+    "free": {
+     "file": "design_fatosa_e2_free.json",
+     "max_grade_permille": 12.8,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    },
+    "gs": {
+     "file": "design_fatosa_e2.json",
+     "max_grade_permille": 12.8,
+     "tunnel_m": 0.0,
+     "bridge_m": 0.0
+    }
+   },
+   "polyline": {
+    "points": 15,
+    "max_deviation_m": 9.59
+   }
+  },
+  {
+   "id": "noto",
+   "name": "野斗路線（振別〜賢萌〜野斗路）",
+   "feature": 17,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（振別）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "振別",
+     0
+    ],
+    [
+     "賢萌",
+     3860
+    ],
+    [
+     "野斗路",
+     6726
+    ]
+   ],
+   "length_m": 6726,
+   "lines": [
+    {
+     "line": "野斗路線",
+     "from": "振別",
+     "to": "野斗路"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 390,
+   "profile": {
+    "free": {
+     "file": "design_fnoto_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 1440.0,
+     "bridge_m": 0.0
+    },
+    "gs": {
+     "file": "design_fnoto.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 1440.0,
+     "bridge_m": 0.0
+    }
+   },
+   "polyline": {
+    "points": 24,
+    "max_deviation_m": 9.95
+   }
+  },
+  {
+   "id": "yorib",
+   "name": "寄別線（焼沼〜鬼門〜寄別）",
+   "feature": 18,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "otamoi",
+     "at": "始点（焼沼）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "焼沼",
+     0
+    ],
+    [
+     "鬼門",
+     3870
+    ],
+    [
+     "寄別",
+     9069
+    ]
+   ],
+   "length_m": 9069,
+   "lines": [
+    {
+     "line": "寄別線",
+     "from": "焼沼",
+     "to": "寄別"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 180,
+   "profile": {
+    "free": {
+     "file": "design_fyorib_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 1020.0,
+     "bridge_m": 2560.0
+    },
+    "gs": {
+     "file": "design_fyorib.json",
+     "max_grade_permille": 18.0,
+     "tunnel_m": 4260.0,
+     "bridge_m": 740.0
+    }
+   },
+   "polyline": {
+    "points": 43,
+    "max_deviation_m": 9.95
+   }
+  },
+  {
+   "id": "otoshi",
+   "name": "乙知志線（乙知志〜択捉原〜北乙）",
+   "feature": 19,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "moyoro",
+     "at": "始点（乙知志）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "乙知志",
+     0
+    ],
+    [
+     "択捉原",
+     3881
+    ],
+    [
+     "北乙",
+     8373
+    ]
+   ],
+   "length_m": 8373,
+   "lines": [
+    {
+     "line": "乙知志線",
+     "from": "乙知志",
+     "to": "北乙"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 170,
+   "profile": {
+    "free": {
+     "file": "design_fotoshi_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 1500.0,
+     "bridge_m": 0.0
+    },
+    "gs": {
+     "file": "design_fotoshi.json",
+     "max_grade_permille": 24.9,
+     "tunnel_m": 0.0,
+     "bridge_m": 1500.0
+    }
+   },
+   "polyline": {
+    "points": 35,
+    "max_deviation_m": 10.0
+   }
+  },
+  {
+   "id": "moke",
+   "name": "萌消線（萌消〜満前）",
+   "feature": 20,
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（満前）"
+    }
+   ],
+   "method": "branch",
+   "stations": [
+    [
+     "萌消",
+     0
+    ],
+    [
+     "満前",
+     7400
+    ]
+   ],
+   "length_m": 7404,
+   "lines": [
+    {
+     "line": "萌消線",
+     "from": "萌消",
+     "to": "満前"
+    }
+   ],
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile_input": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "min_radius_m": 240,
+   "profile": {
+    "free": {
+     "file": "design_fmoke_free.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 340.0
+    },
+    "gs": {
+     "file": "design_fmoke.json",
+     "max_grade_permille": 15.0,
+     "tunnel_m": 0.0,
+     "bridge_m": 320.0
+    }
+   },
+   "polyline": {
+    "points": 22,
+    "max_deviation_m": 9.63
+   }
+  }
+ ],
+ "lines": [
+  {
+   "name": "蘂取線",
+   "kana": "しべとろせん",
+   "pieces": [
+    {
+     "section": "ipg",
+     "from": "蘂取",
+     "to": "紗那"
+    },
+    {
+     "section": "ipg",
+     "from": "南留別",
+     "to": "類平"
+    },
+    {
+     "section": "shibw",
+     "from": "択捉六甲",
+     "to": "類平"
+    },
+    {
+     "section": "shibr",
+     "from": "紗那",
+     "to": "南留別"
+    }
+   ],
+   "stations_drawn": [
+    "択捉六甲",
+    "方真辺信号場",
+    "得茂別",
+    "御所釜別信号場",
+    "目名問",
+    "十五夜萌",
+    "入里節",
+    "背野津",
+    "野塚",
+    "具夜",
+    "碓",
+    "西単冠",
+    "黒木内",
+    "年萌",
+    "羅臼川",
+    "類平",
+    "宇遠知",
+    "南留別",
+    "奧留別",
+    "大小",
+    "摺鉢山",
+    "沼田",
+    "三股信号場",
+    "留紗那",
+    "紗那",
+    "東紗那",
+    "瀬石温泉",
+    "標後",
+    "西山",
+    "浜中",
+    "塘路",
+    "乙今牛",
+    "振比内",
+    "尾渡",
+    "蘂取"
+   ]
+  },
+  {
+   "name": "留別線",
+   "kana": "るべつせん",
+   "pieces": [
+    {
+     "section": "ipg",
+     "from": "紗那",
+     "to": "南留別"
+    }
+   ],
+   "stations_drawn": [
+    "紗那",
+    "沼南信号場",
+    "有萌",
+    "西碓",
+    "長碓",
+    "散布下井信号場",
+    "後捲",
+    "内保浜",
+    "留別",
+    "南留別"
+   ]
+  },
+  {
+   "name": "振別線",
+   "kana": "ふれべつせん",
+   "pieces": [
+    {
+     "section": "ipg",
+     "from": "類平",
+     "to": "老門"
+    },
+    {
+     "section": "furu",
+     "from": "老門",
+     "to": "奧羅臼"
+    }
+   ],
+   "stations_drawn": [
+    "類平",
+    "西内保別",
+    "振別",
+    "西振別",
+    "老門",
+    "奧羅臼"
+   ]
+  },
+  {
+   "name": "老門線",
+   "kana": "おいとせん",
+   "pieces": [
+    {
+     "section": "ipg",
+     "from": "老門",
+     "to": "兵至平"
+    }
+   ],
+   "stations_drawn": [
+    "老門",
+    "在採信号場",
+    "採神威",
+    "終里信号場",
+    "長生内",
+    "白川口",
+    "治部乙",
+    "剣鱒信号場",
+    "擲都",
+    "木匁",
+    "択捉神居古潭",
+    "伏福別",
+    "辺渓別",
+    "旧内保",
+    "満前",
+    "東六甲",
+    "択捉六甲",
+    "美容都",
+    "両牛",
+    "新布刈信号場",
+    "布刈",
+    "兵至平"
+   ]
+  },
+  {
+   "name": "散布線",
+   "kana": "ちりっぷせん",
+   "pieces": [
+    {
+     "section": "sanpu",
+     "from": "大岬",
+     "to": "瀬石温泉"
+    }
+   ],
+   "stations_drawn": [
+    "大岬",
+    "散布",
+    "散布渓",
+    "紗万部",
+    "南散布",
+    "乳萌",
+    "別飛仮乗降場",
+    "瀬石温泉"
+   ]
+  },
+  {
+   "name": "酪別線",
+   "kana": "らっきべつせん",
+   "pieces": [
+    {
+     "section": "rakki",
+     "from": "酪別",
+     "to": "蘂取"
+    }
+   ],
+   "stations_drawn": [
+    "酪別",
+    "恵師",
+    "裡縫山信号場",
+    "御処",
+    "新幌萌信号場",
+    "散別",
+    "敏音別信号場",
+    "蘂取"
+   ]
+  },
+  {
+   "name": "茂世路線",
+   "kana": "もよろせん",
+   "pieces": [
+    {
+     "section": "moyoro",
+     "from": "茂世路",
+     "to": "沼田"
+    }
+   ],
+   "stations_drawn": [
+    "茂世路",
+    "戸狩臼",
+    "浮老",
+    "背卸",
+    "牧読井",
+    "去家",
+    "背祖曽",
+    "応仁萌",
+    "四谷",
+    "渡刈",
+    "東留茶留",
+    "乙知志",
+    "磯谷",
+    "新指臼",
+    "沼田"
+   ]
+  },
+  {
+   "name": "択捉空港線",
+   "kana": "えとろふくうこうせん",
+   "pieces": [
+    {
+     "section": "kuko",
+     "from": "西単冠",
+     "to": "植別"
+    }
+   ],
+   "stations_drawn": [
+    "西単冠",
+    "択捉空港",
+    "植別"
+   ]
+  },
+  {
+   "name": "単冠山麓線",
+   "kana": "ひとかっぷさんろくせん",
+   "pieces": [
+    {
+     "section": "sanroku_n",
+     "from": "入里節",
+     "to": "単冠山口"
+    },
+    {
+     "section": "sanroku_s",
+     "from": "単冠山口",
+     "to": "長生内"
+    }
+   ],
+   "stations_drawn": [
+    "入里節",
+    "特掟",
+    "美云別",
+    "樺里信号場",
+    "単冠山口",
+    "西映",
+    "上伏古信号場",
+    "仲芭蕉",
+    "来季萌",
+    "長生内"
+   ]
+  },
+  {
+   "name": "茂世路線(冬知里支線)",
+   "kana": "もよろせん(としるりしせん)",
+   "pieces": [
+    {
+     "section": "toshi",
+     "from": "四谷",
+     "to": "塘路"
+    }
+   ],
+   "stations_drawn": [
+    "四谷",
+    "冬知里信号場",
+    "塘路"
+   ]
+  },
+  {
+   "name": "小田萌線",
+   "kana": "おたもいせん",
+   "pieces": [
+    {
+     "section": "otamoi",
+     "from": "年萌",
+     "to": "新指臼"
+    }
+   ],
+   "stations_drawn": [
+    "年萌",
+    "焼沼",
+    "礼文尻",
+    "鞍掛",
+    "小田萌",
+    "襲士別信号場",
+    "新指臼"
+   ]
+  },
+  {
+   "name": "背蘂線",
+   "kana": "せしべせん",
+   "pieces": [
+    {
+     "section": "sesibe",
+     "from": "蘂取",
+     "to": "背祖曽"
+    }
+   ],
+   "stations_drawn": [
+    "蘂取",
+    "良宇仁",
+    "睡名",
+    "長根",
+    "天幕",
+    "上去家",
+    "中去家信号場",
+    "背祖曽"
+   ]
+  },
+  {
+   "name": "丹根萌線",
+   "kana": "たんねもいせん",
+   "pieces": [
+    {
+     "section": "tanne",
+     "from": "択捉六甲",
+     "to": "丹根萌"
+    }
+   ],
+   "stations_drawn": [
+    "択捉六甲",
+    "迂遠知信号場",
+    "丹根萌"
+   ]
+  },
+  {
+   "name": "阿登佐線",
+   "kana": "あとさせん",
+   "pieces": [
+    {
+     "section": "atosa_w",
+     "from": "択捉神居古潭",
+     "to": "内保"
+    },
+    {
+     "section": "atosa_e1",
+     "from": "択捉神居古潭",
+     "to": "散布泊"
+    },
+    {
+     "section": "atosa_e2",
+     "from": "散布泊",
+     "to": "阿登佐岳"
+    }
+   ],
+   "stations_drawn": [
+    "内保",
+    "択捉神居古潭",
+    "散布泊",
+    "阿登佐岳"
+   ]
+  },
+  {
+   "name": "野斗路線",
+   "kana": "のとろせん",
+   "pieces": [
+    {
+     "section": "noto",
+     "from": "振別",
+     "to": "野斗路"
+    }
+   ],
+   "stations_drawn": [
+    "振別",
+    "賢萌",
+    "野斗路"
+   ]
+  },
+  {
+   "name": "寄別線",
+   "kana": "よこしべつせん",
+   "pieces": [
+    {
+     "section": "yorib",
+     "from": "焼沼",
+     "to": "寄別"
+    }
+   ],
+   "stations_drawn": [
+    "焼沼",
+    "鬼門",
+    "寄別"
+   ]
+  },
+  {
+   "name": "乙知志線",
+   "kana": "おっちしせん",
+   "pieces": [
+    {
+     "section": "otoshi",
+     "from": "乙知志",
+     "to": "北乙"
+    }
+   ],
+   "stations_drawn": [
+    "乙知志",
+    "択捉原",
+    "北乙"
+   ]
+  },
+  {
+   "name": "萌消線",
+   "kana": "もえけしせん",
+   "pieces": [
+    {
+     "section": "moke",
+     "from": "萌消",
+     "to": "満前"
+    }
+   ],
+   "stations_drawn": [
+    "萌消",
+    "満前"
+   ]
+  }
+ ],
+ "systems": [
+  {
+   "id": "tokkyu",
+   "name": "特急 蘂取→兵至平",
+   "sections": [
+    "ipg"
+   ],
+   "stops": null,
+   "car": {
+    "type": "キハ283系",
+    "cars": 8,
+    "perf": null,
+    "source": "セーブのキハ261系をキハ283系と読み替える（ユーザーの指定）"
+   },
+   "VMAX": 130,
+   "TILT": 1,
+   "TRAIN": 160,
+   "run_min": {
+    "free": 149.3,
+    "gs": 149.8
+   },
+   "note": ""
+  },
+  {
+   "id": "futsu_sanpu",
+   "name": "普通 大岬→紗那",
+   "sections": [
+    "sanpu",
+    "ipg"
+   ],
+   "stops": [
+    "大岬",
+    "散布",
+    "散布渓",
+    "紗万部",
+    "南散布",
+    "乳萌",
+    "別飛仮乗降場",
+    "瀬石温泉",
+    "東紗那",
+    "紗那"
+   ],
+   "car": {
+    "type": "キハ54形500番台",
+    "cars": 4,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ"
+   },
+   "VMAX": 100,
+   "TILT": 0,
+   "TRAIN": 85,
+   "run_min": {
+    "free": 34.4,
+    "gs": 34.9
+   },
+   "note": ""
+  },
+  {
+   "id": "tokkyu_moyoro",
+   "name": "特急 茂世路→択捉六甲",
+   "sections": [
+    "moyoro",
+    "shibr",
+    "ipg",
+    "shibw"
+   ],
+   "stops": [
+    "茂世路",
+    "背祖曽",
+    "四谷",
+    "新指臼",
+    "沼田",
+    "南留別",
+    "類平",
+    "年萌",
+    "西単冠",
+    "入里節",
+    "得茂別",
+    "択捉六甲"
+   ],
+   "car": {
+    "type": "789系1000番台",
+    "cars": 8,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ（茂世路線 特急）"
+   },
+   "VMAX": 130,
+   "TILT": 0,
+   "TRAIN": 170,
+   "run_min": {
+    "free": 151.1,
+    "gs": 153.4
+   },
+   "note": "茂世路線 → 蘂取線（沼田〜南留別）→ 特急の経路（南留別〜類平）→ 蘂取線（類平 → 択捉六甲、逆向き）→ 特急の経路（分岐器 → 択捉六甲）。ダイヤ a.oud2 の特急（上下 16 本ずつ）"
+  },
+  {
+   "id": "futsu_shibetoro",
+   "name": "普通 蘂取→択捉六甲",
+   "sections": [
+    "ipg",
+    "shibr",
+    "shibw"
+   ],
+   "stops": [
+    "蘂取",
+    "尾渡",
+    "振比内",
+    "乙今牛",
+    "塘路",
+    "浜中",
+    "西山",
+    "標後",
+    "瀬石温泉",
+    "東紗那",
+    "紗那",
+    "留紗那",
+    "沼田",
+    "摺鉢山",
+    "大小",
+    "奧留別",
+    "南留別",
+    "宇遠知",
+    "類平",
+    "羅臼川",
+    "年萌",
+    "黒木内",
+    "西単冠",
+    "碓",
+    "具夜",
+    "野塚",
+    "背野津",
+    "入里節",
+    "十五夜萌",
+    "目名問",
+    "得茂別",
+    "択捉六甲"
+   ],
+   "car": {
+    "type": "719系",
+    "cars": 6,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ（蘂取本線 普通）。長さは 1 両 20 m、最高速度は 719系の 110 km/h"
+   },
+   "VMAX": 110,
+   "TILT": 0,
+   "TRAIN": 120,
+   "run_min": {
+    "free": 177.4,
+    "gs": 178.1
+   },
+   "note": "特急の経路（蘂取〜紗那）→ 蘂取線（紗那〜南留別）→ 特急の経路（南留別〜類平）→ 蘂取線（類平 → 択捉六甲、逆向き）→ 特急の経路（分岐器 → 択捉六甲）。ダイヤ a.oud2 の普通（上下 16 本ずつ）"
+  },
+  {
+   "id": "tokkyu_rakki",
+   "name": "特急 酪別→年萌",
+   "sections": [
+    "rakki",
+    "ipg",
+    "toshi",
+    "moyoro",
+    "otamoi",
+    "shibw"
+   ],
+   "stops": [
+    "酪別",
+    "蘂取",
+    "乙今牛",
+    "塘路",
+    "四谷",
+    "新指臼",
+    "小田萌",
+    "年萌"
+   ],
+   "car": {
+    "type": "キハ283系",
+    "cars": 8,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ（酪別線 特急、789系）。この特急だけは気動車で、789系は見た目だけ、キハ283系相当として扱う（2026-11-05、ユーザーの指定）"
+   },
+   "VMAX": 130,
+   "TILT": 1,
+   "TRAIN": 160,
+   "run_min": {
+    "free": 92.3,
+    "gs": 92.4
+   },
+   "note": "酪別線 → 特急の経路（蘂取→塘路。塘路で折り返し：冬知里支線は塘路の手前で蘂取の側を向いて分かれる）→ 冬知里支線（塘路→四谷、逆向き）→ 茂世路線（四谷→新指臼）→ 小田萌線（新指臼→年萌、逆向き）→ 蘂取線（分岐器→年萌）。ダイヤ a.oud2 の特急（上下 16 本ずつ）"
+  },
+  {
+   "id": "kyuko",
+   "name": "急行 蘂取→丹根萌",
+   "sections": [
+    "sesibe",
+    "moyoro",
+    "shibr",
+    "ipg",
+    "tanne"
+   ],
+   "stops": [
+    "蘂取",
+    "睡名",
+    "天幕",
+    "背祖曽",
+    "四谷",
+    "乙知志",
+    "新指臼",
+    "沼田",
+    "大小",
+    "南留別",
+    "類平",
+    "振別",
+    "老門",
+    "長生内",
+    "治部乙",
+    "擲都",
+    "択捉神居古潭",
+    "満前",
+    "択捉六甲",
+    "丹根萌"
+   ],
+   "car": {
+    "type": "DD51形重連＋客車",
+    "cars": 7,
+    "perf": {
+     "P_KW": 2260,
+     "MASS_T": 379,
+     "FMAX_KN": 330
+    },
+    "source": "freetrain-saves の択捉島のセーブ（観光急行：EF81＋24系・ED79＋E26系の 6 両）。電気機関車の見た目だが非電化区間も走るので、ディーゼル機関車 DD51形相当として扱う（2026-11-05、ユーザーの指定）。長さは機関車 18.0 m＋客車 20.8 m×5"
+   },
+   "VMAX": 95,
+   "TILT": 0,
+   "TRAIN": 140,
+   "run_min": {
+    "free": 196.5,
+    "gs": 198.7
+   },
+   "note": "背蘂線 → 茂世路線（背祖曽 → 沼田）→ 蘂取線（沼田 → 南留別）→ 特急の経路（南留別 → 択捉六甲の先の分岐器）→ 丹根萌線。ダイヤ a.oud2 の急行（上下 4 本ずつ）。標後〜蘂取は回送（特急の経路の上）"
+  },
+  {
+   "id": "kaisoku_kuko",
+   "name": "快速 茂世路→択捉空港",
+   "sections": [
+    "moyoro",
+    "shibr",
+    "ipg",
+    "shibw",
+    "kuko"
+   ],
+   "stops": [
+    "茂世路",
+    "浮老",
+    "背卸",
+    "牧読井",
+    "去家",
+    "背祖曽",
+    "応仁萌",
+    "四谷",
+    "渡刈",
+    "東留茶留",
+    "乙知志",
+    "磯谷",
+    "新指臼",
+    "沼田",
+    "南留別",
+    "類平",
+    "年萌",
+    "西単冠",
+    "択捉空港"
+   ],
+   "car": {
+    "type": "719系",
+    "cars": 6,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ（茂世路線 普通の編成、キハE120形 6 両）。快速は電車（ユーザーの指定）で、719系相当として扱う（ユーザーの選択）"
+   },
+   "VMAX": 110,
+   "TILT": 0,
+   "TRAIN": 120,
+   "run_min": {
+    "free": 119.7,
+    "gs": 122.3
+   },
+   "note": "茂世路線 → 蘂取線（沼田〜南留別）→ 特急の経路（南留別〜類平の先の分岐器）→ 蘂取線（類平 → 西単冠、逆向き）→ 択捉空港線。ダイヤ a.oud2 の快速（上下 14 本ずつ）"
+  },
+  {
+   "id": "futsu_tokite",
+   "name": "普通 西単冠→特掟",
+   "sections": [
+    "shibw",
+    "sanroku_n"
+   ],
+   "stops": [
+    "西単冠",
+    "碓",
+    "具夜",
+    "野塚",
+    "背野津",
+    "入里節",
+    "特掟"
+   ],
+   "car": {
+    "type": "731系",
+    "cars": 6,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ（単冠本線 山麓乗入、731系 6 両。ダイヤで中速）"
+   },
+   "VMAX": 120,
+   "TILT": 0,
+   "TRAIN": 120,
+   "run_min": {
+    "free": 29.3,
+    "gs": 29.3
+   },
+   "note": "蘂取線（西単冠 → 入里節の先の分岐器、逆向き）→ 単冠山麓線 北側（入里節 → 特掟）。ダイヤ a.oud2 の普通（上下 33 本ずつ、731系）"
+  },
+  {
+   "id": "futsu_sanroku",
+   "name": "普通 入里節→長生内",
+   "sections": [
+    "sanroku_n",
+    "sanroku_s"
+   ],
+   "stops": [
+    "入里節",
+    "特掟",
+    "美云別",
+    "単冠山口",
+    "西映",
+    "仲芭蕉",
+    "来季萌",
+    "長生内"
+   ],
+   "car": {
+    "type": "キハ120形",
+    "cars": 4,
+    "perf": null,
+    "source": "freetrain-saves の択捉島のセーブ（単冠山麓線 普通、キハ201系 4 両。ダイヤで低速）。気動車。最高速度 85 km/h（2026-11-06、ユーザーの指定：芸備線・木次線のイメージ。芸備線の最高速度 85 km/h、広島県の資料）。走行の計算の性能はキハ120形相当（2026-11-06、ユーザーの選択：セーブのキハ201系は出力が大きく、芸備線・木次線のイメージと逆になるため）"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "run_min": {
+    "free": 48.7,
+    "gs": 48.9
+   },
+   "note": "単冠山麓線の普通（入里節 → 単冠山口で折り返し → 長生内）。ダイヤ a.oud2 ではダイヤ作成ソフトの都合で入里節〜単冠山口と単冠山口〜長生内に分けてあるが、1 列車（ユーザーの説明、2026-11-06）。キハ201系 4 両。信号場は通過"
+  },
+  {
+   "id": "futsu_furu",
+   "name": "普通 留別→奧羅臼",
+   "sections": [
+    "ipg",
+    "furu"
+   ],
+   "stops": [
+    "留別",
+    "南留別",
+    "宇遠知",
+    "類平",
+    "西内保別",
+    "振別",
+    "西振別",
+    "老門",
+    "奧羅臼"
+   ],
+   "car": {
+    "type": "キハ40形",
+    "cars": 4,
+    "perf": null,
+    "source": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「振別線 普通（留別行）」キハ40形 4 両"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "run_min": {
+    "free": 36.0,
+    "gs": 35.9
+   },
+   "note": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「振別線 普通（留別行）」キハ40形 4 両"
+  },
+  {
+   "id": "futsu_atosa",
+   "name": "普通 内保→阿登佐岳",
+   "sections": [
+    "atosa_w",
+    "ipg",
+    "atosa_e1",
+    "atosa_e2"
+   ],
+   "stops": [
+    "内保",
+    "択捉神居古潭",
+    "散布泊",
+    "阿登佐岳"
+   ],
+   "car": {
+    "type": "キハ40形",
+    "cars": 4,
+    "perf": null,
+    "source": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「阿登佐線 普通」は 731系だが、線は非電化で車両指定の誤り（ユーザー、11-05）。隣の老門線の普通と同じキハ40形として扱う"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "run_min": {
+    "free": 15.8,
+    "gs": 15.8
+   },
+   "note": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「阿登佐線 普通」は 731系だが、線は非電化で車両指定の誤り（ユーザー、11-05）。隣の老門線の普通と同じキハ40形として扱う"
+  },
+  {
+   "id": "futsu_noto",
+   "name": "普通 野斗路→仲芭蕉",
+   "sections": [
+    "noto",
+    "ipg",
+    "sanroku_s"
+   ],
+   "stops": [
+    "野斗路",
+    "賢萌",
+    "振別",
+    "西振別",
+    "老門",
+    "採神威",
+    "長生内",
+    "来季萌",
+    "仲芭蕉"
+   ],
+   "car": {
+    "type": "キハ40形",
+    "cars": 4,
+    "perf": null,
+    "source": "ダイヤ a.oud2 の普通（上下 15 本ずつ）。セーブの「野斗路線 山麓乗入」キハ40形 4 両（ユーザー、11-06：キハ40 の想定。出力の大小は考えていない）。車両の設定は低速。速度の区分は参考で、線路の規格が低めなので最高速度 85 km/h（ユーザー、11-06）"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "run_min": {
+    "free": 40.8,
+    "gs": 41.2
+   },
+   "note": "ダイヤ a.oud2 の普通（上下 15 本ずつ）。セーブの「野斗路線 山麓乗入」キハ40形 4 両（ユーザー、11-06：キハ40 の想定。出力の大小は考えていない）。車両の設定は低速。速度の区分は参考で、線路の規格が低めなので最高速度 85 km/h（ユーザー、11-06）"
+  },
+  {
+   "id": "futsu_yorib",
+   "name": "普通 小田萌→寄別",
+   "sections": [
+    "otamoi",
+    "yorib"
+   ],
+   "stops": [
+    "小田萌",
+    "鞍掛",
+    "礼文尻",
+    "焼沼",
+    "鬼門",
+    "寄別"
+   ],
+   "car": {
+    "type": "キハ40形",
+    "cars": 4,
+    "perf": null,
+    "source": "ダイヤ a.oud2 の普通（上下 17 本ずつ）。セーブの「寄別線 普通」キハ40形 4 両"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "run_min": {
+    "free": 27.7,
+    "gs": 30.0
+   },
+   "note": "ダイヤ a.oud2 の普通（上下 17 本ずつ）。セーブの「寄別線 普通」キハ40形 4 両"
+  },
+  {
+   "id": "futsu_otoshi",
+   "name": "普通 蘂取→北乙",
+   "sections": [
+    "sesibe",
+    "moyoro",
+    "otoshi"
+   ],
+   "stops": [
+    "蘂取",
+    "良宇仁",
+    "睡名",
+    "長根",
+    "天幕",
+    "上去家",
+    "背祖曽",
+    "応仁萌",
+    "四谷",
+    "渡刈",
+    "東留茶留",
+    "乙知志",
+    "択捉原",
+    "北乙"
+   ],
+   "car": {
+    "type": "キハ40形",
+    "cars": 4,
+    "perf": null,
+    "source": "ダイヤ a.oud2 の普通（上下 12 本ずつ。ほかに四谷〜北乙が 2 本ずつ）。乙知志線の名前の編成はセーブにない。背蘂線を通るので「背蘂線 普通」（キハ40形 4 両）として扱う"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "run_min": {
+    "free": 97.4,
+    "gs": 103.2
+   },
+   "note": "ダイヤ a.oud2 の普通（上下 12 本ずつ。ほかに四谷〜北乙が 2 本ずつ）。乙知志線の名前の編成はセーブにない。背蘂線を通るので「背蘂線 普通」（キハ40形 4 両）として扱う"
+  },
+  {
+   "id": "futsu_moke",
+   "name": "普通 満前→萌消",
+   "sections": [
+    "ipg",
+    "moke"
+   ],
+   "stops": [
+    "満前",
+    "萌消"
+   ],
+   "car": {
+    "type": "キハ150形",
+    "cars": 3,
+    "perf": null,
+    "source": "ダイヤ a.oud2 の普通（上下 8 本ずつ）。セーブの「萌消線 普通」キハ150形 3 両"
+   },
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 60,
+   "run_min": {
+    "free": 5.9,
+    "gs": 5.9
+   },
+   "note": "ダイヤ a.oud2 の普通（上下 8 本ずつ）。セーブの「萌消線 普通」キハ150形 3 両"
+  }
+ ],
+ "vehicles": {
+  "719系": {
+   "kind": "電車",
+   "mass_t": 36.8,
+   "p_kw": 285,
+   "a0": 2.0,
+   "vmax": 110,
+   "src": "ウィキペディア（日本語版）「JR東日本719系電車」の情報欄（2026-11-06 取得）",
+   "quote": [
+    "編成 = 2両編成（1M1T）",
+    "編成重量 = 73.5 t（0番台）",
+    "編成出力 = 130 kW × 4 = 600 kW",
+    "起動加速度 = 2.0 km/h/s"
+   ],
+   "calc": "1 両 73.5÷2 t、600 kW×0.95÷2"
+  },
+  "731系": {
+   "kind": "電車",
+   "mass_t": 33.3,
+   "p_kw": 291,
+   "a0": 2.2,
+   "vmax": 120,
+   "src": "ウィキペディア（日本語版）「JR北海道731系電車」の情報欄（2026-11-06 取得）",
+   "quote": [
+    "編成 = 3両編成 （1M2T）",
+    "編成重量 = 100.0 t",
+    "主電動機出力 = 230 kW",
+    "起動加速度 = 2.2 km/h/s"
+   ],
+   "calc": "1 両 100.0÷3 t、主電動機 4 個（電動車 1 両、記事の本文の構成による仮定）×230 kW×0.95÷3"
+  },
+  "789系1000番台": {
+   "kind": "電車",
+   "mass_t": 40.3,
+   "p_kw": 350,
+   "a0": 2.4,
+   "vmax": 120,
+   "src": "ウィキペディア（日本語版）「JR北海道789系電車」の情報欄（2026-11-06 取得）",
+   "quote": [
+    "編成 = 5両編成 (2M3T)",
+    "編成重量 = 201.5 t（5両編成）",
+    "主電動機出力 = 230 kW",
+    "起動加速度 = 2.4km/h/s"
+   ],
+   "calc": "1 両 201.5÷5 t、電動車 2 両×主電動機 4 個（記事の本文の構成による仮定）×230 kW×0.95÷5"
+  },
+  "キハ120形": {
+   "kind": "気動車",
+   "mass_t": 27.7,
+   "p_kw": 170,
+   "a0": 2.0,
+   "vmax": 95,
+   "src": "ウィキペディア（日本語版）「JR西日本キハ120形気動車」の情報欄（2026-11-06 取得）",
+   "quote": [
+    "自重 = 27.7 t（0・300番台）",
+    "機関出力 = 330PS × 1（0・300番台）",
+    "最高速度 = 95 km/h"
+   ],
+   "calc": "0・300番台。機関 330 PS×0.7355×0.70。起動加速度は記載なし（記録なし）：2.0 km/h/s を仮に置く。単冠山麓線の普通に使う（セーブはキハ201系、ユーザーの選択）"
+  },
+  "キハ150形": {
+   "kind": "気動車",
+   "mass_t": 33.3,
+   "p_kw": 232,
+   "a0": 2.0,
+   "vmax": 110,
+   "src": "ウィキペディア（日本語版）「JR北海道キハ150形気動車」（2026-11-06 取得）",
+   "quote": [
+    "自重 = 33.3 t（0番台）",
+    "機関出力 = 450ps/2,000rpm（連続定格）",
+    "最高速度 = 110 km/h"
+   ],
+   "calc": "0 番台。機関 450 PS×0.7355×0.70。起動加速度は記載なし（記録なし）：2.0 km/h/s を仮に置く"
+  },
+  "キハ283系": {
+   "kind": "気動車",
+   "mass_t": 42.4,
+   "p_kw": 366,
+   "a0": 2.0,
+   "vmax": 130,
+   "src": "ウィキペディア（日本語版）「JR北海道キハ283系気動車」の情報欄（2026-11-06 取得）",
+   "quote": [
+    "編成重量 = 254.3 t（6両編成）",
+    "機関出力 = 355 ps/2,100 rpm ×2 / 両",
+    "起動加速度 = 2.0 km/h/s（0→60km/h）"
+   ],
+   "calc": "1 両 254.3÷6 t、機関 355 PS×2×0.7355×0.70"
+  },
+  "キハ40形": {
+   "kind": "気動車",
+   "mass_t": 37.2,
+   "p_kw": 113,
+   "a0": 2.0,
+   "vmax": 95,
+   "src": "ウィキペディア（日本語版）「国鉄キハ40系気動車 (2代)」（2026-11-06 取得）",
+   "quote": [
+    "機関出力 = 220 PS",
+    "最高速度 = 95 km/h",
+    "キハ40形100番台が36.8 - 37.6 t（いずれも全長21.3 m、両運転台、トイレ付、片開き2扉、酷寒地向け）"
+   ],
+   "calc": "100 番台（酷寒地向け）の 36.8〜37.6 t の中央 37.2 t、機関 220 PS×0.7355×0.70。機関を換えた 1700 番台の出力は記事の本文に見つからないので元の値。起動加速度は記載なし（記録なし）：2.0 km/h/s を仮に置く"
+  },
+  "キハ54形500番台": {
+   "kind": "気動車",
+   "mass_t": 38.7,
+   "p_kw": 257,
+   "a0": 2.0,
+   "vmax": 110,
+   "src": "ウィキペディア（日本語版）「国鉄キハ54形気動車」の情報欄（2026-11-06 取得）（JR北海道 500番台の欄）",
+   "quote": [
+    "自重 = 38.7 t",
+    "機関出力 = 250 PS × 2基",
+    "最高速度 = 95 km/h → 110 km/h"
+   ],
+   "calc": "機関 250 PS×2×0.7355×0.70。起動加速度は記載なし（記録なし）：キハ283系と同じ 2.0 km/h/s を仮に置く"
+  }
+ }
+}

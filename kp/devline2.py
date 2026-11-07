@@ -20,7 +20,12 @@ import structdp
 GMAX = float(os.environ.get('GMAX', '0.015')); H = float(os.environ.get('H', '50')); MARGIN = float(os.environ.get('MARGIN', '4000'))
 K = int(os.environ.get('K', '1500')); BIN = float(os.environ.get('BIN', '10')); STN_HALF = 55.0
 P = json.load(open('costs_single.json'))
-hh = np.arange(-400, 400.01, 0.5); CM = structdp.costs_per_m(hh, P).min(axis=0)   # 高さの差 h（地盤−線路）→ 1 m あたりの最小の費用
+# 橋梁の高さの費用を縦断の計算（design3.py の W_BH・W_BH2）と同じにする（2026-11-07、国後島の笛島線：探索の費用に高さの費用がなく、
+# 高い橋梁を避けなかった）。縦断では高さ 1 m あたり W_BH（浅い土工 1 m 分＝b_cut m³）、境 BRIDGE_H1 を超える分は W_BH2
+W_BH = float(os.environ.get('W_BH', '1.0')); BRIDGE_H1 = float(os.environ.get('BRIDGE_H1', '0')); W_BH2 = float(os.environ.get('W_BH2', '100'))
+hh = np.arange(-400, 400.01, 0.5); _C3 = structdp.costs_per_m(hh, P); _fil = np.maximum(-hh, 0)
+_C3[2] = _C3[2] + P['b_cut'] * (W_BH * _fil + (W_BH2 * np.maximum(_fil - BRIDGE_H1, 0) if BRIDGE_H1 > 0 else 0))
+CM = _C3.min(axis=0)   # 高さの差 h（地盤−線路）→ 1 m あたりの最小の費用
 cm = lambda h: CM[int(round((min(max(h, -400), 400) + 400) / 0.5))]
 route, A, B, out = sys.argv[1:5]
 r = json.load(open(route)); Pt = np.array(r['points']); names = [n for n, _ in r['stations']]
@@ -56,12 +61,24 @@ sa, sb = cell(seg[0]), cell(seg[-1])
 # 駅での向き：HA・HB（16 方向の番号）で与える。与えないとき、駅 A は作図の向き、駅 B は自由（HB=-1）。駅 B の作図の向きを使うときは HB=draw
 ha = int(os.environ['HA']) if os.environ.get('HA') else heading(seg[min(3, len(seg) - 1)] - seg[0])
 _hb = os.environ.get('HB', '-1'); hb = heading(seg[-1] - seg[max(0, len(seg) - 4)]) if _hb == 'draw' else int(_hb)
-hok = lambda h: hb < 0 or min((h - hb) % 16, (hb - h) % 16) <= 1
+HBTOL = int(os.environ.get('HBTOL', '1'))   # 駅 B での向きの許容（16 方向の刻み。1＝±22.5°、2＝±45°。2026-11-07、国後島の南利寄→利寄）
+hok = lambda h: hb < 0 or min((h - hb) % 16, (hb - h) % 16) <= HBTOL
 zA, zB = float(G[sa[1], sa[0]]), float(G[sb[1], sb[0]]); dZ = zB - zA; sg = 1 if dZ > 0 else -1
 s_need = 2 * STN_HALF + abs(dZ) / GMAX
 def zt(s): return zA + sg * min(max(s - STN_HALF, 0) * GMAX, abs(dZ))
 db = lambda i, j: math.hypot(i - sb[0], j - sb[1]) * H
 print(f'{A}→{B}：作図 {Ldraw / 1000:.2f} km、駅の地盤 {zA:.0f} → {zB:.0f} m、{GMAX * 1000:.0f}‰ で要る長さ {s_need / 1000:.2f} km、格子 {nx}×{ny}（{H:.0f} m）、幅 K={K}', flush=True)
+# 元の折れ線の費用 C(0) を同じ尺度で出すだけ（EVAL_DRAW=出力.json。段階的な探索の基準。2026-11-07、国後島）：作図の線を BIN ごとに
+# たどり、同じ展開線の高さ zt(s) との差の費用を足す。線が短くて駅 B の高さに届かない場合もそのまま足す（勾配で届かない駅間は別の規則）
+if os.environ.get('EVAL_DRAW'):
+    from scipy.ndimage import map_coordinates
+    cum = np.r_[0, np.cumsum(np.hypot(*np.diff(seg, axis=0).T))]; ss = np.arange(0, cum[-1], BIN)
+    px = np.interp(ss, cum, seg[:, 0]); py = np.interp(ss, cum, seg[:, 1])
+    gz = map_coordinates(G, [(py - y0) / H, (px - x0) / H], order=1, mode='nearest')
+    cdraw = float(sum(BIN * cm(float(gz[k]) - zt(float(ss[k]))) for k in range(len(ss))))
+    print(f'  元の折れ線の費用 {cdraw:.3g}（{cum[-1] / 1000:.2f} km）', flush=True)
+    json.dump({'from': A, 'to': B, 'cost_draw': cdraw, 'length': float(cum[-1]), 'GMAX': GMAX, 'H': H, 'MARGIN': MARGIN}, open(os.environ['EVAL_DRAW'], 'w'), ensure_ascii=False)
+    raise SystemExit
 maxbin = int((s_need + 3 * math.hypot(*(seg[-1] - seg[0])) + 3000) / BIN)
 layers = {0: {(sa[0], sa[1], ha, 0): (0.0, None)}}   # 距離の刻み → {状態: (費用, (前の刻み, 前の状態))}
 best = None

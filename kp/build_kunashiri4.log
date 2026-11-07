@@ -1,0 +1,6 @@
+== 区間 ipg：古い手順（計算しない）。特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py …
+== 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
+== 区間 kita_e（国後北線 東側（仁岸寄〜奔別〜国後蘂取〜遠音別〜白糠泊））ハッシュ 経路 7c0eb883932c・線形 40abd70808b5・縦断 83d88a2ebe29
+  $ ROUTE='route_kita_e.json' OUT='route_kita_e_hyb.json' PREFIX='kita_e_' GDEF='0.0333' LAMBDA='1.0' GMAP='{"仁岸寄|奔別": 0.025, "奔別|止音別": 0.025, "止音別|南利寄": 0.025, "南利寄|利寄": 0.025, "利寄|璃瑠篠信号場": 0.025, "璃瑠篠信号場|知牽牛": 0.025, "知牽牛|翻内": 0.025, "翻内|国後蘂取": 0.025, "国後蘂取|散尺別": 0.025, "散尺別|留遠知": 0.025, "留遠知|知東": 0.025}' python3 devline_hybrid.py > hyb_kita_e.log 2>&1
+  $ rm -f branch_kita_e_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kita_e route_kita_e_hyb.json fit_kita_w.json end=fit_minami.json > ipb_kita_e.log 2>&1

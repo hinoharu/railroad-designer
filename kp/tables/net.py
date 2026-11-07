@@ -6,7 +6,11 @@ SECTIONS = load('sections.json')['sections']; SEC = {s['id']: s for s in SECTION
 SYSTEMS = load('systems.json')['systems']
 # 古い手順の区間の縦断のファイル（高さ指定なし、駅地平化）。ほかの区間は design_f<id>_free.json・design_f<id>.json
 LEGACY_DESIGN = {'ipg': ('design_fipgh.json', 'design_fipgh_gs.json'), 'sanpu': ('design_fsanpu_free.json', 'design_fsanpu.json')}
-def design_files(i): return LEGACY_DESIGN.get(i, (f'design_f{i}_free.json', f'design_f{i}.json'))
+def design_files(i):
+    """（高さ指定なし、駅地平化）の縦断のファイル。profile.only_gs の区間は高さ指定なしを作らないので、両方とも駅地平化のファイル（2026-11-07、国後島）"""
+    if i in LEGACY_DESIGN: return LEGACY_DESIGN[i]
+    if SEC[i]['profile'].get('only_gs'): return (f'design_f{i}.json', f'design_f{i}.json')
+    return (f'design_f{i}_free.json', f'design_f{i}.json')
 DESIGN = {s['id']: design_files(s['id']) for s in SECTIONS}
 RANK = {s['id']: s['rank'] for s in SECTIONS}
 def deps(s):

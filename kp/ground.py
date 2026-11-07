@@ -1,5 +1,5 @@
 # ground elevation along a route, every STEP m, from GSI elevation tiles (dem_png, zoom 14; DEM10B)
-import json,math,os,sys,subprocess
+import os, json,math,os,sys,subprocess
 import numpy as np
 from PIL import Image
 from geo import metres
@@ -14,6 +14,7 @@ def resample(pts,step):
     out.append(pts[-1]); cum.append(acc)
     return out,cum
 cache={}
+os.makedirs('dem',exist_ok=True)   # 保存先はコミットしないので、新しい複製にはない（2026-11-07、国後島で全点が欠けた）
 def tile(x,y):
     if (x,y) in cache: return cache[(x,y)]
     f=f'dem/{Z}_{x}_{y}.png'

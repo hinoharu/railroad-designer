@@ -1,0 +1,6 @@
+== 区間 ipg：古い手順（計算しない）。特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py …
+== 区間 minami（国後南線（安渡移矢岬〜古釜布〜国後泊））ハッシュ 6828716978f2
+  経路：国後 安渡移矢岬・安渡移矢・洞揺瀬・白糠泊・終化計・平牛・渓臼・岡布・沙流釜布・上野塚・御狩場・留夜別・原井・狗頭・岸内・千国・沖津臼・絹飼・近布内・板蘂・古釜布・西釜布・岩吉・狩士別・鬼無里・尾路久根・智婦泊・稚遣幼・白幡別・国後泊 → route_minami.json
+  同じ点が続く所を 2 か所除いた
+  $ rm -f branch_minami_cands.json
+  $ VMAX='130' TILT='0' TRAIN='170' python3 ipfit_branch.py minami route_minami.json fit_minami.json free > ipb_minami.log 2>&1

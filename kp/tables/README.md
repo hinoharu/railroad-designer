@@ -13,6 +13,7 @@
 | route.stops | 駅の並び（つながる区間の駅から先へ）。経路は作図の線をこの順に最短でつないで作る |
 | route.file | 経路のファイル。あれば使い、`--remake-route` のときだけ作り直す |
 | route.turnback | 始点の駅の先の折り返し（スイッチバック駅の行き止まり）を除くか |
+| route.turnback_end | 終点の側で同じことをするか（2026-11-07、国後島の仁岸寄） |
 | route.hybrid | 地形から探して経路を作り直す（devline_hybrid.py の GDEF：既定の勾配の上限、GMAP：駅間ごとの上限、PREFIX） |
 | fit.trunk | 線形の当てはめ（ipfit_branch.py）の既定の幹線 |
 | fit.ends | 端ごとの接続：`""` は既定の幹線、区間 id はその区間につながる。書かない端は、どの線にもつながらない |

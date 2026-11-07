@@ -944,6 +944,679 @@
    },
    "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
    "island": "択捉"
+  },
+  {
+   "id": "minami",
+   "name": "国後南線（安渡移矢岬〜古釜布〜国後泊）",
+   "rank": 1,
+   "grade": "乙線",
+   "parents": [],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "安渡移矢岬",
+     "安渡移矢",
+     "洞揺瀬",
+     "白糠泊",
+     "終化計",
+     "平牛",
+     "渓臼",
+     "岡布",
+     "沙流釜布",
+     "上野塚",
+     "御狩場",
+     "留夜別",
+     "原井",
+     "狗頭",
+     "岸内",
+     "千国",
+     "沖津臼",
+     "絹飼",
+     "近布内",
+     "板蘂",
+     "古釜布",
+     "西釜布",
+     "岩吉",
+     "狩士別",
+     "鬼無里",
+     "尾路久根",
+     "智婦泊",
+     "稚遣幼",
+     "白幡別",
+     "国後泊"
+    ],
+    "file": "route_minami.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {},
+    "free": true
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "安渡移矢",
+      "国後泊"
+     ]
+    ],
+    "KYAKU25_ADD": [
+     [
+      "安渡移矢岬",
+      "安渡移矢"
+     ]
+    ]
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "幹線（順位 1）。特急 善平古丹〜白糠泊（789系 8 両）が走る。セーブでは安渡移矢〜国後泊が複線・電化、安渡移矢岬〜安渡移矢は単線・非電化（25‰）。線形の前提は 789系（振子なし）130 km/h・170 m"
+  },
+  {
+   "id": "kita_w",
+   "name": "国後北線 西側（国後泊〜軽別〜植尻〜仁岸寄）",
+   "rank": 2,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（国後泊。国後南線の終点）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "国後泊",
+     "樽別",
+     "善平古丹",
+     "嬰頃牛",
+     "米戸賀",
+     "軽別",
+     "斜里苅別信号場",
+     "一菱内",
+     "鸚居温泉",
+     "植尻",
+     "小田富",
+     "芦里",
+     "秩苅別",
+     "島登",
+     "遣岱",
+     "仁岸寄"
+    ],
+    "file": "route_kita_w.json",
+    "turnback": false,
+    "turnback_end": true
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "国後泊",
+      "軽別"
+     ]
+    ],
+    "KYAKU25_ADD": [
+     [
+      "植尻",
+      "仁岸寄"
+     ]
+    ]
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "特急 安渡移矢〜国後泊（キハ283系 8 両、振子）が走る。セーブでは国後泊〜軽別が複線、国後泊〜植尻が電化、植尻〜仁岸寄は単線・非電化（25‰）。仁岸寄はスイッチバック駅（作図で線の向きが 173° 変わる）で、ここで東側と分ける（択捉島の単冠山口と同じ扱い）"
+  },
+  {
+   "id": "kofu",
+   "name": "国後北線 古釜布支線（仁岸寄〜古釜布）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "kita_w",
+     "at": "始点（仁岸寄。西側の終点から直進）"
+    },
+    {
+     "section": "minami",
+     "at": "終点（古釜布。南線の線路に合流）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "仁岸寄",
+     "古釜布"
+    ],
+    "file": "route_kofu.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "kita_w",
+    "ends": {
+     "start": "",
+     "end": "minami"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "作図では仁岸寄から南線の線路に合流して古釜布に入る 6.3 km の線（終わりの 2.7 km は南線と重なる）。北線の列車は古釜布で折り返す。単線・非電化"
+  },
+  {
+   "id": "kita_e",
+   "name": "国後北線 東側（仁岸寄〜奔別〜国後蘂取〜遠音別〜白糠泊）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "終点（白糠泊）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "仁岸寄",
+     "奔別",
+     "止音別",
+     "南利寄",
+     "利寄",
+     "璃瑠篠信号場",
+     "知牽牛",
+     "翻内",
+     "国後蘂取",
+     "散尺別",
+     "留遠知",
+     "知東",
+     "止嬰賀",
+     "硫老",
+     "落石",
+     "遠音別",
+     "島別",
+     "小田別",
+     "美禄",
+     "白糠泊"
+    ],
+    "file": "route_kita_e.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "kita_w",
+    "ends": {
+     "end": "minami"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "奔別",
+      "利寄"
+     ],
+     [
+      "止嬰賀",
+      "白糠泊"
+     ]
+    ],
+    "KYAKU25_ADD": [
+     [
+      "仁岸寄",
+      "知東"
+     ]
+    ],
+    "start_z_from": "kita_w"
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "始点の仁岸寄はスイッチバック駅なのでつながず、施工基面を西側の終点に合わせる。セーブでは奔別〜利寄と止嬰賀〜白糠泊が複線、仁岸寄〜知東が非電化（25‰）、知東〜白糠泊が電化（止嬰賀から）"
+  },
+  {
+   "id": "chacha",
+   "name": "爺爺線（岡布〜遠音別）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（岡布）"
+    },
+    {
+     "section": "kita_e",
+     "at": "終点（遠音別）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "岡布",
+     "渡海別",
+     "東爺爺",
+     "音笏",
+     "遠音別"
+    ],
+    "file": "route_chacha.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": "",
+     "end": "kita_e"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 130
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "特急 国後空港〜岡布〜止嬰賀（789系1000番台 6 両）が走る。単線・電化"
+  },
+  {
+   "id": "onne",
+   "name": "遠音別線（遠音別〜上遠根別〜国後蘂取）",
+   "rank": 4,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "kita_e",
+     "at": "始点（遠音別）"
+    },
+    {
+     "section": "kita_e",
+     "at": "終点（国後蘂取）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "遠音別",
+     "底吼",
+     "円山",
+     "上遠根別",
+     "千歳信号場",
+     "国後蘂取"
+    ],
+    "file": "route_onne.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "kita_e",
+    "ends": {
+     "start": "",
+     "end": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 125
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "快速 白糠泊〜東沸湖（キハ183系 6 両）と普通（キハ40形）が走る。単線・非電化"
+  },
+  {
+   "id": "kishi",
+   "name": "岸内線（岸内〜南利寄）",
+   "rank": 4,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（岸内）"
+    },
+    {
+     "section": "kita_e",
+     "at": "終点（南利寄）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "岸内",
+     "朧瀬別信号場",
+     "南利寄"
+    ],
+    "file": "route_kishi.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": "",
+     "end": "kita_e"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "単線・非電化。普通（キハ40形 4 両）"
+  },
+  {
+   "id": "seoi",
+   "name": "瀬生線（上遠根別〜瀬生〜岸内）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "onne",
+     "at": "始点（上遠根別）"
+    },
+    {
+     "section": "minami",
+     "at": "終点（岸内）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "上遠根別",
+     "上留夜別",
+     "瀬生",
+     "浦雲泊",
+     "竜知志",
+     "岸内"
+    ],
+    "file": "route_seoi.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "onne",
+    "ends": {
+     "start": "",
+     "end": "minami"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "単線・非電化。普通（キハ40形 4 両）"
+  },
+  {
+   "id": "kuko_k",
+   "name": "国後空港線（狩士別〜国後空港）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（狩士別）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "狩士別",
+     "稚婦",
+     "国後空港"
+    ],
+    "file": "route_kuko_k.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 130
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "特急（789系1000番台 6 両）・快速・普通（731系 6 両）。単線・電化"
+  },
+  {
+   "id": "tofutsu",
+   "name": "東沸湖線（尾路久根〜東沸湖）",
+   "rank": 3,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（尾路久根）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "尾路久根",
+     "背辛",
+     "鹿士別信号場",
+     "茶嵐岸",
+     "東沸湖"
+    ],
+    "file": "route_tofutsu.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 125
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "快速 白糠泊〜東沸湖（キハ183系 6 両）と普通（キハ40形）。単線・非電化"
+  },
+  {
+   "id": "heuke",
+   "name": "平浮線（留夜別〜平浮泊）",
+   "rank": 3,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（留夜別）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "留夜別",
+     "乳呑路",
+     "稚奮別",
+     "平浮泊"
+    ],
+    "file": "route_heuke.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "単線・非電化。普通（キハ40形 4 両）"
+  },
+  {
+   "id": "keromoi",
+   "name": "計呂萌線（国後泊〜計呂萌）",
+   "rank": 3,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（国後泊。国後南線の終点）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "国後泊",
+     "千笛狩",
+     "計呂萌"
+    ],
+    "file": "route_keromoi.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 125
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "普通 計呂萌〜古釜布（キハ201系相当 6 両）。単線・非電化"
+  },
+  {
+   "id": "fueshima",
+   "name": "笛島線（白糠泊〜歌分）",
+   "rank": 3,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "minami",
+     "at": "始点（白糠泊）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "白糠泊",
+     "新白糠信号場",
+     "南白糠",
+     "笛島",
+     "東笛島",
+     "歌分"
+    ],
+    "file": "route_fueshima.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "minami",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "2026-11-07 国後島（docs/kunashiri.md）",
+   "island": "国後",
+   "note": "単線・非電化。普通（キハ40形 4 両）"
   }
  ]
 }

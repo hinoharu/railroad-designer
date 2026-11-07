@@ -8,6 +8,7 @@
 #   止まっても同じコマンドで続きから再開できる（2026-11-03、ユーザーの指定：長い計算は途中から再開できる作りに）
 #   --dry-run：実行せずにコマンドだけを出す。--remake-route：経路のファイルがあっても駅の並びから作り直す（⑥の試験用）。
 #   --force：済んだ印を無視して、対象の区間をすべて計算し直す
+#   --routes-only：経路だけを作って止まる（区間を足したときに、駅の並びと折り返しを確かめる）
 #   系統のあとに、駅レーダーサイトへ渡すファイルを export.py で書き出す（段 4、2026-11-07。--no-systems のときは書き出さない）
 # 古い手順の区間（method が legacy：特急の経路 ipg、散布線 sanpu）は計算しない。縦断のファイルの中身のハッシュだけを、
 # 下位の区間が変わったかの判定に使う
@@ -18,6 +19,7 @@ import numpy as np
 
 ARGS = sys.argv[1:]
 DRY = '--dry-run' in ARGS; REMAKE = '--remake-route' in ARGS; FORCE = '--force' in ARGS; NOSYS = '--no-systems' in ARGS; CHECK = '--check-spec' in ARGS
+ROUTES_ONLY = '--routes-only' in ARGS   # 経路だけを作って止まる（区間を足したときの確認用。2026-11-07）
 ONLY = None
 if '--only' in ARGS: ONLY = set(ARGS[ARGS.index('--only') + 1].split(','))
 os.makedirs('.build', exist_ok=True)
@@ -71,7 +73,15 @@ def make_route(s):
     from path import route
     import re   # path.py の idx は駅名の末尾の「信号場」「仮乗降場」を除いて比べるので、同じく除いて渡す（古い経路のファイルは付けたまま記録している）
     pts, st, sn, vidx = route(s['island'], [re.sub('(信号場|仮乗降場)$', '', n) for n in r['stops']])
+    # 同じ点が続く所（駅が作図の線のつなぎ目の頂点にあるとき）を 1 点にする（2026-11-07、国後島の底吼・浦雲泊。長さ 0 の線分を線形の当てはめに渡さない）
+    keep = [i for i in range(len(pts)) if i == 0 or math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]) > 1e-9]
+    if len(keep) < len(pts):
+        idx = {i: k for k, i in enumerate(keep)}; back = lambda v: idx[v] if v in idx else idx[max(i for i in keep if i < v)]
+        print(f'  同じ点が続く所を {len(pts) - len(keep)} か所除いた'); vidx = [back(v) for v in vidx]; pts = [pts[i] for i in keep]
     if r.get('turnback'): pts, st, vidx = drop_turnback(pts, st, vidx)
+    if r.get('turnback_end'):   # 終点の駅の先の折り返しも除く（2026-11-07、国後島の仁岸寄：駅の点が折り返しの頂点の 5 m 先にある）
+        n = len(pts); pts, st, vidx = drop_turnback(pts[::-1], [(a, st[-1][1] - c) for a, c in st[::-1]], [n - 1 - v for v in vidx[::-1]])
+        n = len(pts); pts, st, vidx = pts[::-1], [(a, st[-1][1] - c) for a, c in st[::-1]], [n - 1 - v for v in vidx[::-1]]
     json.dump({'points': pts, 'stations': st, 'stops': sn, 'vidx': vidx}, open(f, 'w'), ensure_ascii=False)
 
 def route_file(s):
@@ -122,6 +132,7 @@ def build_section(s):
     print(f"== 区間 {b}（{s['name']}）ハッシュ {h}", flush=True)
     if REMAKE or not os.path.exists(s['route']['file']):
         step(b, 'route', h, lambda: make_route(s))
+    if ROUTES_ONLY: return
     if 'hybrid' in s['route']:
         hy = s['route']['hybrid']; env = {'ROUTE': s['route']['file'], 'OUT': rf, 'PREFIX': hy.get('PREFIX', ''), 'GDEF': hy['GDEF']}
         if 'GMAP' in hy: env['GMAP'] = json.dumps(hy['GMAP'], ensure_ascii=False)

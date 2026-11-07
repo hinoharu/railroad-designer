@@ -129,12 +129,17 @@ def detect_problems(s):
     駅間と、橋梁の高さが BRIDGE_H1 を超える点のある駅間。戻り値：[[A, B], ...]（駅の並びの順）"""
     rules = s['profile'].get('rules', {}); H1 = float(rules.get('BRIDGE_H1', 0)); H2 = float(rules.get('BRIDGE_H2', 100)); SPAN = float(rules.get('BRIDGE_SPAN', 300))
     d = json.load(open(net.design_files(s['id'])[1])); sn = np.array(d['s']); g = np.array(d['ground'], float); z = np.array(d['z']); st = d['struct']
-    names = [n for n, _ in d['stations']]; pos = [c for _, c in d['stations']]; bad = {}   # 駅間 → 'station' か 'bridge'
+    names = [n for n, _ in d['stations']]; pos = [c for _, c in d['stations']]; bad = {}
+    # 駅間 → 'hard'（ユーザーの規則に反する：地下 DEPTH_MAX 超で EXIT_R 以内に出口がない）、'station'（準地平の外。探す対象にはするが勾配は下げない。
+    # 高架駅は可、地下駅も 40 m までは可というユーザーの規則、2026-11-07）、'bridge'
+    DM = float(rules.get('DEPTH_MAX', 0)); ER = float(rules.get('EXIT_R', 200))
     for k, (n, c) in enumerate(d['stations']):
         i = int(np.argmin(np.abs(sn - c))); hh = z[i] - g[i]
         if hh < -10 or hh > 12:
-            if k > 0: bad[(names[k - 1], n)] = 'station'
-            if k + 1 < len(names): bad[(n, names[k + 1])] = 'station'
+            hard = DM > 0 and hh < 0 and z[i] < float(np.nanmin(g[np.abs(sn - c) <= ER])) - DM
+            kind = 'hard' if hard else 'station'
+            if k > 0: bad[(names[k - 1], n)] = kind if bad.get((names[k - 1], n)) != 'hard' else 'hard'
+            if k + 1 < len(names): bad[(n, names[k + 1])] = kind if bad.get((n, names[k + 1])) != 'hard' else 'hard'
     if H1 > 0:   # 橋梁の境：design3.py と同じ峡谷の例外（境を超える部分が SPAN 以下で両側に境以下の所があれば H2）
         i = 0; h = z - g
         while i < len(sn):
@@ -225,10 +230,10 @@ def build_section(s):
     # 探した線は勾配の上限ぎりぎりの長さになりがちで、縦断では駅が地平に届かない（国後島の一菱内）。橋梁だけの問題（峡谷）は勾配では直らないので下げない
     hy = s['route']['hybrid']; gs = json.load(open(gseg_file(b))) if os.path.exists(gseg_file(b)) else {}
     env = hybrid_env(s, route_file(s)); gmap = json.loads(env.get('GMAP', '{}')); changed = False
-    for a_, b_ in [x for x in probs if kinds[x] == 'station']:
+    for a_, b_ in [x for x in probs if kinds[x] == 'hard']:   # 勾配を下げるのは、ユーザーの規則に反する駅（出口のない深さ DEPTH_MAX 超）だけ
         k = f'{a_}|{b_}'; cur = gs.get(k, hy.get('GSEG', {}).get(k, gmap.get(k, float(env['GDEF']))))
         if cur - 0.001 >= 0.010: gs[k] = round(cur - 0.001, 4); changed = True
-    if not changed: print(f'  問題が残る駅間 {["・".join(x) + "（" + kinds[x] + "）" for x in probs]}（勾配は下げないので、ここで止める）'); return False
+    if not changed: print(f'  問題が残る駅間 {["・".join(x) + "（" + kinds[x] + "）" for x in probs]}（規則の範囲内の駅・峡谷の橋梁なので、勾配は下げずにここで止める）'); return False
     json.dump(gs, open(gseg_file(b), 'w'), ensure_ascii=False)
     print(f'  問題が残る駅間 {["・".join(x) for x in probs]}：探す勾配を 1‰ 下げて（{gs}）探索からやり直す', flush=True); return True
 

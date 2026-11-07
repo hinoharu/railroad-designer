@@ -112,6 +112,9 @@ def make_spec(s):
             sec = j['trunk'][4:-5]; fp = json.load(open(f'fit_{sec}.json')); rp = json.load(open(f'route_f{sec}.json'))
             d = json.load(open(net.design_files(sec)[k]))
             sj = float(np.interp(j['s'], fp['s'], rp['s'])); sp[w + '_z'] = float(np.interp(sj, d['s'], d['z']))
+            if j.get('tau') is not None and s['fit'].get('junction', {}).get('match_grade', True):   # 端の勾配＝幹線の分岐点の勾配（±50 m）× 向き τ（2026-11-08）
+                g_ = (float(np.interp(sj + 50, d['s'], d['z'])) - float(np.interp(sj - 50, d['s'], d['z']))) / 100.0
+                sp[w + '_g'] = round(j['tau'] * g_, 6)
         if 'start_z_from' in pf:
             d = json.load(open(net.design_files(pf['start_z_from'])[k])); sp['start_z'] = d['z'][-1]
             sp['note_start'] = f"始点の施工基面を {pf['start_z_from']} の終点に合わせる（スイッチバック駅）"
@@ -204,6 +207,8 @@ def build_section(s):
     trunk = f'fit_{f["trunk"]}.json'
     fit_env = dict(VMAX=run['VMAX'], TILT=run['TILT'], TRAIN=run['TRAIN'])
     for w_, d_ in f.get('dir', {}).items(): fit_env[f'DIR_{w_}'] = d_   # 分かれる向きの指定（forward／backward。2026-11-07）
+    for k_ in ('JMIN', 'GJ', 'JEXT'):   # 分岐器の候補の制限（fit.junction：停車場中心からの最小距離 m、本線の勾配の上限 ‰。2026-11-08）
+        if k_ in f.get('junction', {}): fit_env[k_] = f['junction'][k_]
     step(b, 'fit', hf, lambda: (sh(f'rm -f branch_{b}_cands.json'),
                                 sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', fit_env, f'ipb_{b}.log')))
     step(b, 'geo', hf, lambda: (sh(f'python3 fit2route.py {b}', {'ROUTE': rf}, f'geo_{b}.log'),

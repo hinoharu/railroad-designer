@@ -170,6 +170,38 @@ def solve(core, js, je, sweeps=F.SWEEPS):
     cost, mx = F.local_cost(V_, Rs, 0, len(V_) - 1, True)
     return dict(cost=float(cost), maxdev=float(mx), V=V_.tolist(), Rs=list(map(float, Rs)), dense=dense.tolist())
 
+# 分岐器の候補の制限（2026-11-08、ユーザーの指摘：分岐器が停車場中心の真上に置かれ、構内の有効長が取れない。分岐点の本線が急勾配）
+# JMIN：停車場中心から分岐器までの最小距離（m）。支線を通る列車の進む側（start は向き τ の側、end は τ と反対の側）に置く。
+#   候補の範囲がすべて近すぎるときは、最小距離の所から JEXT（300 m）先まで 10 m 刻みで候補を延ばす。幹線が駅で終わっていて置けないときは今までどおり（注意を出す）
+# GJ：分岐点の本線の勾配の上限（‰）。超える候補は除く（残らなければ除かずに注意を出す）
+JMIN = float(os.environ.get('JMIN', '0')); GJ = float(os.environ.get('GJ', '0')); JEXT = float(os.environ.get('JEXT', '300'))
+def restrict(lo, hi, tau, w):
+    """候補 sj の並びと、基準にした幹線の駅（名前、幹線のキロ程）"""
+    TS = TR[w][0]; tid = TRUNKS[w][4:-5]
+    cands = list(np.arange(math.ceil(lo / STEP) * STEP, hi + 0.1, STEP)) if hi - lo >= STEP else [round(lo)]
+    if JMIN <= 0 and GJ <= 0: return cands, None
+    rt = json.load(open(f'route_f{tid}.json')); RS = np.array(rt['s'])
+    fit_of = lambda sg: float(np.interp(sg, RS, TS)); ground_of = lambda sf: float(np.interp(sf, TS, RS))
+    name, c = min(((n_, fit_of(c_)) for n_, c_ in rt['stations']), key=lambda x: abs(x[1] - (lo + hi) / 2))
+    if JMIN > 0:
+        side = tau if w == 'start' else -tau
+        ok = [s_ for s_ in cands if side * (s_ - c) >= JMIN]
+        if not ok:
+            a_ = c + side * JMIN; b_ = a_ + side * JEXT; a_, b_ = sorted((a_, b_))
+            a_, b_ = max(a_, float(TS[0])), min(b_, float(TS[-1]))
+            if b_ - a_ >= STEP: ok = list(np.arange(math.ceil(a_ / STEP) * STEP, b_ + 0.1, STEP)); print(f'  {w}：停車場中心（{name}）から {JMIN:.0f} m 以内の候補しかないので、{a_:.0f}〜{b_:.0f} m に候補を延ばす', flush=True)
+            else: print(f'  {w}：幹線が駅（{name}）で終わっていて、停車場中心から {JMIN:.0f} m 離した所に分岐器を置けない。今までどおりの候補で続ける', flush=True); ok = cands
+        else: print(f'  {w}：停車場中心（{name}）から {JMIN:.0f} m 以上離れた候補 {len(ok)}（{len(cands)} のうち）', flush=True)
+        cands = ok
+    if GJ > 0 and os.path.exists(f'design_f{tid}.json'):
+        d_ = json.load(open(f'design_f{tid}.json')); ds_ = np.array(d_['s']); dz_ = np.array(d_['z'])
+        def grade(sf):
+            sg = ground_of(sf); z1 = float(np.interp(sg - 50, ds_, dz_)); z2 = float(np.interp(sg + 50, ds_, dz_)); return (z2 - z1) / 100 * 1000
+        ok = [s_ for s_ in cands if abs(grade(s_)) <= GJ + 1e-9]
+        if ok: print(f'  {w}：分岐点の本線の勾配が {GJ:.0f}‰ 以下の候補 {len(ok)}（{len(cands)} のうち）', flush=True); cands = ok
+        else: print(f'  {w}：分岐点の本線の勾配が {GJ:.0f}‰ 以下の候補がない（最小 {min(abs(grade(s_)) for s_ in cands):.1f}‰）。除かずに続ける', flush=True)
+    return cands, (name, c)
+
 def station_cut(which):
     """端から最寄りの駅（端の駅を除く）の作図の点の番号"""
     vs = sorted(set(F.r['vidx']))
@@ -184,10 +216,11 @@ if __name__ == '__main__':
     lo_core = (n - 1 - (len(info['start'][0]) - 1)) if 'start' in info else 0
     hi_core = (len(info['end'][0]) - 1) if 'end' in info else n - 1
     best = {}
-    for w, (core_rev, lo, hi, tau, sig, _w) in info.items():
+    for w, (core_rev, lo, hi, tau, sig, _w) in list(info.items()):
         print(f'{NAME}・{w}：幹線のキロ程 {lo:.0f}〜{hi:.0f} m、支線は幹線の{"左" if sig > 0 else "右"}側、幹線のキロ程が{"増える" if tau > 0 else "減る"}向きにつながる', flush=True)
         cut = station_cut(w)
-        for sj in np.arange(math.ceil(lo / STEP) * STEP, hi + 0.1, STEP) if hi - lo >= STEP else [round(lo)]:
+        cands, near_st = restrict(lo, hi, tau, w); info[w] = info[w] + (near_st,)
+        for sj in cands:
             key = f'{w}:{sj:.0f}'
             if key not in done:
                 J, h = junction(sj, tau, sig, w)
@@ -197,12 +230,12 @@ if __name__ == '__main__':
                 json.dump(done, open(fn, 'w'))
             v = done[key]
             print(f'  {w} {sj:.0f} m：' + (f'費用 {v["cost"]:.0f}、ずれの最大 {v["maxdev"]:.1f} m' if v['cost'] is not None else '曲線が入らない：' + v.get('why', '')) + f'（{time.time() - t0:.0f} 秒）', flush=True)
-        ok = [v for k, v in done.items() if k.startswith(w + ':') and v['cost'] is not None]
+        ok = [v for k, v in done.items() if k.startswith(w + ':') and v['cost'] is not None and any(abs(v['sj'] - s_) < 0.5 for s_ in cands)]
         best[w] = min(ok, key=lambda v: v['cost'])['sj']
         print(f'  選んだ分岐器の位置（{w}）：幹線のキロ程 {best[w]:.0f} m', flush=True)
-    js = junction(best['start'], *info['start'][3:]) if 'start' in best else None
+    js = junction(best['start'], *info['start'][3:6]) if 'start' in best else None
     if js: js = (js[0], -js[1])
-    je = junction(best['end'], *info['end'][3:]) if 'end' in best else None
+    je = junction(best['end'], *info['end'][3:6]) if 'end' in best else None
     res = solve(list(range(lo_core, hi_core + 1)), js, je)
     if res is None: raise SystemExit('全体：曲線が入らない：' + getattr(solve, 'why', ''))
     print(f'全体：費用 {res["cost"]:.0f}、ずれの最大 {res["maxdev"]:.1f} m、交点 {len(res["V"]) - 2}（{time.time() - t0:.0f} 秒）', flush=True)
@@ -237,7 +270,8 @@ if __name__ == '__main__':
     jinfo = {}
     for w, jj in (('start', js), ('end', je)):
         if jj is not None:
-            jinfo[w] = {'trunk': TRUNKS[w], 's': best[w], 'lonlat': [jj[0][0] / K + pts[0][0], jj[0][1] / 110570 + pts[0][1]], 'angle_deg': math.degrees(THETA)}
+            jinfo[w] = {'trunk': TRUNKS[w], 's': best[w], 'lonlat': [jj[0][0] / K + pts[0][0], jj[0][1] / 110570 + pts[0][1]], 'angle_deg': math.degrees(THETA),
+                        'tau': info[w][3], 'station': info[w][6][0] if len(info[w]) > 6 and info[w][6] else None, 'station_s': info[w][6][1] if len(info[w]) > 6 and info[w][6] else None}   # τ：分かれる向き（+1＝幹線のキロ程の増える向きに進む）。2026-11-08
     out_ = {'A': np.c_[lon, lat].tolist(), 's': sg.tolist(), 'k': list(map(float, kg)), 'stopidx': stopidx, 'dev': dv.tolist(), 'elements_flat': els, 'junctions': jinfo}
     if 'end' in jinfo: out_['junction'] = jinfo['end']   # 片端の版（ipfit_branch_v1.py）と同じ名前でも読めるように
     json.dump(out_, open(f'fit_{NAME}.json', 'w'))

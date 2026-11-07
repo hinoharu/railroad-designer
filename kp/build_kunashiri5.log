@@ -131,3 +131,12 @@
   $ ROUTE='route_onne.json' OUT='route_onne_hyb.json' PREFIX='onne_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' LAMBDA='1.0' python3 devline_hybrid.py > hyb_onne.log 2>&1
   $ rm -f branch_onne_cands.json
   $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py onne route_onne_hyb.json fit_kita_e.json start end > ipb_onne.log 2>&1
+  $ ROUTE='route_onne_hyb.json' python3 fit2route.py onne > geo_onne.log 2>&1
+  $ python3 ground.py route_fonne.json ground_fonne.json > ground_onne.log 2>&1
+  高さの指定表 _free： {'start_z': 8.8, 'end_z': 4.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.8, 'end_z': 4.8} 4 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fonne.json costs_single.json design_fonne.json height_spec_onne.json > d_onne.log 2>&1
+  駅の高さ 底吼: 地盤から -10.2 m（地平駅：範囲外）
+  問題のある駅間 ['遠音別・底吼（station）', '底吼・円山（station）'] を探す駅間に足し（合計 2）、探索からやり直す
+== 区間 onne（遠音別線（遠音別〜上遠根別〜国後蘂取））ハッシュ 経路 5d03d0c2dcde・線形 5ff2060abf09・縦断 f3550b8bd040
+  $ ROUTE='route_onne.json' OUT='route_onne_hyb.json' PREFIX='onne_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["遠音別", "底吼"], ["底吼", "円山"]]' LAMBDA='1.0' python3 devline_hybrid.py > hyb_onne.log 2>&1

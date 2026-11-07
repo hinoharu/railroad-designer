@@ -4,3 +4,156 @@
   （済み）geo
   （済み）spec
   （済み）design
+== 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
+== 区間 kita_w（国後北線 西側（国後泊〜軽別〜植尻〜仁岸寄））ハッシュ 経路 ca3819efb30d・線形 8b82544a692b・縦断 2e0c9312154a
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  問題が残る駅間 ['斜里苅別信号場・一菱内（bridge）']（規則の範囲内の駅・峡谷の橋梁なので、勾配は下げずにここで止める）
+== 区間 kofu（国後北線 古釜布支線（仁岸寄〜古釜布））ハッシュ 経路 e8234fd5cd9f・線形 1ae923426cc6・縦断 5e02ec523a9e
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+== 区間 kita_e（国後北線 東側（仁岸寄〜奔別〜国後蘂取〜遠音別〜白糠泊））ハッシュ 経路 7c0eb883932c・線形 0b2935557799・縦断 7a1a62ad03ea
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  問題のある駅間なし
+== 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ 経路 644d255dd88f・線形 19892432be31・縦断 3b77e507d0f9
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+== 区間 tofutsu（東沸湖線（尾路久根〜東沸湖））ハッシュ 経路 50dacdd2833e・線形 b14143dcc6ff・縦断 59510eb6bea1
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+== 区間 heuke（平浮線（留夜別〜平浮泊））ハッシュ 経路 8cdd8e9b65b8・線形 dd65997702e1・縦断 fe5e6de10ced
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+== 区間 keromoi（計呂萌線（国後泊〜計呂萌））ハッシュ 経路 55474db46e84・線形 947a560645c3・縦断 5310942b5fde
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 32e3ad5a070a・縦断 548dfb8e1289
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  駅の高さ 南白糠: 地盤から +14.4 m（地平駅：範囲外）
+  駅の高さ 東笛島: 地盤から -40.5 m（地平駅：範囲外）
+  問題が残る駅間 ['新白糠信号場・南白糠（station）', '南白糠・笛島（station）', '笛島・東笛島（station）', '東笛島・歌分（station）']（規則の範囲内の駅・峡谷の橋梁なので、勾配は下げずにここで止める）
+== 区間 chacha（爺爺線（岡布〜遠音別））ハッシュ 経路 baeb36cdd70b・線形 b66de3be3424・縦断 3c8467303953
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  問題のある駅間なし
+== 区間 onne（遠音別線（遠音別〜上遠根別〜国後蘂取））ハッシュ 経路 5d03d0c2dcde・線形 5ff2060abf09・縦断 f3550b8bd040
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  問題のある駅間なし
+== 区間 kishi（岸内線（岸内〜南利寄））ハッシュ 経路 8b81ca4ed2c7・線形 9a76dd701062・縦断 1b715f25bc58
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+== 区間 seoi（瀬生線（上遠根別〜瀬生〜岸内））ハッシュ 経路 374c34a90572・線形 bab398a361e4・縦断 1947f1192eaf
+  （済み）hybrid
+  （済み）fit
+  （済み）geo
+  （済み）spec
+  （済み）design
+  問題のある駅間なし
+== 系統 tokkyu_kita（特急 安渡移矢→国後泊（北線経由））ハッシュ f61cb1bcce9e
+  $ P_KW='2928' MASS_T='339.2' FMAX_KN='188.4' VMAX='130' TILT='1' TRAIN='160' python3 keito2.py sys_tokkyu_kita.json > k_tokkyu_kita.log 2>&1
+  $ P_KW='2928' MASS_T='339.2' FMAX_KN='188.4' VMAX='130' TILT='1' TRAIN='160' python3 keito2.py sys_tokkyu_kita.json gs > k_tokkyu_kitags.log 2>&1
+== 系統 tokkyu_minami（特急 善平古丹→白糠泊（南線））ハッシュ 283e314af970
+  $ P_KW='2800' MASS_T='322.4' FMAX_KN='214.9' VMAX='130' TILT='0' TRAIN='170' python3 keito2.py sys_tokkyu_minami.json > k_tokkyu_minami.log 2>&1
+  $ P_KW='2800' MASS_T='322.4' FMAX_KN='214.9' VMAX='130' TILT='0' TRAIN='170' python3 keito2.py sys_tokkyu_minami.json gs > k_tokkyu_minamigs.log 2>&1
+== 系統 tokkyu_kuko_k（特急 国後空港→岡布→止嬰賀）ハッシュ 18d22fe0c834
+  $ P_KW='2100' MASS_T='241.8' FMAX_KN='161.2' VMAX='130' TILT='0' TRAIN='130' python3 keito2.py sys_tokkyu_kuko_k.json > k_tokkyu_kuko_k.log 2>&1
+  $ P_KW='2100' MASS_T='241.8' FMAX_KN='161.2' VMAX='130' TILT='0' TRAIN='130' python3 keito2.py sys_tokkyu_kuko_k.json gs > k_tokkyu_kuko_kgs.log 2>&1
+== 系統 tsukin（通勤急行 軽別→白糠泊→遠音別）ハッシュ 53a06f6731fe
+  $ P_KW='2328' MASS_T='266.4' FMAX_KN='162.8' VMAX='120' TILT='0' TRAIN='160' python3 keito2.py sys_tsukin.json > k_tsukin.log 2>&1
+  $ P_KW='2328' MASS_T='266.4' FMAX_KN='162.8' VMAX='120' TILT='0' TRAIN='160' python3 keito2.py sys_tsukin.json gs > k_tsukings.log 2>&1
+== 系統 kaisoku_kuko_k（快速 国後空港→白糠泊→安渡移矢）ハッシュ 6225dca7818e
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_kaisoku_kuko_k.json > k_kaisoku_kuko_k.log 2>&1
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_kaisoku_kuko_k.json gs > k_kaisoku_kuko_kgs.log 2>&1
+== 系統 kaisoku_tofutsu（快速 白糠泊→東沸湖（遠音別線経由））ハッシュ 9882b34bdc1b
+  $ P_KW='1134' MASS_T='262.2' FMAX_KN='96.9' VMAX='110' TILT='0' TRAIN='130' python3 keito2.py sys_kaisoku_tofutsu.json > k_kaisoku_tofutsu.log 2>&1
+  $ P_KW='1134' MASS_T='262.2' FMAX_KN='96.9' VMAX='110' TILT='0' TRAIN='130' python3 keito2.py sys_kaisoku_tofutsu.json gs > k_kaisoku_tofutsugs.log 2>&1
+== 系統 futsu_chacha（普通 岡布→古釜布（爺爺線・北線 東側経由））ハッシュ cfc78b53e46c
+  $ P_KW='2778' MASS_T='235.8' FMAX_KN='144.1' VMAX='120' TILT='0' TRAIN='130' python3 keito2.py sys_futsu_chacha.json > k_futsu_chacha.log 2>&1
+  $ P_KW='2778' MASS_T='235.8' FMAX_KN='144.1' VMAX='120' TILT='0' TRAIN='130' python3 keito2.py sys_futsu_chacha.json gs > k_futsu_chachags.log 2>&1
+== 系統 futsu_keromoi（普通 計呂萌→古釜布（北線 西側経由））ハッシュ e0fe36576b79
+  $ P_KW='2778' MASS_T='235.8' FMAX_KN='144.1' VMAX='120' TILT='0' TRAIN='130' python3 keito2.py sys_futsu_keromoi.json > k_futsu_keromoi.log 2>&1
+  $ P_KW='2778' MASS_T='235.8' FMAX_KN='144.1' VMAX='120' TILT='0' TRAIN='130' python3 keito2.py sys_futsu_keromoi.json gs > k_futsu_keromoigs.log 2>&1
+== 系統 futsu_minami（普通 白糠泊→古釜布）ハッシュ 5a1c16f2c8af
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_minami.json > k_futsu_minami.log 2>&1
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_minami.json gs > k_futsu_minamigs.log 2>&1
+== 系統 futsu_uejiri（普通 植尻→岸内）ハッシュ 7ff719ca816b
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_uejiri.json > k_futsu_uejiri.log 2>&1
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_uejiri.json gs > k_futsu_uejirigs.log 2>&1
+== 系統 futsu_karu（普通 軽別→狩士別）ハッシュ 0fc4132f8ae0
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_karu.json > k_futsu_karu.log 2>&1
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_karu.json gs > k_futsu_karugs.log 2>&1
+== 系統 futsu_higashi（普通 安渡移矢岬→国後蘂取（北線 東側））ハッシュ 414a9ff5588c
+  $ P_KW='1028' MASS_T='154.8' FMAX_KN='86.0' VMAX='110' TILT='0' TRAIN='85' python3 keito2.py sys_futsu_higashi.json > k_futsu_higashi.log 2>&1
+  $ P_KW='1028' MASS_T='154.8' FMAX_KN='86.0' VMAX='110' TILT='0' TRAIN='85' python3 keito2.py sys_futsu_higashi.json gs > k_futsu_higashigs.log 2>&1
+== 系統 futsu_onne（普通 上遠根別→遠音別→白糠泊）ハッシュ 14735a1de424
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_onne.json > k_futsu_onne.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_onne.json gs > k_futsu_onnegs.log 2>&1
+== 系統 futsu_onne2（普通 上遠根別→国後蘂取→南利寄）ハッシュ 26398ff4ab78
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_onne2.json > k_futsu_onne2.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_onne2.json gs > k_futsu_onne2gs.log 2>&1
+== 系統 futsu_seoi（普通 上遠根別→瀬生→岸内）ハッシュ d980d72eec0e
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_seoi.json > k_futsu_seoi.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_seoi.json gs > k_futsu_seoigs.log 2>&1
+== 系統 futsu_kishi（普通 岸内→南利寄→奔別）ハッシュ 2eaa0af31fc7
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_kishi.json > k_futsu_kishi.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_kishi.json gs > k_futsu_kishigs.log 2>&1
+== 系統 futsu_heuke（普通 岸内→留夜別→平浮泊）ハッシュ 14582c1703cc
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_heuke.json > k_futsu_heuke.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_heuke.json gs > k_futsu_heukegs.log 2>&1
+== 系統 futsu_tofutsu（普通 尾路久根→東沸湖）ハッシュ 5c9fddf91e21
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_tofutsu.json > k_futsu_tofutsu.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_tofutsu.json gs > k_futsu_tofutsugs.log 2>&1
+== 系統 futsu_kuko_k（普通 国後空港→狩士別）ハッシュ 44be007e1075
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_kuko_k.json > k_futsu_kuko_k.log 2>&1
+  $ P_KW='1746' MASS_T='199.8' FMAX_KN='122.1' VMAX='120' TILT='0' TRAIN='120' python3 keito2.py sys_futsu_kuko_k.json gs > k_futsu_kuko_kgs.log 2>&1
+== 系統 futsu_fueshima（普通 白糠泊→歌分）ハッシュ faaf18f50992
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_fueshima.json > k_futsu_fueshima.log 2>&1
+  $ P_KW='452' MASS_T='148.8' FMAX_KN='82.7' VMAX='85' TILT='0' TRAIN='80' python3 keito2.py sys_futsu_fueshima.json gs > k_futsu_fueshimags.log 2>&1
+== 書き出し（export.py）
+  $ python3 export.py
+  ../export/etorofu_lines.geojson  59,442 bytes
+  ../export/etorofu_stations.geojson  18,846 bytes
+  ../export/etorofu_network.json  53,680 bytes
+  ../export/etorofu_line_names.tsv  2,515 bytes
+  ../export/etorofu_line_splits.tsv  604 bytes
+  ../export/etorofu_yomi.tsv  12,902 bytes
+択捉：区間 21（頂点 2464、線形から最大 10.00 m）、駅 130、路線 18、系統 15、線を分ける指示 5
+  注意：kita_e の 仁岸寄〜奔別 は作図のどの路線にもない（路線名なし）
+  ../export/kunashiri_lines.geojson  34,687 bytes
+  ../export/kunashiri_stations.geojson  13,260 bytes
+  ../export/kunashiri_network.json  43,136 bytes
+  ../export/kunashiri_line_names.tsv  1,334 bytes
+  ../export/kunashiri_line_splits.tsv  136 bytes
+  ../export/kunashiri_yomi.tsv  9,319 bytes
+国後：区間 13（頂点 1429、線形から最大 9.99 m）、駅 91、路線 12、系統 20、線を分ける指示 1
+完了

@@ -17,3 +17,14 @@
   問題のある駅間 ['斜里苅別信号場・一菱内'] を探す駅間に足し（合計 1）、探索からやり直す
 == 区間 kita_w（国後北線 西側（国後泊〜軽別〜植尻〜仁岸寄））ハッシュ 経路 5d4f69caa8b9・線形 4f4f913ba405・縦断 6499677ebbcb
   $ ROUTE='route_kita_w.json' OUT='route_kita_w_hyb.json' PREFIX='kita_w_' GDEF='0.0333' SEGS='[["斜里苅別信号場", "一菱内"]]' GMAP='{"植尻|小田富": 0.025, "小田富|芦里": 0.025, "芦里|秩苅別": 0.025, "秩苅別|島登": 0.025, "島登|遣岱": 0.025, "遣岱|仁岸寄": 0.025}' python3 devline_hybrid.py > hyb_kita_w.log 2>&1
+  $ rm -f branch_kita_w_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kita_w route_kita_w_hyb.json fit_minami.json start > ipb_kita_w.log 2>&1
+  $ ROUTE='route_kita_w_hyb.json' python3 fit2route.py kita_w > geo_kita_w.log 2>&1
+  $ python3 ground.py route_fkita_w.json ground_fkita_w.json > ground_kita_w.log 2>&1
+  高さの指定表 _free： {'start_z': 8.7} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.7} 15 駅を指定
+  $ GCAP='0.0333' KYAKU25_ADD='[["植尻", "仁岸寄"]]' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_fkita_w.json costs_single.json design_fkita_w.json height_spec_kita_w.json > d_kita_w.log 2>&1
+  問題が残る駅間 ['斜里苅別信号場・一菱内']（探す駅間は増えないので、ここで止める）
+== 区間 kofu（国後北線 古釜布支線（仁岸寄〜古釜布））ハッシュ 経路 e8234fd5cd9f・線形 8f443779ce9d・縦断 dd2ec3586e3f
+  $ rm -f branch_kofu_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kofu route_kofu.json fit_kita_w.json start end=fit_minami.json > ipb_kofu.log 2>&1

@@ -18,6 +18,14 @@ RATIO = 1.1; WS = [300, 600, 1000, 1500, 2000]
 # （2026-11-07、ユーザー：橋梁の高さなどがどうしても高くなりすぎる場合、段階的に広げる。数値は仮：docs/thresholds.md）
 SEGS = {tuple(x) for x in json.loads(os.environ.get('SEGS', '[]'))}
 STAGES = [tuple(x) for x in json.loads(os.environ.get('STAGES', '[[300, 3], [300, 2], [600, 2], [1000, 2], [1500, 2], [2000, 2]]'))]
+# 連続的な基準（LAMBDA を与えたとき。2026-11-07、ユーザー「段階的でなく連続的でもいい」）：候補（元の折れ線と、帯 W ごとに探した線）の
+# 総費用 ＝ 建設費 C ＋ LAMBDA × A（A：元の折れ線からの離れのうち D_FREE＝30 m（線形の当てはめのずれの上限 D と同じ）を超える分を
+# 線に沿って積分した面積 m²）が最小の候補を採る。勾配で届かない駅間（元の折れ線は候補にならない）も同じ式で帯を選ぶ（1.1 倍の規則の代わり）
+LAMBDA = float(os.environ['LAMBDA']) if os.environ.get('LAMBDA') else None; D_FREE = 30.0
+def dev_area(pts, D):
+    """pts（探した線）の、作図の駅間の線 D からの離れの面積（m²）：各点の離れ d のうち D_FREE を超える分を、点の間隔で積分"""
+    d = [min(project(tuple(q), tuple(u), tuple(v))[1] for u, v in zip(D, D[1:])) for q in pts]
+    return sum(0.5 * (max(0.0, d[i] - D_FREE) + max(0.0, d[i + 1] - D_FREE)) * metres(pts[i], pts[i + 1]) for i in range(len(pts) - 1))
 # 探す勾配は上限の 25‰。ただし、25‰ ちょうどで探した結果、縦断で駅が範囲外になった駅間は 1‰ 低く探す（線形の当てはめと駅の前後の水平な区間の余裕）：
 # 蘂取→良宇仁（25‰ では良宇仁 −11.8 m。蘂取の高さは特急の経路の起点で決まり、良宇仁へ上る長さが足りない）
 GSEG = {('蘂取', '良宇仁'): 0.024}; GSEG.update({tuple(k.split('|')): v for k, v in json.loads(os.environ.get('GSEG', '{}')).items()})
@@ -28,7 +36,24 @@ for k, (a, b) in enumerate(zip(names, names[1:])):
     G = GMAP.get((a, b), GDEF)
     za, zb = elev(*D[0]), elev(*D[-1]); need = 110 + abs(zb - za) / G
     use = D; how = '作図の線'
-    if need <= Ld and (a, b) in SEGS:   # 段階的な探索（問題の残る駅間）
+    if need <= Ld and (a, b) in SEGS and LAMBDA is not None:   # 連続的な基準（問題の残る駅間）
+        GS = GSEG.get((a, b), G); env0 = dict(os.environ, GMAX=str(GS), K='1500', MARGIN='3000', STATION_ONLY='0', HB='draw')
+        f0 = f"{PREFIX}draw_{a}_{b}.json"
+        if not os.path.exists(f0): subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f0], env=dict(env0, CORRIDOR='0', EVAL_DRAW=f0), stdout=subprocess.DEVNULL, check=False)
+        c0 = json.load(open(f0))['cost_draw']; cand = [(c0, 0.0, 0.0, None)]   # (総費用, 建設費, 離れの面積, 帯)
+        for W in WS:
+            f = f"{PREFIX}{'dev4' if GS == G else 'dev7'}_{a}_{b}_{W}.json"
+            if not os.path.exists(f):
+                subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W)), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+                if not os.path.exists(f) and env0['K'] != '8000':
+                    print(f'  {a}→{b}（帯 {W}）：K=1500 では見つからず、K=8000 で探す', flush=True); env0['K'] = '8000'
+                    subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W)), stdout=subprocess.DEVNULL, check=False)
+            if os.path.exists(f):
+                dd = json.load(open(f)); Ax = dev_area(dd['points'], D); cand.append((dd['cost'] + LAMBDA * Ax, dd['cost'], Ax, W))
+        tot, cw, Ax, Wc = min(cand, key=lambda x: x[0])
+        if Wc is not None: use = json.load(open(f"{PREFIX}{'dev4' if GS == G else 'dev7'}_{a}_{b}_{Wc}.json"))['points']; computed.append([a, b]); how = f'探した線（帯 {Wc} m、建設費 {cw / c0:.0%}、離れの面積 {Ax:.3g} m²、λ={LAMBDA:g}）'
+        print(f'{a}→{b}：問題の残る駅間。元の折れ線 {c0:.3g}、候補 ' + '、'.join(f'帯 {W}：建設費 {c:.3g}＋λA {LAMBDA * A:.3g}＝{tt:.3g}' for tt, c, A, W in cand[1:]) + f' → {how}', flush=True)
+    elif need <= Ld and (a, b) in SEGS:   # 段階的な探索（問題の残る駅間。LAMBDA を与えないとき）
         GS = GSEG.get((a, b), G); env0 = dict(os.environ, GMAX=str(GS), K='1500', MARGIN='3000', STATION_ONLY='0', HB='draw')
         f0 = f"{PREFIX}draw_{a}_{b}.json"
         if not os.path.exists(f0): subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f0], env=dict(env0, CORRIDOR='0', EVAL_DRAW=f0), stdout=subprocess.DEVNULL, check=False)
@@ -59,8 +84,13 @@ for k, (a, b) in enumerate(zip(names, names[1:])):
             res[W] = json.load(open(f)) if os.path.exists(f) else None
         if res[0] is None: raise SystemExit(f'{a}→{b}：帯の制限なしでも経路が見つからない')
         base = res[0]['cost']
-        ok = [W for W in WS if res[W] and res[W]['cost'] <= RATIO * base]
-        Wc = ok[0] if ok else 0; use = res[Wc]['points']; computed.append([a, b])
+        if LAMBDA is not None:   # 連続的な基準：帯ごとの建設費＋λ×離れの面積が最小の候補（帯の制限なしも候補）
+            cand = [(res[W]['cost'] + LAMBDA * dev_area(res[W]['points'], D), W) for W in [0] + WS if res[W]]
+            Wc = min(cand)[1]
+        else:
+            ok = [W for W in WS if res[W] and res[W]['cost'] <= RATIO * base]
+            Wc = ok[0] if ok else 0
+        use = res[Wc]['points']; computed.append([a, b])
         how = f'探した線（帯 {Wc} m）' if Wc else '探した線（帯の制限なし）'
         print(f'{a}→{b}：要る長さ {need / 1000:.2f} km ＞ 作図 {Ld / 1000:.2f} km。帯ごとの費用 ' + '、'.join(f'{W or "制限なし"}：{res[W]["cost"]:.3g}' if res[W] else f'{W}：なし' for W in [0] + WS) + f' → {how}', flush=True)
     if not pts: pts = [list(use[0])]; stations.append((a, 0.0)); vidx.append(0)

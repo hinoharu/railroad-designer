@@ -155,6 +155,7 @@ def hybrid_env(s, rf):
             for k in range(lo, hi): gmap.setdefault(f'{stops[k]}|{stops[k + 1]}', min(0.025, float(env['GDEF'])))
         if os.path.exists(segs_file(b)): env['SEGS'] = json.dumps(json.load(open(segs_file(b))), ensure_ascii=False)
         if 'STAGES' in hy: env['STAGES'] = json.dumps(hy['STAGES'])
+        if 'LAMBDA' in hy: env['LAMBDA'] = hy['LAMBDA']   # 連続的な基準（離れ 1 m² の重み）。与えなければ STAGES の段階的な基準
     if gmap: env['GMAP'] = json.dumps(gmap, ensure_ascii=False)
     if 'GSEG' in hy: env['GSEG'] = json.dumps(hy['GSEG'], ensure_ascii=False)
     return env

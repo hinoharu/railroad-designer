@@ -127,19 +127,26 @@ def make_spec(s):
 def detect_problems(s):
     """縦断（駅地平化）から、問題のある駅間を機械的に出す：準地平（地盤から −10〜+12 m）の外にある駅（トンネル駅・高架駅）の前後の
     駅間と、橋梁の高さが BRIDGE_H1 を超える点のある駅間。戻り値：[[A, B], ...]（駅の並びの順）"""
-    rules = s['profile'].get('rules', {}); H1 = float(rules.get('BRIDGE_H1', 0))
+    rules = s['profile'].get('rules', {}); H1 = float(rules.get('BRIDGE_H1', 0)); H2 = float(rules.get('BRIDGE_H2', 100)); SPAN = float(rules.get('BRIDGE_SPAN', 300))
     d = json.load(open(net.design_files(s['id'])[1])); sn = np.array(d['s']); g = np.array(d['ground'], float); z = np.array(d['z']); st = d['struct']
-    names = [n for n, _ in d['stations']]; pos = [c for _, c in d['stations']]; bad = set()
+    names = [n for n, _ in d['stations']]; pos = [c for _, c in d['stations']]; bad = {}   # 駅間 → 'station' か 'bridge'
     for k, (n, c) in enumerate(d['stations']):
         i = int(np.argmin(np.abs(sn - c))); hh = z[i] - g[i]
         if hh < -10 or hh > 12:
-            if k > 0: bad.add((names[k - 1], n))
-            if k + 1 < len(names): bad.add((n, names[k + 1]))
-    if H1 > 0:
-        for i in range(len(sn)):
-            if st[i] == 'B' and z[i] - g[i] > H1:
-                k = min(max(0, int(np.searchsorted(pos, sn[i])) - 1), len(names) - 2); bad.add((names[k], names[k + 1]))
-    return sorted(bad, key=lambda ab: names.index(ab[0]))
+            if k > 0: bad[(names[k - 1], n)] = 'station'
+            if k + 1 < len(names): bad[(n, names[k + 1])] = 'station'
+    if H1 > 0:   # 橋梁の境：design3.py と同じ峡谷の例外（境を超える部分が SPAN 以下で両側に境以下の所があれば H2）
+        i = 0; h = z - g
+        while i < len(sn):
+            if st[i] == 'B' and h[i] > H1:
+                j = i
+                while j < len(sn) and st[j] == 'B' and h[j] > H1: j += 1
+                thr = H2 if (sn[j - 1] - sn[i] <= SPAN and i > 0 and j < len(sn)) else H1
+                if h[i:j].max() > thr:
+                    k = min(max(0, int(np.searchsorted(pos, sn[i])) - 1), len(names) - 2); bad.setdefault((names[k], names[k + 1]), 'bridge')
+                i = j
+            else: i += 1
+    return sorted(bad.items(), key=lambda kv: names.index(kv[0][0]))
 
 def segs_file(b): return f'hyb_{b}_segs.json'
 def gseg_file(b): return f'hyb_{b}_gseg.json'   # 探す勾配を下げた駅間：{"A|B": 勾配}（2 回探しても駅が範囲外のままの駅間。1 回に 1‰ 下げる）
@@ -208,20 +215,20 @@ def build_section(s):
             os.system(f"grep -h '範囲外' d_{b}{suf}.log | head -3")
     if DRY or not s['route'].get('hybrid', {}).get('auto'): return False
     # 自動の探索（2026-11-07）：縦断に問題（トンネル駅・高架駅・高い橋梁）が残る駅間を探す駅間に足し、増えたら探索からやり直す
-    probs = detect_problems(s); old = [tuple(x) for x in json.load(open(segs_file(b)))] if os.path.exists(segs_file(b)) else []
+    kinds = dict(detect_problems(s)); probs = list(kinds); old = [tuple(x) for x in json.load(open(segs_file(b)))] if os.path.exists(segs_file(b)) else []
     new = sorted(set(old) | set(probs), key=lambda ab: s['route']['stops'].index(ab[0]))
     if not probs: print('  問題のある駅間なし'); return False
     if new != old:
         json.dump([list(x) for x in new], open(segs_file(b), 'w'), ensure_ascii=False)
-        print(f'  問題のある駅間 {["・".join(x) for x in probs]} を探す駅間に足し（合計 {len(new)}）、探索からやり直す', flush=True); return True
+        print(f'  問題のある駅間 {["・".join(x) + "（" + kinds[x] + "）" for x in probs]} を探す駅間に足し（合計 {len(new)}）、探索からやり直す', flush=True); return True
     # 探した駅間の駅が範囲外のまま（択捉島の規則：探す勾配を 1‰ 下げて探し直す。devline_hybrid.py の GSEG。2026-11-07 に自動にした）。
-    # 探した線は勾配の上限ぎりぎりの長さになりがちで、縦断では駅が地平に届かない（国後島の一菱内）
+    # 探した線は勾配の上限ぎりぎりの長さになりがちで、縦断では駅が地平に届かない（国後島の一菱内）。橋梁だけの問題（峡谷）は勾配では直らないので下げない
     hy = s['route']['hybrid']; gs = json.load(open(gseg_file(b))) if os.path.exists(gseg_file(b)) else {}
     env = hybrid_env(s, route_file(s)); gmap = json.loads(env.get('GMAP', '{}')); changed = False
-    for a_, b_ in probs:
+    for a_, b_ in [x for x in probs if kinds[x] == 'station']:
         k = f'{a_}|{b_}'; cur = gs.get(k, hy.get('GSEG', {}).get(k, gmap.get(k, float(env['GDEF']))))
         if cur - 0.001 >= 0.010: gs[k] = round(cur - 0.001, 4); changed = True
-    if not changed: print(f'  問題が残る駅間 {["・".join(x) for x in probs]}（勾配はこれ以上下げないので、ここで止める）'); return False
+    if not changed: print(f'  問題が残る駅間 {["・".join(x) + "（" + kinds[x] + "）" for x in probs]}（勾配は下げないので、ここで止める）'); return False
     json.dump(gs, open(gseg_file(b), 'w'), ensure_ascii=False)
     print(f'  問題が残る駅間 {["・".join(x) for x in probs]}：探す勾配を 1‰ 下げて（{gs}）探索からやり直す', flush=True); return True
 

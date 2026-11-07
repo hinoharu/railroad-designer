@@ -147,6 +147,7 @@ def hybrid_env(s, rf):
     問題のある駅間 SEGS を hyb_<id>_segs.json から渡す"""
     hy = s['route']['hybrid']; pf = s['profile']; b = s['id']
     env = {'ROUTE': s['route']['file'], 'OUT': rf, 'PREFIX': hy.get('PREFIX', ''), 'GDEF': hy.get('GDEF', pf['GCAP'])}
+    env.update(pf.get('rules', {}))   # 探索の費用も縦断と同じ橋梁の高さの費用にする（devline2.py の W_BH・BRIDGE_H1・W_BH2。2026-11-07）
     gmap = dict(hy.get('GMAP', {}))
     if hy.get('auto'):
         stops = s['route']['stops']

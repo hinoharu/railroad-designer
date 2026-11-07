@@ -37,3 +37,13 @@
   問題のある駅間 ['南白糠・笛島', '笛島・東笛島', '東笛島・歌分'] を探す駅間に足し（合計 3）、探索からやり直す
 == 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 b8469a449d90・縦断 0455f6ccfd8a
   $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' SEGS='[["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 東笛島: 地盤から -12.3 m（地平駅：範囲外）
+  問題が残る駅間 ['南白糠・笛島', '笛島・東笛島', '東笛島・歌分']（探す駅間は増えないので、ここで止める）
+完了

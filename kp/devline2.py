@@ -20,7 +20,12 @@ import structdp
 GMAX = float(os.environ.get('GMAX', '0.015')); H = float(os.environ.get('H', '50')); MARGIN = float(os.environ.get('MARGIN', '4000'))
 K = int(os.environ.get('K', '1500')); BIN = float(os.environ.get('BIN', '10')); STN_HALF = 55.0
 P = json.load(open('costs_single.json'))
-hh = np.arange(-400, 400.01, 0.5); CM = structdp.costs_per_m(hh, P).min(axis=0)   # 高さの差 h（地盤−線路）→ 1 m あたりの最小の費用
+# 橋梁の高さの費用を縦断の計算（design3.py の W_BH・W_BH2）と同じにする（2026-11-07、国後島の笛島線：探索の費用に高さの費用がなく、
+# 高い橋梁を避けなかった）。縦断では高さ 1 m あたり W_BH（浅い土工 1 m 分＝b_cut m³）、境 BRIDGE_H1 を超える分は W_BH2
+W_BH = float(os.environ.get('W_BH', '1.0')); BRIDGE_H1 = float(os.environ.get('BRIDGE_H1', '0')); W_BH2 = float(os.environ.get('W_BH2', '100'))
+hh = np.arange(-400, 400.01, 0.5); _C3 = structdp.costs_per_m(hh, P); _fil = np.maximum(-hh, 0)
+_C3[2] = _C3[2] + P['b_cut'] * (W_BH * _fil + (W_BH2 * np.maximum(_fil - BRIDGE_H1, 0) if BRIDGE_H1 > 0 else 0))
+CM = _C3.min(axis=0)   # 高さの差 h（地盤−線路）→ 1 m あたりの最小の費用
 cm = lambda h: CM[int(round((min(max(h, -400), 400) + 400) / 0.5))]
 route, A, B, out = sys.argv[1:5]
 r = json.load(open(route)); Pt = np.array(r['points']); names = [n for n, _ in r['stations']]

@@ -56,7 +56,8 @@ sa, sb = cell(seg[0]), cell(seg[-1])
 # 駅での向き：HA・HB（16 方向の番号）で与える。与えないとき、駅 A は作図の向き、駅 B は自由（HB=-1）。駅 B の作図の向きを使うときは HB=draw
 ha = int(os.environ['HA']) if os.environ.get('HA') else heading(seg[min(3, len(seg) - 1)] - seg[0])
 _hb = os.environ.get('HB', '-1'); hb = heading(seg[-1] - seg[max(0, len(seg) - 4)]) if _hb == 'draw' else int(_hb)
-hok = lambda h: hb < 0 or min((h - hb) % 16, (hb - h) % 16) <= 1
+HBTOL = int(os.environ.get('HBTOL', '1'))   # 駅 B での向きの許容（16 方向の刻み。1＝±22.5°、2＝±45°。2026-11-07、国後島の南利寄→利寄）
+hok = lambda h: hb < 0 or min((h - hb) % 16, (hb - h) % 16) <= HBTOL
 zA, zB = float(G[sa[1], sa[0]]), float(G[sb[1], sb[0]]); dZ = zB - zA; sg = 1 if dZ > 0 else -1
 s_need = 2 * STN_HALF + abs(dZ) / GMAX
 def zt(s): return zA + sg * min(max(s - STN_HALF, 0) * GMAX, abs(dZ))

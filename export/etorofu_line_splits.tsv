@@ -1,0 +1,6 @@
+island	segment	station	note
+etorofu	紗那〜南留別	留紗那	同じ両端の駅の別の線（留別線）と区別するため、途中の駅で分ける（railroad-designer の書き出し）
+etorofu	蘂取〜兵至平	紗那	区間 ipg の路線の境（railroad-designer の書き出し）
+etorofu	紗那〜兵至平	南留別	区間 ipg の路線の境（railroad-designer の書き出し）
+etorofu	南留別〜兵至平	類平	区間 ipg の路線の境（railroad-designer の書き出し）
+etorofu	類平〜兵至平	老門	区間 ipg の路線の境（railroad-designer の書き出し）

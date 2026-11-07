@@ -8,6 +8,7 @@
 #   止まっても同じコマンドで続きから再開できる（2026-11-03、ユーザーの指定：長い計算は途中から再開できる作りに）
 #   --dry-run：実行せずにコマンドだけを出す。--remake-route：経路のファイルがあっても駅の並びから作り直す（⑥の試験用）。
 #   --force：済んだ印を無視して、対象の区間をすべて計算し直す
+#   系統のあとに、駅レーダーサイトへ渡すファイルを export.py で書き出す（段 4、2026-11-07。--no-systems のときは書き出さない）
 # 古い手順の区間（method が legacy：特急の経路 ipg、散布線 sanpu）は計算しない。縦断のファイルの中身のハッシュだけを、
 # 下位の区間が変わったかの判定に使う
 import hashlib, json, math, os, subprocess, sys
@@ -178,4 +179,6 @@ if not NOSYS and not CHECK:
     for y in net.SYSTEMS:
         if ONLY and not (ONLY & set(y['sections'])): continue
         build_system(y)
+    # 段 4（2026-11-07）：駅レーダーサイトへ渡すファイル（../export/）。すべての結果から作るので、毎回作り直す（2 秒ほど）
+    print('== 書き出し（export.py）'); sh('python3 export.py')
 print('完了')

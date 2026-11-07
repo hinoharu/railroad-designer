@@ -12,7 +12,7 @@ Claude Code が作業前に読む説明書です。変更の前に全体を読�
 
 ## 駅レーダーサイトとの関係（2026-11-07、ユーザーの判断）
 - 常時の連携はしない。共通ライブラリも当面作らない。両方で使う関数は写して持ち、写した元を注釈に書く（例：`kp/geo.py`）。画面を駅レーダーサイトに合わせるとき（今の確認用ページの画面は仮）に、改めて判断する。
-- 受け渡しは書き出したファイルだけ：駅の位置と路線の形は、今の作図と同じ形の GeoJSON（駅レーダーサイトの `scripts/fiction.py` が変更なしで読める形）。区間をまとめた路線の名前、系統、車両の性能、出典などの補足は、別の JSON。精度は約 10 m の折れ線でよい。形の決まりは【未定】（次の作業）。
+- 受け渡しは書き出したファイルだけ：駅の位置と路線の形は、今の作図と同じ形の GeoJSON（駅レーダーサイトの `scripts/fiction.py` が変更なしで読める形）。区間をまとめた路線の名前、系統、車両の性能、出典などの補足は、別の JSON。精度は約 10 m の折れ線でよい。形の決まりは `docs/exchange.md`（2026-11-07）。書き出しは `kp/export.py` → `export/`。
 - 駅レーダーサイトに残るもの：作図の GeoJSON（`data/fiction_src/`）、`scripts/fiction.py`、`data/fiction.json`、地図・選択駅情報欄・未取得駅管理画面への表示。このリポジトリの `data/fiction.json` は、その写し（2026-11-07 時点）。
 - 共通のデータ置き場：`hinoharu/freetrain-saves`（非公開。名前は後で検討）を正本にし、各プロジェクトは写しを持って取り込んだ版を記録する（ビルドのたびに直接読まない）。置くのは、受け取ったものと、加工したもののうち共通の資料として使えるもの。加工したものには元・作り方・使う側を書く。
 
@@ -21,10 +21,11 @@ Claude Code が作業前に読む説明書です。変更の前に全体を読�
 |---|---|
 | `kp/` | 計算の本体（Python・シェル）。`build.py`：入力表から経路・線形・地盤・高さの指定表・縦断・系統の走行までを 1 本で計算する（入力が変わった区間と下位だけ、途中から再開できる）。`tables/`：入力表（人が決める値の正本、説明は `tables/README.md`）。ほかは各段のスクリプトと、計算の結果（`fit_*`・`route_f*`・`design_f*`・`keito2_*` など） |
 | `kp/geo.py` | 距離と、点を線分に下ろす計算（駅レーダーサイトから写した）と、`data/fiction.json` の場所 |
+| `kp/export.py`・`export/` | 駅レーダーサイトへ渡すファイルの書き出し（段 4）と、その結果（島ごとに GeoJSON 2 本・補足の JSON・`fiction.py` の表の行 3 本）。形の決まりは `docs/exchange.md` |
 | `kp_var/` | 案の比較の計算の結果（`V256` は前の版の 10 区間。ユーザーの指定で永続的に残す） |
 | `data/fiction.json` | 作図から作った路線・駅（駅レーダーサイトの写し）。経路の探索 `kp/path.py` が読む |
 | `page/` | 確認用ページ（GitHub Pages で公開）：`align.html`、データ `data/fiction_align.json`・`fiction_variants.json`、データを作るスクリプト `scripts/` |
-| `docs/` | 仕様と判断の経緯（`README.md` 目的と順番と決定、`align.md` 線形・縦断・走行、`thresholds.md` しきい値の台帳、`history.md`、`inventory/` 棚卸し） |
+| `docs/` | 仕様と判断の経緯（`README.md` 目的と順番と決定、`align.md` 線形・縦断・走行、`exchange.md` 駅レーダーサイトとの受け渡しの形、`thresholds.md` しきい値の台帳、`history.md`、`inventory/` 棚卸し） |
 | `.claude/` | 応答が英語になったら指摘する hook（`wording_reminder.py`） |
 | `.github/workflows/pages.yml` | `page/` を GitHub Pages に公開する |
 
@@ -36,6 +37,7 @@ cd kp
 python3 build.py --dry-run          # 実行せずに、計算するコマンドを出す
 python3 build.py                    # 入力表が変わった区間と下位・系統を計算する（止まっても同じコマンドで再開）
 python3 build.py --check-spec       # 高さの指定表を規則から作り、今のファイルと照合する（38 枚すべて「一致」が正常）
+python3 export.py                   # 駅レーダーサイトへ渡すファイルを export/ に書き出す（build.py の最後でも呼ぶ。2 秒ほど）
 cd ..
 python3 page/scripts/fiction_align.py kp      # 確認用ページのデータ page/data/fiction_align.json を作る
 python3 page/scripts/fiction_variants.py kp   # 案の比較のデータ page/data/fiction_variants.json を作る（kp_var を読む）

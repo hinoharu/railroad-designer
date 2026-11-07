@@ -1,0 +1,686 @@
+{
+ "note": "線路網の表（2026-11-04、ユーザーと決めた「まず線形ありき」と線の順位）。sections：線形の区間（順位 rank が小さいほど上位。支線は parents の線に合わせる）。systems：系統（区間をつないだ経路に、車両・停車駅を加えたもの）。計算し直す順は order.py が決める",
+ "sections": [
+  {
+   "id": "ipg",
+   "name": "特急の経路（蘂取〜紗那〜兵至平）",
+   "rank": 1,
+   "parents": [],
+   "build": "sh rerun_ip.sh ipg（交点法 ipfit_all.py、縦断は高さ指定 height_spec.json）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 1
+   },
+   "costs": "costs_double.json",
+   "grade": "乙線"
+  },
+  {
+   "id": "sanpu",
+   "name": "散布線（大岬〜瀬石温泉の分岐器）",
+   "rank": 2,
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（瀬石温泉の構内）"
+    }
+   ],
+   "build": "GCAP=0.035 VMAX=100 TILT=0 TRAIN=85 sh rerun_branch.sh sanpu route_sanpu.json ipg costs_single.json 普通大岬紗那 紗那 …（駅・信号場は地平を原則：height_spec_sanpu.json）",
+   "conditions": {
+    "VMAX": 100,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "grade": "丙線"
+  },
+  {
+   "id": "shibw",
+   "name": "蘂取線（択捉六甲〜類平）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉六甲）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（類平）"
+    }
+   ],
+   "build": "VMAX=130 TILT=0 TRAIN=170 python3 ipfit_branch.py shibw route_shibetoro_w.json fit_ipg.json start end → ROUTE=route_shibetoro_w.json fit2route.py shibw → ground.py → design3.py（costs_single.json、height_spec_shibw.json：両端の施工基面を幹線に合わせる）（駅・信号場は地平を原則）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "特急 茂世路→択捉六甲（789系1000番台 8 両）が全区間を走るので、その条件で計算。信号場があるので単線"
+  },
+  {
+   "id": "shibr",
+   "name": "蘂取線（紗那〜沼田〜南留別）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（紗那の先。紗那は特急の経路の折り返しの駅）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（南留別の手前）"
+    }
+   ],
+   "build": "VMAX=130 TILT=0 TRAIN=170 python3 ipfit_branch.py shibr route_shibetoro_r.json fit_ipg.json start end → chain_new.sh（fit2route・ground・design3、複線は沼田〜南留別）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 0
+   },
+   "costs": "costs_single.json（沼田〜南留別は costs_double.json）",
+   "note": "特急 茂世路→択捉六甲（789系1000番台 8 両）が沼田〜南留別を走るので、その条件で計算"
+  },
+  {
+   "id": "moyoro",
+   "name": "茂世路線（茂世路〜沼田）",
+   "rank": 4,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "shibr",
+     "at": "終点（沼田）"
+    }
+   ],
+   "build": "VMAX=130 TILT=0 TRAIN=170 python3 ipfit_branch.py moyoro route_moyoro.json fit_shibr.json end → chain_new.sh（GCAP=0.035、複線は背祖曽〜沼田）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 0
+   },
+   "costs": "costs_single.json（背祖曽〜沼田は costs_double.json）",
+   "note": "特急 茂世路→択捉六甲（789系1000番台 8 両）が全区間を走る"
+  },
+  {
+   "id": "rakki",
+   "name": "酪別線（酪別〜蘂取）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（蘂取。特急の経路の起点）"
+    }
+   ],
+   "build": "VMAX=130 TILT=1 TRAIN=160 python3 ipfit_branch.py rakki route_rakkibetsu.json fit_ipg.json end → chain_new2.sh（GCAP=0.025）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 1
+   },
+   "costs": "costs_single.json",
+   "note": "特急 酪別→年萌（キハ283系相当）が全区間を走る。非電化・単線（2026-11-05、ユーザーの指定）"
+  },
+  {
+   "id": "toshi",
+   "name": "茂世路線 冬知里支線（四谷〜塘路）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "moyoro",
+     "at": "始点（四谷）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（塘路の手前。特急は塘路で折り返す）"
+    }
+   ],
+   "build": "VMAX=130 TILT=1 TRAIN=160 python3 ipfit_branch.py toshi route_toshiruri.json fit_ipg.json start=fit_moyoro.json end=fit_ipg.json → chain_new2.sh（GCAP=0.025）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 1
+   },
+   "costs": "costs_single.json",
+   "note": "特急 酪別→年萌が全区間を走る。非電化・単線（2026-11-05、ユーザーの指定）"
+  },
+  {
+   "id": "otamoi",
+   "name": "小田萌線（年萌〜新指臼）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（年萌）"
+    },
+    {
+     "section": "moyoro",
+     "at": "終点（新指臼）"
+    }
+   ],
+   "build": "VMAX=130 TILT=1 TRAIN=160 python3 ipfit_branch.py otamoi route_otamoi.json fit_ipg.json start=fit_shibw.json end=fit_moyoro.json → chain_new2.sh（GCAP=0.025）",
+   "conditions": {
+    "VMAX": 130,
+    "TILT": 1
+   },
+   "costs": "costs_single.json",
+   "note": "特急 酪別→年萌（キハ283系相当）と普通（セーブでは 415系 6 両。気動車として扱う：ユーザーの指定）が走る。非電化・単線（2026-11-05、ユーザーの指定）"
+  },
+  {
+   "id": "sesibe",
+   "name": "背蘂線（蘂取〜背祖曽）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（蘂取。特急の経路の起点）"
+    },
+    {
+     "section": "moyoro",
+     "at": "終点（背祖曽）"
+    }
+   ],
+   "build": "VMAX=95 TILT=0 TRAIN=122 python3 ipfit_branch.py sesibe route_sesibe.json fit_ipg.json start=fit_ipg.json end=fit_moyoro.json → chain_new3.sh（GCAP=0.025）",
+   "conditions": {
+    "VMAX": 95,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "急行 蘂取→丹根萌（DD51形相当＋客車 5 両）と普通（キハ40形、低速）が走る。非電化・単線（セーブで複線以上の割合 0〜16%）。2026-11-05"
+  },
+  {
+   "id": "tanne",
+   "name": "丹根萌線（択捉六甲〜丹根萌）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉六甲の先の分岐器）"
+    }
+   ],
+   "build": "VMAX=95 TILT=0 TRAIN=122 python3 ipfit_branch.py tanne route_tanne.json fit_ipg.json start → chain_new3.sh（GCAP=0.025）",
+   "conditions": {
+    "VMAX": 95,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "急行 蘂取→丹根萌と、老門線から直通する普通（キハ40形、低速）が走る。非電化・単線（択捉六甲〜迂遠知信号場は複線以上 44% だが、全部が 3 本以上の並び＝構内の側線とみた）。2026-11-05"
+  },
+  {
+   "id": "kuko",
+   "name": "択捉空港線（西単冠〜択捉空港〜植別）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（西単冠）"
+    }
+   ],
+   "build": "VMAX=110 TILT=0 TRAIN=120 python3 ipfit_branch.py kuko route_kuko.json fit_ipg.json start=fit_shibw.json → chain_new5.sh（GCAP=0.0333、択捉空港〜植別は 25‰）",
+   "conditions": {
+    "VMAX": 110,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "快速（719系相当、電車）が西単冠〜択捉空港を、気動車の普通が全線を走る。西単冠〜択捉空港は電化、択捉空港〜植別は非電化。単線（セーブ）。2026-11-05"
+  },
+  {
+   "id": "sanroku_n",
+   "name": "単冠山麓線（入里節〜特掟〜単冠山口）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（入里節）"
+    }
+   ],
+   "build": "VMAX=85 TILT=0 TRAIN=80 python3 ipfit_branch.py sanroku_n route_sanroku_n_hyb.json fit_shibw.json start=fit_shibw.json → chain_sanroku3.sh（GCAP=0.0333、特掟〜単冠山口は 25‰）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "731系の普通が入里節〜特掟を、気動車（キハ201系・キハ40形）の普通が全線を走る。入里節〜特掟は電化、特掟より先は非電化。単線（セーブ。単冠山口〜西映は複線以上 59% でどちらとも決まらないが、最長の連続が 19 マスと短いので単線とした）。2026-11-05 単冠山口は両側の線が同じ側から入る駅（スイッチバック駅）なので、単冠山口で 2 区間に分けた（2026-11-05、ユーザーの選択）。収まらない駅間（樺里信号場→単冠山口、西映→上伏古信号場、来季萌→長生内）は元の折れ線の帯の中で地形から探した線"
+  },
+  {
+   "id": "sanroku_s",
+   "name": "単冠山麓線（単冠山口〜長生内）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（長生内）"
+    }
+   ],
+   "build": "VMAX=85 TILT=0 TRAIN=80 python3 ipfit_branch.py sanroku_s route_sanroku_s_hyb.json fit_ipg.json end=fit_ipg.json → chain_sanroku3.sh（GCAP=0.025。単冠山口の施工基面は sanroku_n の終点に合わせる）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "731系の普通が入里節〜特掟を、気動車（キハ201系・キハ40形）の普通が全線を走る。入里節〜特掟は電化、特掟より先は非電化。単線（セーブ。単冠山口〜西映は複線以上 59% でどちらとも決まらないが、最長の連続が 19 マスと短いので単線とした）。2026-11-05 単冠山口は両側の線が同じ側から入る駅（スイッチバック駅）なので、単冠山口で 2 区間に分けた（2026-11-05、ユーザーの選択）。収まらない駅間（樺里信号場→単冠山口、西映→上伏古信号場、来季萌→長生内）は元の折れ線の帯の中で地形から探した線"
+  },
+  {
+   "id": "furu",
+   "name": "振別線（老門〜奧羅臼）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（老門）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "atosa_w",
+   "name": "阿登佐線 西側（択捉神居古潭〜内保）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉神居古潭）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "atosa_e1",
+   "name": "阿登佐線 東側（択捉神居古潭〜散布泊）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉神居古潭）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "atosa_e2",
+   "name": "阿登佐線 東側（散布泊〜阿登佐岳）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "noto",
+   "name": "野斗路線（振別〜賢萌〜野斗路）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（振別）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "yorib",
+   "name": "寄別線（焼沼〜鬼門〜寄別）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "otamoi",
+     "at": "始点（焼沼）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "otoshi",
+   "name": "乙知志線（乙知志〜択捉原〜北乙）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "moyoro",
+     "at": "始点（乙知志）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  },
+  {
+   "id": "moke",
+   "name": "萌消線（萌消〜満前）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（満前）"
+    }
+   ],
+   "build": "make_routes6.py → chain_new6.sh・chain_new6b.sh（阿登佐線 東側）（VMAX=85 TRAIN=80、GCAP=0.025）",
+   "conditions": {
+    "VMAX": 85,
+    "TILT": 0
+   },
+   "costs": "costs_single.json",
+   "note": "低速の普通（気動車）だけが走る。非電化・単線（セーブ）。線形は 85 km/h 前提（単冠山麓線と同じ）。2026-11-06"
+  }
+ ],
+ "systems": [
+  {
+   "id": "tokkyu",
+   "name": "特急 蘂取→兵至平",
+   "sections": [
+    "ipg"
+   ],
+   "car": "キハ283系（振子式）8 両（160 m）",
+   "VMAX": 130,
+   "TILT": 1,
+   "TRAIN": 160,
+   "car_source": "セーブのキハ261系をキハ283系と読み替える（ユーザーの指定）",
+   "car_type": "キハ283系",
+   "cars": 8
+  },
+  {
+   "id": "futsu_sanpu",
+   "name": "普通 大岬→紗那",
+   "sections": [
+    "sanpu",
+    "ipg"
+   ],
+   "car": "キハ54形500番台 4 両（85 m）",
+   "VMAX": 100,
+   "TILT": 0,
+   "TRAIN": 85,
+   "stops": [
+    "大岬",
+    "散布",
+    "散布渓",
+    "紗万部",
+    "南散布",
+    "乳萌",
+    "別飛仮乗降場",
+    "瀬石温泉",
+    "東紗那",
+    "紗那"
+   ],
+   "keito": "keito_普通大岬紗那.json",
+   "car_source": "freetrain-saves の択捉島のセーブ",
+   "car_type": "キハ54形500番台",
+   "cars": 4
+  },
+  {
+   "id": "tokkyu_moyoro",
+   "name": "特急 茂世路→択捉六甲",
+   "sections": [
+    "moyoro",
+    "shibr",
+    "ipg",
+    "shibw"
+   ],
+   "keito2": "sys_tokkyu_moyoro.json",
+   "car": "789系1000番台 8 両（170 m）",
+   "car_type": "789系1000番台",
+   "cars": 8,
+   "VMAX": 130,
+   "TILT": 0,
+   "TRAIN": 170,
+   "car_source": "freetrain-saves の択捉島のセーブ（茂世路線 特急）"
+  },
+  {
+   "id": "futsu_shibetoro",
+   "name": "普通 蘂取→択捉六甲",
+   "sections": [
+    "ipg",
+    "shibr",
+    "shibw"
+   ],
+   "keito2": "sys_futsu_shibetoro.json",
+   "car": "719系 6 両（120 m）",
+   "car_type": "719系",
+   "cars": 6,
+   "VMAX": 110,
+   "TILT": 0,
+   "TRAIN": 120,
+   "car_source": "freetrain-saves の択捉島のセーブ（蘂取本線 普通）。長さは 1 両 20 m、最高速度は 719系の 110 km/h"
+  },
+  {
+   "id": "tokkyu_rakki",
+   "name": "特急 酪別→年萌",
+   "sections": [
+    "rakki",
+    "ipg",
+    "toshi",
+    "moyoro",
+    "otamoi",
+    "shibw"
+   ],
+   "keito2": "sys_tokkyu_rakki.json",
+   "car": "キハ283系（振子式）8 両（160 m）",
+   "car_type": "キハ283系",
+   "cars": 8,
+   "VMAX": 130,
+   "TILT": 1,
+   "TRAIN": 160,
+   "car_source": "freetrain-saves の択捉島のセーブ（酪別線 特急、789系）。この特急だけは気動車で、789系は見た目だけ、キハ283系相当として扱う（2026-11-05、ユーザーの指定）"
+  },
+  {
+   "id": "kyuko",
+   "name": "急行 蘂取→丹根萌",
+   "sections": [
+    "sesibe",
+    "moyoro",
+    "shibr",
+    "ipg",
+    "tanne"
+   ],
+   "keito2": "sys_kyuko.json",
+   "car": "DD51形相当 重連＋客車 5 両（140 m）",
+   "car_type": "DD51形重連＋客車",
+   "cars": 7,
+   "VMAX": 95,
+   "TILT": 0,
+   "TRAIN": 140,
+   "car_source": "freetrain-saves の択捉島のセーブ（観光急行：EF81＋24系・ED79＋E26系の 6 両）。電気機関車の見た目だが非電化区間も走るので、ディーゼル機関車 DD51形相当として扱う（2026-11-05、ユーザーの指定）。長さは機関車 18.0 m＋客車 20.8 m×5",
+   "P_KW": 2260,
+   "MASS_T": 379,
+   "FMAX_KN": 330,
+   "perf_note": "重連の性能（2026-11-05、ユーザーの指定）：レールの出力 2,260 kW（DD51形 2,200 PS×2、伝達の効率 0.7 と仮定）、重さ 約 379 t（機関車 84 t×2＋客車 約 210 t、仮定）、最大引張力 330 kN（16,800 kgf×2）"
+  },
+  {
+   "id": "kaisoku_kuko",
+   "name": "快速 茂世路→択捉空港",
+   "sections": [
+    "moyoro",
+    "shibr",
+    "ipg",
+    "shibw",
+    "kuko"
+   ],
+   "keito2": "sys_kaisoku_kuko.json",
+   "car": "719系相当 6 両（120 m）",
+   "car_type": "719系",
+   "cars": 6,
+   "VMAX": 110,
+   "TILT": 0,
+   "TRAIN": 120,
+   "car_source": "freetrain-saves の択捉島のセーブ（茂世路線 普通の編成、キハE120形 6 両）。快速は電車（ユーザーの指定）で、719系相当として扱う（ユーザーの選択）"
+  },
+  {
+   "id": "futsu_tokite",
+   "name": "普通 西単冠→特掟",
+   "sections": [
+    "shibw",
+    "sanroku_n"
+   ],
+   "keito2": "sys_futsu_tokite.json",
+   "car": "731系 6 両（120 m）",
+   "car_type": "731系",
+   "cars": 6,
+   "VMAX": 120,
+   "TILT": 0,
+   "TRAIN": 120,
+   "car_source": "freetrain-saves の択捉島のセーブ（単冠本線 山麓乗入、731系 6 両。ダイヤで中速）"
+  },
+  {
+   "id": "futsu_sanroku",
+   "name": "普通 入里節→長生内",
+   "sections": [
+    "sanroku_n",
+    "sanroku_s"
+   ],
+   "keito2": "sys_futsu_sanroku.json",
+   "car": "キハ120形相当 4 両（80 m）",
+   "car_type": "キハ120形",
+   "cars": 4,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "car_source": "freetrain-saves の択捉島のセーブ（単冠山麓線 普通、キハ201系 4 両。ダイヤで低速）。気動車。最高速度 85 km/h（2026-11-06、ユーザーの指定：芸備線・木次線のイメージ。芸備線の最高速度 85 km/h、広島県の資料）。走行の計算の性能はキハ120形相当（2026-11-06、ユーザーの選択：セーブのキハ201系は出力が大きく、芸備線・木次線のイメージと逆になるため）",
+   "note": "単冠山口で折り返す 1 列車（ダイヤでは作成ソフトの都合で 2 つに分けてある。ユーザーの説明、2026-11-06）"
+  },
+  {
+   "id": "futsu_furu",
+   "name": "普通 留別→奧羅臼",
+   "sections": [
+    "ipg",
+    "furu"
+   ],
+   "keito2": "sys_futsu_furu.json",
+   "car": "キハ40形相当 4 両（80 m）",
+   "car_type": "キハ40形",
+   "cars": 4,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "car_source": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「振別線 普通（留別行）」キハ40形 4 両"
+  },
+  {
+   "id": "futsu_atosa",
+   "name": "普通 内保→阿登佐岳",
+   "sections": [
+    "atosa_w",
+    "ipg",
+    "atosa_e1",
+    "atosa_e2"
+   ],
+   "keito2": "sys_futsu_atosa.json",
+   "car": "キハ40形相当 4 両（80 m）",
+   "car_type": "キハ40形",
+   "cars": 4,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "car_source": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「阿登佐線 普通」は 731系だが、線は非電化で車両指定の誤り（ユーザー、11-05）。隣の老門線の普通と同じキハ40形として扱う"
+  },
+  {
+   "id": "futsu_noto",
+   "name": "普通 野斗路→仲芭蕉",
+   "sections": [
+    "noto",
+    "ipg",
+    "sanroku_s"
+   ],
+   "keito2": "sys_futsu_noto.json",
+   "car": "キハ40形相当 4 両（80 m）",
+   "car_type": "キハ40形",
+   "cars": 4,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "car_source": "ダイヤ a.oud2 の普通（上下 15 本ずつ）。セーブの「野斗路線 山麓乗入」キハ40形 4 両（ユーザー、11-06：キハ40 の想定。出力の大小は考えていない）。車両の設定は低速。速度の区分は参考で、線路の規格が低めなので最高速度 85 km/h（ユーザー、11-06）"
+  },
+  {
+   "id": "futsu_yorib",
+   "name": "普通 小田萌→寄別",
+   "sections": [
+    "otamoi",
+    "yorib"
+   ],
+   "keito2": "sys_futsu_yorib.json",
+   "car": "キハ40形相当 4 両（80 m）",
+   "car_type": "キハ40形",
+   "cars": 4,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "car_source": "ダイヤ a.oud2 の普通（上下 17 本ずつ）。セーブの「寄別線 普通」キハ40形 4 両"
+  },
+  {
+   "id": "futsu_otoshi",
+   "name": "普通 蘂取→北乙",
+   "sections": [
+    "sesibe",
+    "moyoro",
+    "otoshi"
+   ],
+   "keito2": "sys_futsu_otoshi.json",
+   "car": "キハ40形相当 4 両（80 m）",
+   "car_type": "キハ40形",
+   "cars": 4,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 80,
+   "car_source": "ダイヤ a.oud2 の普通（上下 12 本ずつ。ほかに四谷〜北乙が 2 本ずつ）。乙知志線の名前の編成はセーブにない。背蘂線を通るので「背蘂線 普通」（キハ40形 4 両）として扱う"
+  },
+  {
+   "id": "futsu_moke",
+   "name": "普通 満前→萌消",
+   "sections": [
+    "ipg",
+    "moke"
+   ],
+   "keito2": "sys_futsu_moke.json",
+   "car": "キハ150形相当 3 両（60 m）",
+   "car_type": "キハ150形",
+   "cars": 3,
+   "VMAX": 85,
+   "TILT": 0,
+   "TRAIN": 60,
+   "car_source": "ダイヤ a.oud2 の普通（上下 8 本ずつ）。セーブの「萌消線 普通」キハ150形 3 両"
+  }
+ ]
+}

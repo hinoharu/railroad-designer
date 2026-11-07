@@ -1,0 +1,3 @@
+{"name": "仮の数値（動作の確認だけ）", "c_cut": 1.0, "b_cut": 8.0, "m_cut": 1.0, "c_fill": 1.0, "b_fill": 7.0, "m_fill": 1.5, "c_slope": 0.5,
+ "c_tunnel": 300.0, "t_height": 7.0, "t_cover_min": 3.0, "t_portal_min": 10.0, "c_portal": 15000.0,
+ "c_bridge": 200.0, "c_bridge_h": 5.0, "b_min_height": 3.0, "c_abutment": 8000.0}

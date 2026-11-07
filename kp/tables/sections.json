@@ -1,0 +1,949 @@
+{
+ "note": "区間の表（⑤の段 1、2026-11-06）。人が決める値の正本。説明は README.md",
+ "sections": [
+  {
+   "id": "ipg",
+   "name": "特急の経路（蘂取〜紗那〜兵至平）",
+   "rank": 1,
+   "grade": "乙線",
+   "parents": [],
+   "method": "legacy",
+   "legacy": "特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py ground_fipg.json costs_single.json に height_spec_ipg.json（高さ指定なし側）と height_spec_ipgh_gs.json（駅地平化）。湿地は wetland.py（rerun_all.sh の 1・2）",
+   "island": "択捉"
+  },
+  {
+   "id": "sanpu",
+   "name": "散布線（大岬〜瀬石温泉の分岐器）",
+   "rank": 2,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（瀬石温泉の構内）"
+    }
+   ],
+   "method": "legacy",
+   "legacy": "散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun_all.sh の resync、GCAP=0.035、系統は keito.py）",
+   "island": "択捉"
+  },
+  {
+   "id": "shibw",
+   "name": "蘂取線（択捉六甲〜類平）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉六甲）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（類平）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "択捉六甲",
+     "方真辺信号場",
+     "得茂別",
+     "御所釜別信号場",
+     "目名問",
+     "十五夜萌",
+     "入里節",
+     "背野津",
+     "野塚",
+     "具夜",
+     "碓",
+     "西単冠",
+     "黒木内",
+     "年萌",
+     "羅臼川",
+     "類平"
+    ],
+    "file": "route_shibetoro_w.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "",
+     "end": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "入里節",
+      "類平"
+     ]
+    ]
+   },
+   "src": "network.json の build、rerun_all.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "shibr",
+   "name": "蘂取線（紗那〜沼田〜南留別）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（紗那の先。紗那は特急の経路の折り返しの駅）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（南留別の手前）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "紗那",
+     "留紗那",
+     "三股信号場",
+     "沼田",
+     "摺鉢山",
+     "大小",
+     "奧留別",
+     "南留別"
+    ],
+    "file": "route_shibetoro_r.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "",
+     "end": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "double": [
+     [
+      "沼田",
+      "南留別"
+     ]
+    ],
+    "stations": {
+     "free": {
+      "沼田": [
+       -2,
+       2
+      ]
+     },
+     "gs": {
+      "沼田": [
+       -2,
+       2
+      ]
+     }
+    }
+   },
+   "src": "chain_new.sh・rerun_all.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "moyoro",
+   "name": "茂世路線（茂世路〜沼田）",
+   "rank": 4,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "shibr",
+     "at": "終点（沼田）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "茂世路",
+     "戸狩臼",
+     "浮老",
+     "背卸",
+     "牧読井",
+     "去家",
+     "背祖曽",
+     "応仁萌",
+     "四谷",
+     "渡刈",
+     "東留茶留",
+     "乙知志",
+     "磯谷",
+     "新指臼",
+     "沼田"
+    ],
+    "file": "route_moyoro.json",
+    "turnback": false,
+    "hybrid": {
+     "GDEF": 0.025,
+     "GMAP": {
+      "茂世路|戸狩臼": 0.035,
+      "戸狩臼|浮老": 0.035,
+      "浮老|背卸": 0.035,
+      "背卸|牧読井": 0.035,
+      "牧読井|去家": 0.035,
+      "去家|背祖曽": 0.035
+     },
+     "GSEG": {
+      "去家|背祖曽": 0.034,
+      "背祖曽|応仁萌": 0.024
+     },
+     "PREFIX": "m_",
+     "note": "2026-11-05 07:15 の実行（会話の記録から。スクリプトには残っていなかった）。GSEG は探す勾配を上限より 1‰ 下げる駅間。背祖曽|応仁萌 0.024 は 2026-11-06 に追加（作り直しで背祖曽が −10.5 m の範囲外になったため、devline_hybrid.py の規則で 1‰ 下げた）"
+    }
+   },
+   "fit": {
+    "trunk": "shibr",
+    "ends": {
+     "end": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 0,
+    "TRAIN": 170
+   },
+   "profile": {
+    "GCAP": 0.035,
+    "costs": "single",
+    "double": [
+     [
+      "背祖曽",
+      "沼田"
+     ]
+    ]
+   },
+   "src": "chain_new.sh・rerun_all.sh、会話の記録（地形からの探索）",
+   "island": "択捉"
+  },
+  {
+   "id": "rakki",
+   "name": "酪別線（酪別〜蘂取）",
+   "rank": 3,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（蘂取。特急の経路の起点）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "酪別",
+     "恵師",
+     "裡縫山信号場",
+     "御処",
+     "新幌萌信号場",
+     "散別",
+     "敏音別信号場",
+     "蘂取"
+    ],
+    "file": "route_rakkibetsu.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "end": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "rerun_tilt.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "toshi",
+   "name": "茂世路線 冬知里支線（四谷〜塘路）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "moyoro",
+     "at": "始点（四谷）"
+    },
+    {
+     "section": "ipg",
+     "at": "終点（塘路の手前。特急は塘路で折り返す）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "四谷",
+     "冬知里信号場",
+     "塘路"
+    ],
+    "file": "route_toshiruri.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "moyoro",
+     "end": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "rerun_tilt.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "otamoi",
+   "name": "小田萌線（年萌〜新指臼）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（年萌）"
+    },
+    {
+     "section": "moyoro",
+     "at": "終点（新指臼）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "年萌",
+     "新指臼"
+    ],
+    "file": "route_otamoi.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "shibw",
+     "end": "moyoro"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 130,
+    "TILT": 1,
+    "TRAIN": 160
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "rerun_tilt.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "sesibe",
+   "name": "背蘂線（蘂取〜背祖曽）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（蘂取。特急の経路の起点）"
+    },
+    {
+     "section": "moyoro",
+     "at": "終点（背祖曽）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "蘂取",
+     "良宇仁",
+     "睡名",
+     "長根",
+     "天幕",
+     "上去家",
+     "中去家信号場",
+     "背祖曽"
+    ],
+    "file": "route_sesibe.json",
+    "turnback": false,
+    "hybrid": {
+     "GDEF": 0.025,
+     "GSEG": {
+      "蘂取|良宇仁": 0.024
+     },
+     "PREFIX": "",
+     "note": "devline_hybrid.py の既定値で実行した（GSEG の 蘂取|良宇仁 は devline_hybrid.py に埋め込まれた既定値を表に写した）"
+    }
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "ipg",
+     "end": "moyoro"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 122
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "chain_new3.sh、chain_hyb.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "tanne",
+   "name": "丹根萌線（択捉六甲〜丹根萌）",
+   "rank": 5,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉六甲の先の分岐器）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "択捉六甲",
+     "丹根萌"
+    ],
+    "file": "route_tanne.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": ""
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 95,
+    "TILT": 0,
+    "TRAIN": 122
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "chain_new3.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "kuko",
+   "name": "択捉空港線（西単冠〜択捉空港〜植別）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（西単冠）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "西単冠",
+     "択捉空港",
+     "植別"
+    ],
+    "file": "route_kuko.json",
+    "turnback": false
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "shibw"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 110,
+    "TILT": 0,
+    "TRAIN": 120
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "KYAKU25_ADD": [
+     [
+      "択捉空港",
+      "植別"
+     ]
+    ],
+    "double": []
+   },
+   "src": "chain_new5.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "sanroku_n",
+   "name": "単冠山麓線（入里節〜特掟〜単冠山口）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "shibw",
+     "at": "始点（入里節）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "入里節",
+     "特掟",
+     "美云別",
+     "樺里信号場",
+     "単冠山口"
+    ],
+    "file": "route_sanroku_n.json",
+    "turnback": false,
+    "hybrid": {
+     "GDEF": 0.025,
+     "GMAP": {
+      "入里節|特掟": 0.0333
+     },
+     "PREFIX": "sr_"
+    }
+   },
+   "fit": {
+    "trunk": "shibw",
+    "ends": {
+     "start": "shibw"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.0333,
+    "costs": "single",
+    "KYAKU25_ADD": [
+     [
+      "特掟",
+      "単冠山口"
+     ]
+    ],
+    "double": []
+   },
+   "src": "chain_sanroku3.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "sanroku_s",
+   "name": "単冠山麓線（単冠山口〜長生内）",
+   "rank": 4,
+   "grade": "乙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（長生内）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "単冠山口",
+     "西映",
+     "上伏古信号場",
+     "仲芭蕉",
+     "来季萌",
+     "長生内"
+    ],
+    "file": "route_sanroku_s.json",
+    "turnback": false,
+    "hybrid": {
+     "GDEF": 0.025,
+     "PREFIX": "sr_"
+    }
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "end": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "start_z_from": "sanroku_n",
+    "double": [],
+    "stations": {
+     "gs": {
+      "単冠山口": "地平"
+     }
+    }
+   },
+   "src": "chain_sanroku3.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "furu",
+   "name": "振別線（老門〜奧羅臼）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（老門）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "老門",
+     "奧羅臼"
+    ],
+    "file": "route_furu.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "atosa_w",
+   "name": "阿登佐線 西側（択捉神居古潭〜内保）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉神居古潭）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "択捉神居古潭",
+     "内保"
+    ],
+    "file": "route_atosa_w.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "atosa_e1",
+   "name": "阿登佐線 東側（択捉神居古潭〜散布泊）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（択捉神居古潭）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "択捉神居古潭",
+     "散布泊"
+    ],
+    "file": "route_atosa_e1.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "atosa_e2",
+   "name": "阿登佐線 東側（散布泊〜阿登佐岳）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "散布泊",
+     "阿登佐岳"
+    ],
+    "file": "route_atosa_e2.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {},
+    "free": true
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "start_z_from": "atosa_e1",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "noto",
+   "name": "野斗路線（振別〜賢萌〜野斗路）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "始点（振別）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "振別",
+     "賢萌",
+     "野斗路"
+    ],
+    "file": "route_noto.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "start": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "yorib",
+   "name": "寄別線（焼沼〜鬼門〜寄別）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "otamoi",
+     "at": "始点（焼沼）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "焼沼",
+     "鬼門",
+     "寄別"
+    ],
+    "file": "route_yorib.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "otamoi",
+    "ends": {
+     "start": "otamoi"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "otoshi",
+   "name": "乙知志線（乙知志〜択捉原〜北乙）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "moyoro",
+     "at": "始点（乙知志）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "乙知志",
+     "択捉原",
+     "北乙"
+    ],
+    "file": "route_otoshi.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "moyoro",
+    "ends": {
+     "start": "moyoro"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  },
+  {
+   "id": "moke",
+   "name": "萌消線（萌消〜満前）",
+   "rank": 5,
+   "grade": "丙線",
+   "parents": [
+    {
+     "section": "ipg",
+     "at": "終点（満前）"
+    }
+   ],
+   "method": "branch",
+   "route": {
+    "stops": [
+     "萌消",
+     "満前"
+    ],
+    "file": "route_moke.json",
+    "turnback": true
+   },
+   "fit": {
+    "trunk": "ipg",
+    "ends": {
+     "end": "ipg"
+    },
+    "free": false
+   },
+   "run": {
+    "VMAX": 85,
+    "TILT": 0,
+    "TRAIN": 80
+   },
+   "profile": {
+    "GCAP": 0.025,
+    "costs": "single",
+    "double": []
+   },
+   "src": "make_routes6.py・chain_new6.sh・chain_new6b.sh",
+   "island": "択捉"
+  }
+ ]
+}

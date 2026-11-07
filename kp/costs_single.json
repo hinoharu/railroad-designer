@@ -1,0 +1,19 @@
+{
+ "c_cut": 1.0,
+ "m_cut": 1.2,
+ "c_fill": 1.2,
+ "m_fill": 1.5,
+ "c_slope": 5.0,
+ "c_bridge_h": 0.0,
+ "b_min_height": 3.0,
+ "name": "単線",
+ "b_cut": 5.0,
+ "b_fill": 4.5,
+ "t_height": 6.0,
+ "t_cover_min": 2.0,
+ "t_portal_min": 10.0,
+ "c_tunnel": 515.8207727662366,
+ "c_bridge": 370.71850744726044,
+ "c_portal": 25791.03863831183,
+ "c_abutment": 9267.96268618151
+}

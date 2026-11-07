@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>架空路線の線形（確認用）</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  /* the map above and the profile below, linked: moving either moves the other to the same chainage */
+  :root { --font: "BIZ UDGothic", "Hiragino Sans", "BIZ UDPGothic", sans-serif; --ink: #1c2433; --sub: #5a6577; --line: #d6dbe4; --tline: #c3cad6; --bg: #f4f6fa; --accent: #1f5fa8; --cur: #d62728; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; margin: 0; }
+  /* one font for the page, the map labels (Leaflet sets Helvetica/Arial on its container) and the profile canvas: BIZ UDGothic first, its figures
+     of one width suit the values in columns (2026-11-04, the user's phone draws the panel in it and the map labels were proportional) */
+  body, .leaflet-container { font-family: var(--font); }
+  body { display: flex; flex-direction: column; color: var(--ink); background: var(--bg); }
+  #map { flex: 1 1 58%; min-height: 160px; }
+  #panel { flex: 0 0 auto; max-height: 75%; display: flex; flex-direction: column; border-top: 1px solid var(--line); background: #fff; min-height: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px); }
+  #bar { display: flex; flex-direction: column; gap: 6px; min-height: 0; overflow-y: auto; padding: 8px max(10px, env(safe-area-inset-left, 0px)) 6px; font-size: 13px; }
+  #bar .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .flat { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; }
+  /* the summary: label and value pairs, not one sentence cut by dots */
+  #sum { display: flex; flex-wrap: wrap; gap: 2px 14px; line-height: 1.4; }
+  #sum span { white-space: nowrap; } #sum b { font-weight: 400; color: var(--sub); font-size: 11px; margin-right: 4px; } #sum small { color: var(--sub); font-size: 11px; }
+  .seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 6px; overflow: hidden; }
+  .seg button { font: inherit; font-size: 13px; padding: 4px 8px; border: 0; background: #fff; color: var(--accent); cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--accent); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  #sysSel { font: inherit; font-size: 13px; padding: 3px 4px; max-width: 13em; min-width: 0; flex: 1 1 auto; }
+  #sysSel:disabled { opacity: .45; }
+  /* the values at the current chainage: a table with fixed columns, so that each value stays at the same place */
+  /* one table: the label and its unit in the head, the values (numbers only) right-aligned below, the same padding in every cell */
+  /* the two tables joined into one (no gap): one line between the upper and the lower rows (the lower table's top line, drawn over the
+     upper one's bottom line by the margin of −1 px) */
+  /* the line between the upper and the lower rows, in the same colour as the other lines of the table (--tline: a little darker than --line,
+     which could not be told from the header's background: the user's report) */
+  #tbls .vt + .vt { border-top: 1px solid var(--tline); }
+  .vt { width: 100%; margin-top: -1px; table-layout: fixed; border-collapse: collapse; font-variant-numeric: tabular-nums; border: 1px solid var(--tline); }
+  .vt th { font-size: 10px; font-weight: 400; color: var(--sub); background: var(--bg); text-align: center; white-space: nowrap; overflow: hidden; padding: 2px 0 1px; letter-spacing: -.02em; line-height: 1.2; }
+  .vt th i { font-style: normal; font-size: 8.5px; margin-left: 2px; }
+  .vt td { font-size: 14px; line-height: 1.3; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: clip; padding: 2px 3px; border-left: 1px solid var(--tline); }
+  .vt th + th { border-left: 1px solid var(--tline); }
+  #read td:first-child { font-weight: 700; }
+  /* disclosure triangles (2026-11-04, the user's request: not a framed button, and a larger triangle): turned to the right when closed */
+  .disc { font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 4px 2px 0; border: 0; background: none; color: var(--ink); cursor: pointer; }
+  .disc .tri { width: 14px; height: 14px; fill: var(--sub); transition: transform .15s; }
+  .disc[aria-expanded="false"] .tri { transform: rotate(-90deg); }
+  #setting { display: flex; flex-direction: column; gap: 6px; }
+  .vt td.t { text-align: center; font-size: 12px; }
+  #train td.t { font-size: 11px; }
+  /* the legend: on the map, at the lower left */
+  /* two rows side by side (the limits; tunnel and bridge), and folded to one word on a tap (2026-11-04, the user's request: compact) */
+  .leaflet-bottom.leaflet-left .legend { margin: 0; border-radius: 0 4px 0 0; }
+  .legend { background: rgba(255,255,255,.88); border-radius: 4px; padding: 2px 6px; font-size: 10px; line-height: 1.6; color: var(--ink); box-shadow: 0 0 2px rgba(0,0,0,.3); cursor: pointer; max-width: calc(100vw - 120px); }
+  .legend div { display: flex; flex-wrap: wrap; gap: 0 7px; }
+  .legend span { white-space: nowrap; }
+  .legend b { font-weight: 400; color: var(--sub); }
+  .legend b.fx { min-width: 0; margin-left: auto; padding-left: 8px; }
+  #opts { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 13px; }
+  #opts label { white-space: nowrap; cursor: pointer; }
+  .legend i { display: inline-block; width: 10px; height: 4px; vertical-align: middle; margin-right: 2px; }
+  #msg { flex: 1 1 100%; }
+  #prof { flex: 0 0 auto; height: max(170px, 24vh); position: relative; touch-action: none; cursor: grab; }
+  #prof canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #cross { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; pointer-events: none; z-index: 500; }
+  #cross::before, #cross::after { content: ""; position: absolute; background: var(--cur); }
+  #cross::before { left: 10px; top: 0; width: 2px; height: 22px; } #cross::after { top: 10px; left: 0; height: 2px; width: 22px; }
+  #mapwrap { position: relative; flex: 1 1 58%; min-height: 160px; display: flex; }
+  #mapwrap #map { flex: 1; }
+  #lock { position: fixed; inset: 0; z-index: 2000; background: rgba(244,246,250,.97); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #lock form { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px; max-width: 360px; font-size: 14px; line-height: 1.6; }
+  #lock input { font: inherit; font-size: 16px; width: 100%; box-sizing: border-box; padding: 8px; margin: 8px 0; }
+  #lock button { font: inherit; padding: 8px 14px; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 6px; }
+  .st-label { font-size: 12px; white-space: nowrap; text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff; color: #222; }
+  .st-label.stop { font-weight: 700; font-size: 13px; }
+  .cv-label span { position: absolute; display: block; white-space: nowrap; }
+  .zs-label span { position: absolute; display: block; white-space: nowrap; font: 700 11px/1 var(--font); padding: 2px 3px; background: #fff; color: #111; border: 1.5px solid #111; border-radius: 3px; font-variant-numeric: tabular-nums; }
+  /* the end of a limit: the speed-limit release sign (a square cut by an X, the left and right triangles black), without a number */
+  /* slightly wider than tall (10:7, as the user remembers it; no source found). The X joins the corners: atan(20 / 14) = 55 deg from vertical */
+  .zs-label span.end { width: 20px; height: 14px; padding: 0; border-radius: 0; background: conic-gradient(#fff 0 55deg, #111 55deg 125deg, #fff 125deg 235deg, #111 235deg 305deg, #fff 305deg); }
+  /* the comparison of the variants (2026-11-05, the user's request: the results from the first try to the adopted one, side by side with the
+     conditions they were computed under): a table, its rows coloured as their lines on the map; a tap on a row shows that variant's profile */
+  #cmpSel { font: inherit; font-size: 13px; padding: 3px 4px; max-width: 16em; min-width: 0; flex: 1 1 auto; }
+  #cmpBox { overflow: auto; max-height: 34vh; }
+  #cmp { border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 100%; }
+  #cmp th { font-weight: 400; font-size: 10px; line-height: 1.25; color: var(--sub); background: var(--bg); padding: 2px 4px; border: 1px solid var(--tline); white-space: nowrap; position: sticky; top: 0; }
+  #cmp td { padding: 2px 4px; border: 1px solid var(--tline); white-space: nowrap; text-align: right; vertical-align: top; }
+  #cmp td.l { text-align: left; white-space: normal; min-width: 8em; }
+  #cmp tbody tr { cursor: pointer; } #cmp tr.on td { background: #e8f0fb; }
+  #cmp i.c { display: inline-block; width: 14px; height: 5px; vertical-align: middle; margin-right: 4px; }
+  #cmp .bad { color: #c92a2a; }
+  .cv-label { font-size: 11px; white-space: nowrap; text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff; color: #444; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div id="mapwrap"><div id="map"></div><div id="cross"></div></div>
+<div id="panel">
+  <div id="bar">
+    <div class="row">
+      <button type="button" id="fold" class="disc" aria-expanded="true"><svg class="tri" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 2.5h8L5 8z"/></svg>設定</button>
+      <span class="seg" id="varSeg"></span>
+      <select id="sysSel" autocomplete="off" aria-label="系統"></select>
+      <select id="cmpSel" autocomplete="off" aria-label="案を比べる線" hidden></select>
+      <!-- the comparison table folds away completely (2026-11-05, the user's request: on a phone it took most of the panel) -->
+      <button type="button" id="cmpFold" class="disc" aria-expanded="true" hidden><svg class="tri" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 2.5h8L5 8z"/></svg>表</button>
+    </div>
+    <!-- closed, the settings row keeps the display and system menu (switched most often); opened, the profile window and ［駅地平化］
+         (the two that decide the profile) come in one row below it (2026-11-04, the user and I) -->
+    <div id="setting">
+      <div class="row">
+        <span class="seg" id="winSeg"></span>
+        <label class="flat"><input type="checkbox" id="o_flat" autocomplete="off"> 駅地平化</label>
+      </div>
+      <div id="sum"></div>
+      <div id="opts"></div>
+    </div>
+    <!-- the comparison of the variants (2026-11-05). Later the variants that were not adopted move to a separate archive page (the user) -->
+    <div id="cmpBox" hidden><table id="cmp"></table></div>
+    <span id="msg">読み込み中…</span>
+    <!-- the line at the current point, and the train (a system only): two tables of one row each (2026-11-04, the user's design) -->
+    <div id="tbls"><table id="read" class="vt" hidden><colgroup><col style="width:15%"><col style="width:15%"><col style="width:13%"><col style="width:13%"><col style="width:16%"><col style="width:14%"><col style="width:14%"></colgroup>
+      <thead><tr><th>キロ程<i>km</i></th><th>施工基面<i>m</i></th><th>地上高<i>m</i></th><th>勾配<i>‰</i></th><th>平面線形<i>m</i></th><th>構造</th><th>制限<i>km/h</i></th></tr></thead>
+      <tbody><tr><td id="r_s"></td><td id="r_z"></td><td id="r_h"></td><td id="r_i"></td><td id="r_p" class="t"></td><td id="r_t" class="t"></td><td id="r_l"></td></tr></tbody></table>
+    <!-- the speed at the right end, under the limit of the line table (the same width), to compare the two (2026-11-04, the user's order) -->
+    <table id="train" class="vt" hidden><colgroup><col style="width:26%"><col style="width:8%"><col style="width:8%"><col style="width:10%"><col style="width:12%"><col style="width:11%"><col style="width:11%"><col style="width:14%"></colgroup>
+      <thead><tr><th>形式</th><th>振子</th><th>両数</th><th>長さ<i>m</i></th><th>最高<i>km/h</i></th><th>全区間<i>分</i></th><th>経過<i>分</i></th><th>速度<i>km/h</i></th></tr></thead>
+      <tbody><tr><td id="r_ty" class="t"></td><td id="r_tl" class="t"></td><td id="r_n"></td><td id="r_len"></td><td id="r_vm"></td><td id="r_rt"></td><td id="r_e"></td><td id="r_v"></td></tr></tbody></table></div>
+  </div>
+  <div id="prof"><canvas id="cv"></canvas></div>
+</div>
+<div id="lock" hidden>
+  <form id="lockForm" autocomplete="off">
+    <p>このページの線形は架空のデータで、暗号化されています。テスト版のデバッグモードの合言葉を入れてください（一度入れると、この端末では次から入れずに開けます）。</p>
+    <input type="password" id="pass" autocomplete="off" aria-label="合言葉">
+    <button type="submit">開く</button> <span id="lockMsg"></span>
+  </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  // the key of the sealed data: the same as the app's (PBKDF2 of the passphrase), kept by the app on the test site
+  const PREFIX = /eki-radar-stg/.test(location.pathname) ? "stg:" : "";
+  const SALT = "eki-radar-stg/seal/v1", ITER = 600000;
+  let key = null;
+  async function useRaw(raw) { key = await crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["decrypt"]); }
+  async function openSealed(name) {
+    const r = await fetch("../" + name + ".enc");
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const b = new Uint8Array(await r.arrayBuffer());
+    if (String.fromCharCode(...b.subarray(0, 4)) !== "ERS1") throw new Error("not sealed data");
+    const gz = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b.subarray(4, 16) }, key, b.subarray(16));
+    return JSON.parse(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+  }
+  async function load() {
+    const plain = await fetch("data/fiction_align.json").catch(() => null);
+    if (plain && plain.ok) return plain.json();
+    let k = null;
+    try { k = localStorage.getItem(PREFIX + "sealKey"); } catch (e) {}
+    if (k) {
+      try { await useRaw(Uint8Array.from(atob(k), (c) => c.charCodeAt(0))); return await openSealed("fiction_align.json"); } catch (e) { key = null; }
+    }
+    return new Promise((resolve) => {
+      $("lock").hidden = false;
+      $("lockForm").onsubmit = async (ev) => {
+        ev.preventDefault(); $("lockMsg").textContent = "確認しています…";
+        try {
+          const base = await crypto.subtle.importKey("raw", new TextEncoder().encode($("pass").value.normalize("NFKC").trim()), "PBKDF2", false, ["deriveBits"]);
+          const raw = new Uint8Array(await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: new TextEncoder().encode(SALT), iterations: ITER }, base, 256));
+          await useRaw(raw);
+          if ((await openSealed("seal_check")) !== "ok") throw 0;
+          try { localStorage.setItem(PREFIX + "sealKey", btoa(String.fromCharCode(...raw))); } catch (e) {}
+          $("lock").hidden = true; resolve(await openSealed("fiction_align.json"));
+        } catch (e) { key = null; $("lockMsg").textContent = "合言葉が違います"; }
+      };
+    });
+  }
+
+  // the variants (2026-11-05): a separate file, loaded when the comparison is first opened (plain on a local build, sealed on the test site)
+  async function loadVariants() {
+    const plain = await fetch("data/fiction_variants.json").catch(() => null);
+    if (plain && plain.ok) return plain.json();
+    return openSealed("fiction_variants.json");
+  }
+
+  const undelta = (a, sc) => { let v = 0; return a.map((d) => (v += d) / sc); };
+  // the speed bands of the limit (km/h) and their colours
+  const FONT = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "sans-serif"; // the canvas takes the same font
+  const BANDS = [[130, "#1a7f37", "130"], [110, "#2f6fd6", "110〜125"], [90, "#b8860b", "90〜105"], [70, "#e8590c", "70〜85"], [0, "#c92a2a", "65 以下"]];
+  const bandOf = (v) => BANDS.findIndex(([lo]) => v >= lo);
+  const WINS = [2, 5, 10, 20, 50]; // km shown across the profile
+
+  let D, V, SV = null, sel = 0, win = 5, cur = 0, fromProfile = false; // V: what the profile shows (a section, or the selected system); SV: the selected system
+  // the comparison of the variants: the data (CMP), on or off, the group (a line, or the express's performances) and the variant shown
+  let CMP = null, cmpOn = false, cmpG = 0, cmpV = 0, cmpViews = [];
+  const CMP_COLORS = ["#e8590c", "#9c36b5", "#2f9e44", "#c2255c", "#1f5fa8"];
+  const map = L.map("map", { preferCanvas: true, zoomControl: true, attributionControl: true });
+  const GSI = '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>';
+  const bases = {
+    "淡色地図": L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png", { maxZoom: 18, attribution: GSI }),
+    "標準地図": L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", { maxZoom: 18, attribution: GSI }),
+    "陰影起伏図": L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png", { maxZoom: 16, maxNativeZoom: 16, attribution: GSI }),
+    "写真": L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg", { maxZoom: 18, attribution: GSI }),
+  };
+  bases["淡色地図"].addTo(map);
+  L.control.layers(bases, null, { position: "topright" }).addTo(map);
+  map.attributionControl.setPrefix(false);
+  map.attributionControl.addAttribution("線路は架空");
+  const layer = L.layerGroup().addTo(map), origL = L.layerGroup(), vertL = L.layerGroup(), geoL = L.layerGroup().addTo(map), rLabels = L.layerGroup().addTo(map), labels = L.layerGroup().addTo(map);
+  // display options, kept on this device
+  const OPT_KEY = PREFIX + "alignView", opt = { orig: true, verts: false, radius: true, zones: true, color: true, others: true, sel: 0 };
+  try { Object.assign(opt, JSON.parse(localStorage.getItem(OPT_KEY) || "{}")); } catch (e) {}
+  const saveOpt = () => { try { localStorage.setItem(OPT_KEY, JSON.stringify(opt)); } catch (e) {} };
+  const LINE_W = 4, ONE_COLOR = "#1f5fa8", GRAY = "#9aa0a8", PORTAL_R = 7; // px
+
+  // the network (2026-11-04, "the alignment first"): sections, each with its own plan and profile; a system's view is built by
+  // joining the parts of the sections on its path (plan points, elements, curves; the profile resampled every 20 m)
+  function prepSec(v, i) {
+    const lon = undelta(v.lon, 1e5), lat = undelta(v.lat, 1e5);
+    const K = 111320 * Math.cos(lat[Math.floor(lat.length / 2)] * Math.PI / 180);
+    const z = v.z.map((q) => q / 10), zAlt = v.alt ? v.alt.z.map((q) => q / 10) : z;
+    return { ...v, idx: i, lon, lat, K, k: v.k.map((q) => q / 1e7), ground: v.ground.map((g) => g == null ? null : g / 10), z, zBase: z, zAlt,
+      structBase: v.struct, structAlt: v.alt ? v.alt.struct : v.struct,
+      X: lon.map((q) => q * K), Y: lat.map((q) => q * 110570), orig: { lon: undelta(v.orig.lon, 1e5), lat: undelta(v.orig.lat, 1e5) } };
+  }
+  function buildView(y, secs) {
+    // a piece [section, a, b] with a > b runs the section backwards (2026-11-04: the systems of 蘂取線 go 類平 → 択捉六甲): the chainage
+    // of the system grows as the section's falls, the curvature changes sign and a curve to the left becomes one to the right
+    const o = { ...y, lat: [], lon: [], s: [], k: [], elements: [], curves: [], ps: [], ground: [], z: [], struct: "" }, pieces = [];
+    let off = 0;
+    const flip = { "左": "右", "右": "左" };
+    for (const [si, a, b] of y.path) {
+      const S = secs[si], rev = a > b, lo = Math.min(a, b), hi = Math.max(a, b), map_ = (q) => off + Math.abs(q - a);
+      const idx = []; for (let i = 0; i < S.s.length; i++) if (S.s[i] >= lo && S.s[i] <= hi) idx.push(i);
+      if (rev) idx.reverse();
+      for (const i of idx) {
+        const s = map_(S.s[i]); if (o.s.length && s <= o.s[o.s.length - 1]) continue;
+        o.s.push(s); o.lat.push(S.lat[i]); o.lon.push(S.lon[i]); o.k.push(rev ? -S.k[i] : S.k[i]);
+      }
+      const clip = (e) => { const p = map_(Math.max(e[0], lo)), q = map_(Math.min(e[1], hi)); return [Math.min(p, q), Math.max(p, q), e[2], e[3]]; };
+      const els = [], cvs = [];
+      for (const e of S.elements || []) if (e[1] > lo && e[0] < hi) els.push(clip(e));
+      for (const c of S.curves) if (c[1] > lo && c[0] < hi) { const c2 = clip(c); if (rev) c2[3] = flip[c2[3]] || c2[3]; cvs.push(c2); }
+      if (rev) { els.reverse(); cvs.reverse(); }
+      o.elements.push(...els); o.curves.push(...cvs);
+      pieces.push([S, a, b, off]); off += hi - lo;
+    }
+    for (let g = 0; g <= off + 1e-6; g += 20) {
+      const [S, a, b, po] = pieces.find(([, a_, b_, o_]) => g <= o_ + Math.abs(b_ - a_) + 1e-6) || pieces[pieces.length - 1];
+      const s = a > b ? a - (g - po) : a + (g - po), j = Math.max(0, Math.min(S.ps.length - 2, Math.floor(s / 20))), t = (s - S.ps[j]) / Math.max(1, S.ps[j + 1] - S.ps[j]);
+      const g0 = S.ground[j], g1 = S.ground[j + 1];
+      o.ps.push(g); o.z.push(S.z[j] + (S.z[j + 1] - S.z[j]) * t); o.ground.push(g0 == null || g1 == null ? (g0 ?? g1) : g0 + (g1 - g0) * t);
+      o.struct += S.struct[Math.min(S.struct.length - 1, Math.round(s / 20))] || "-";
+    }
+    o.K = 111320 * Math.cos(o.lat[Math.floor(o.lat.length / 2)] * Math.PI / 180);
+    o.X = o.lon.map((q) => q * o.K); o.Y = o.lat.map((q) => q * 110570);
+    return o;
+  }
+  function prepare(d) {
+    const secs = d.sections.map(prepSec);
+    return { secs, systems: d.systems, views: [] };
+  }
+  // the switch ［駅地平化］ (2026-11-04, the user's request: compare the profiles with and without all the stations at ground level):
+  // each section's formation and structures, and each system's running, from the other design
+  function applyFlat() {
+    for (const S of D.secs) { S.z = opt.flat ? S.zAlt : S.zBase; S.struct = opt.flat ? S.structAlt : S.structBase; }
+    D.views = []; // built when the system is chosen (2026-11-06: building all of them made opening the page slow)
+  }
+  const viewOf = (i) => D.views[i] || (D.views[i] = buildView(opt.flat && D.systems[i].alt ? { ...D.systems[i], ...D.systems[i].alt } : D.systems[i], D.secs));
+  // ---- lightening (2026-11-06, the user's request: the page got heavy) ----
+  // C: the points of a line kept at a zoom: within half a pixel of the full line (Douglas-Peucker on the metric X, Y), and always the points
+  // where the colour (the limit's band) or the structure changes, so the runs break where they did. Cached per line, zoom and profile
+  const zoomNow = () => Math.max(5, Math.min(19, Math.round(map.getZoom())));
+  function keepAt(W, z) {
+    const key = z + (opt.flat ? "f" : ""); W._keep = W._keep || {}; if (W._keep[key]) return W._keep[key];
+    const n = W.s.length, keep = new Uint8Array(n), tol = 0.5 * 156543 * Math.cos(W.lat[0] * Math.PI / 180) / 2 ** z, t2 = tol * tol;
+    keep[0] = keep[n - 1] = 1;
+    const st = (i) => at(W.struct, 20, W.s[i]) === "T", band = (i) => W.lim ? bandOf(at(W.lim, W.dx, W.s[i])) : 0;
+    for (let i = 1; i < n; i++) if (st(i) !== st(i - 1) || band(i) !== band(i - 1)) keep[i - 1] = keep[i] = 1;
+    const stack = []; let a = 0;
+    for (let i = 1; i < n; i++) if (keep[i]) { stack.push([a, i]); a = i; }
+    while (stack.length) {
+      const [i, j] = stack.pop(); if (j - i < 2) continue;
+      const ax = W.X[i], ay = W.Y[i], dx = W.X[j] - ax, dy = W.Y[j] - ay, l2 = dx * dx + dy * dy || 1;
+      let worst = -1, wd = t2;
+      for (let k = i + 1; k < j; k++) { const t = ((W.X[k] - ax) * dx + (W.Y[k] - ay) * dy) / l2, ex = ax + dx * t - W.X[k], ey = ay + dy * t - W.Y[k], e = ex * ex + ey * ey; if (e > wd) { wd = e; worst = k; } }
+      if (worst >= 0) { keep[worst] = 1; stack.push([i, worst], [worst, j]); }
+    }
+    return (W._keep[key] = keep);
+  }
+  // A: the runs of bridges and tunnels, found once per line and profile, with their extents (to skip those off the screen)
+  function runsOf(W, ch) {
+    const key = ch + (opt.flat ? "f" : ""); W._runs = W._runs || {}; if (W._runs[key]) return W._runs[key];
+    const out = []; let a = -1;
+    for (let i = 0; i <= W.s.length; i++) {
+      const ok = i < W.s.length && at(W.struct, 20, W.s[i]) === ch;
+      if (ok && a < 0) a = i;
+      if (!ok && a >= 0) { let s0 = Infinity, s1 = -Infinity, w0 = Infinity, w1 = -Infinity; for (let k = a; k < i; k++) { s0 = Math.min(s0, W.lat[k]); s1 = Math.max(s1, W.lat[k]); w0 = Math.min(w0, W.lon[k]); w1 = Math.max(w1, W.lon[k]); } out.push([a, i - 1, L.latLngBounds([s0, w0], [s1, w1])]); a = -1; }
+    }
+    return (W._runs[key] = out);
+  }
+  // the station names by zoom (2026-11-06, the user's request: zoomed out, hundreds of names froze the page): 13 and over all; 11 and 12 the
+  // stops of the line shown (on the grey lines none); 10 and under none. Only those on the screen are placed (the circles are always drawn)
+  let stItems = [];
+  function placeNames() {
+    const z = map.getZoom(), bb = map.getBounds().pad(0.3);
+    for (const it of stItems) {
+      const want = (z >= 13 || (z >= 11 && it.stop && !it.others)) && bb.contains(it.p);
+      if (want && !it.m) it.m = L.marker(it.p, { interactive: false, icon: L.divIcon({ className: "st-label" + (it.stop ? " stop" : ""), html: it.n, iconAnchor: [-8, 8] }) }).addTo(labels);
+      else if (!want && it.m) { labels.removeLayer(it.m); it.m = null; }
+    }
+  }
+  const withV = (W, fn) => { const keep = V; V = W; try { return fn(); } finally { V = keep; } };
+  // in a system's view, the parts of the sections on its path (not drawn again in grey)
+  const covered = (W, s) => SV && sel >= 0 && W.idx !== undefined && SV.path.some(([si, a, b]) => si === W.idx && s >= Math.min(a, b) && s <= Math.max(a, b));
+  // values at a chainage
+  const at = (arr, step, s) => arr[Math.max(0, Math.min(arr.length - 1, Math.round(s / step)))];
+  function idxOf(s) { // the plan point just before chainage s
+    let lo = 0, hi = V.s.length - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (V.s[m] <= s) lo = m; else hi = m; }
+    return lo;
+  }
+  function pointAt(s) {
+    const i = idxOf(s), j = Math.min(i + 1, V.s.length - 1), t = V.s[j] > V.s[i] ? (s - V.s[i]) / (V.s[j] - V.s[i]) : 0;
+    return [V.lat[i] + (V.lat[j] - V.lat[i]) * t, V.lon[i] + (V.lon[j] - V.lon[i]) * t];
+  }
+  function chainageNear(ll) { // the chainage of the alignment's point nearest a place, and the distance (m)
+    const x = ll.lng * V.K, y = ll.lat * 110570;
+    let best = Infinity, bs = 0;
+    for (let i = 0; i < V.X.length - 1; i++) {
+      const ax = V.X[i], ay = V.Y[i], dx = V.X[i + 1] - ax, dy = V.Y[i + 1] - ay, l2 = dx * dx + dy * dy;
+      const t = l2 ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / l2)) : 0;
+      const ex = ax + dx * t - x, ey = ay + dy * t - y, e = ex * ex + ey * ey;
+      if (e < best) { best = e; bs = V.s[i] + (V.s[i + 1] - V.s[i]) * t; }
+    }
+    return [bs, Math.sqrt(best)];
+  }
+  const gradeAt = (s) => { const i = Math.max(0, Math.min(V.z.length - 2, Math.floor(s / 20))); return (V.z[i + 1] - V.z[i]) / Math.max(1, V.ps[i + 1] - V.ps[i]) * 1000; };
+  const curveAt = (s) => V.curves.find((c) => s >= c[0] && s <= c[1]);
+
+  function drawLine(W, colorAt, other) {
+    // the line, in runs of the same colour and structure. Tunnels dotted: 6/10 line and 4/10 gap, the period 3 line widths
+    const PER = 3 * LINE_W, dots = `${0.6 * PER} ${0.4 * PER}`;
+    let r = [], key = null;
+    const flush = () => {
+      if (r.length < 2) return;
+      const [c, st] = key.split("|");
+      if (c === "none") return;
+      L.polyline(r, { color: c, weight: other ? LINE_W - 1 : LINE_W, lineCap: st === "T" ? "butt" : "round", dashArray: st === "T" ? dots : null, interactive: false }).addTo(layer);
+    };
+    const keep = keepAt(W, zoomNow());
+    for (let i = 0; i < W.s.length; i++) {
+      if (!keep[i]) continue;
+      const k = `${colorAt(W.s[i])}|${at(W.struct, 20, W.s[i]) === "T" ? "T" : "-"}`, p = [W.lat[i], W.lon[i]];
+      if (key !== null && k !== key) { r.push(p); flush(); r = [p]; } else r.push(p);
+      key = k;
+    }
+    flush();
+    if (other) return;
+    // 緩和曲線の区間は、線の中央に白い細線を重ねて見分ける
+    withV(W, () => {
+      for (const [a, b, kind] of W.elements || []) {
+        if (kind !== "T") continue;
+        const pts = [pointAt(a)]; for (let i = idxOf(a) + 1; i <= idxOf(b); i++) pts.push([W.lat[i], W.lon[i]]); pts.push(pointAt(b));
+        L.polyline(pts, { color: "#fff", weight: 1.5, interactive: false }).addTo(layer);
+      }
+    });
+  }
+  function drawStations(W, others) {
+    for (const [n, s, stop] of W.stations) {
+      const p = withV(W, () => pointAt(s));
+      L.circleMarker(p, { radius: stop ? 6 : 4, color: others ? GRAY : "#222", weight: 2, fillColor: "#fff", fillOpacity: 1, interactive: false }).addTo(labels);
+      stItems.push({ p, n, stop, others, m: null });
+    }
+  }
+  function drawMap() {
+    layer.clearLayers(); labels.clearLayers(); origL.clearLayers(); vertL.clearLayers(); stItems = []; drawnZoom = zoomNow();
+    if (cmpOn) { drawCmpMap(); legend(); toggles(); drawGeo(); placeNames(); return; }
+    // the drawn lines: all sections, or those on the system's path
+    for (const S of D.secs.filter((S) => sel < 0 || SV.path.some(([si]) => si === S.idx))) {
+      const ol = S.orig.lat.map((la, i) => [la, S.orig.lon[i]]);
+      L.polyline(ol, { color: "#555", weight: 1.5, dashArray: "4 4", interactive: false }).addTo(origL);
+      for (const p of ol) L.circleMarker(p, { radius: 2.5, color: "#333", weight: 1, fillColor: "#fff", fillOpacity: 1, interactive: false }).addTo(vertL);
+    }
+    if (sel < 0) {
+      for (const S of D.secs) drawLine(S, () => ONE_COLOR, false);
+      for (const S of D.secs) drawStations(S, false);
+    } else {
+      // the other lines in grey (an option, 2026-11-04: the user's idea), then the system on top
+      if (opt.others) for (const S of D.secs) { drawLine(S, (s) => covered(S, s) ? "none" : GRAY, true); drawStations({ ...S, stations: S.stations.filter(([, s]) => !covered(S, s)) }, true); }
+      drawLine(SV, (s) => opt.color ? BANDS[bandOf(at(SV.lim, SV.dx, s))][1] : ONE_COLOR, false);
+      drawStations(SV, false);
+    }
+    legend(); toggles(); drawGeo(); placeNames();
+  }
+  // the comparison on the map: the drawn line once, the other variants thin in their colours, the one shown on top (a system: in the limit's colours)
+  function drawCmpMap() {
+    const g = CMP.groups[cmpG];
+    const src = g.kind === "system" ? D.secs.filter((S) => SV.path.some(([si]) => si === S.idx)) : [cmpViews[0]];
+    for (const S of src) {
+      const ol = S.orig.lat.map((la, i) => [la, S.orig.lon[i]]);
+      L.polyline(ol, { color: "#555", weight: 1.5, dashArray: "4 4", interactive: false }).addTo(origL);
+      for (const p of ol) L.circleMarker(p, { radius: 2.5, color: "#333", weight: 1, fillColor: "#fff", fillOpacity: 1, interactive: false }).addTo(vertL);
+    }
+    if (g.kind === "section") cmpViews.forEach((W, k) => { if (k !== cmpV) drawLine(W, () => CMP_COLORS[k % CMP_COLORS.length], true); });
+    drawLine(V, (s) => g.kind === "system" && opt.color ? BANDS[bandOf(at(V.lim, V.dx, s))][1] : CMP_COLORS[cmpV % CMP_COLORS.length], false);
+    drawStations(V, false);
+  }
+  function toggles() {
+    if (opt.orig) origL.addTo(map); else origL.remove();
+    if (opt.orig && opt.verts && map.getZoom() >= 13) vertL.addTo(map); else vertL.remove(); // the vertices from zoom 13 (2026-11-06)
+  }
+  // the legend on the map, at the lower left (2026-11-04, the user's request: out of the settings, to keep the panel short)
+  const legendCtl = L.control({ position: "bottomleft" });
+  legendCtl.onAdd = () => { const d = L.DomUtil.create("div", "legend"); L.DomEvent.disableClickPropagation(d); d.onclick = () => { opt.legendOff = !opt.legendOff; saveOpt(); legend(); }; return d; };
+  function legend() {
+    if (!legendCtl._map) legendCtl.addTo(map);
+    const sw = (st) => `<i style="${st}"></i>`;
+    const box = legendCtl.getContainer();
+    // the limits only, one row without a heading (2026-11-04, the user: tunnels and bridges, and the headings, are clear at a glance);
+    // no legend when the line is not coloured by the limit
+    const on = opt.color && (sel >= 0 || (cmpOn && CMP.groups[cmpG].kind === "system")); box.hidden = !on; if (!on) return;
+    if (opt.legendOff) { box.innerHTML = "<b>凡例 ▸</b>"; return; }
+    box.innerHTML = `<div>${BANDS.map(([, c, t]) => `<span>${sw("background:" + c)}${t.replace("〜", "–")}</span>`).join("")}<b class="fx">◂</b></div>`;
+  }
+  // geometry drawn in screen units (bridges' side lines, tunnel portals, the ends of curves, radii): redrawn when the map moves
+  const toPt = (i) => map.latLngToLayerPoint([V.lat[i], V.lon[i]]), toLL = (p) => map.layerPointToLatLng(p);
+  // the direction of the line on the screen, from points at least 6 px away on each side: the points are 10 m apart, so zoomed out they are
+  // less than a pixel apart, and their positions (rounded to pixels) would give a direction swinging point by point (2026-11-04, the user's report)
+  function dirAt(i) {
+    const n = V.s.length, p = toPt(i); let j0 = i, j1 = i;
+    do j0 = Math.max(0, j0 - 1); while (j0 > 0 && i - j0 < 400 && toPt(j0).distanceTo(p) < 6);
+    do j1 = Math.min(n - 1, j1 + 1); while (j1 < n - 1 && j1 - i < 400 && toPt(j1).distanceTo(p) < 6);
+    const a = toPt(j0), b = toPt(j1), dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy) || 1; return [dx / l, dy / l];
+  }
+  let INK = "#222";
+  const seg = (p, q) => L.polyline([toLL(p), toLL(q)], { color: INK, weight: 1, interactive: false });
+  function drawGeo() {
+    geoL.clearLayers(); rLabels.clearLayers();
+    if (!D || !V) return;
+    try { map.getCenter(); } catch (e) { return; } // the map has no view yet
+    // all sections; or, for a system, the other lines in grey (the parts on its path left out) and the system itself
+    const list = cmpOn ? [[V, false]] : sel < 0 ? D.secs.map((S) => [S, false]) : [...(opt.others ? D.secs.map((S) => [S, true]) : []), [SV, false]];
+    for (const [W, other] of list) { INK = other ? GRAY : "#222"; withV(W, () => geoOne(other)); }
+    INK = "#222";
+  }
+  // the cached runs on the screen, cut where they are covered by the system shown (the grey lines)
+  function splitSkip(runs, near, skip) {
+    const out = [];
+    for (const [a, b, bb] of runs) {
+      if (!near.intersects(bb)) continue;
+      let s0 = -1; for (let i = a; i <= b + 1; i++) { const ok = i <= b && !skip(V.s[i]); if (ok && s0 < 0) s0 = i; if (!ok && s0 >= 0) { out.push([s0, i - 1]); s0 = -1; } }
+    }
+    return out;
+  }
+  function geoOne(other) {
+    const skip = (s) => other && covered(V, s);
+    // bridges, tunnel portals and the ends of curves from zoom 13 only (2026-11-06, the user: zoomed out they crowd together and look messy;
+    // the tunnels still show as the dotted line)
+    if (map.getZoom() < 13) return;
+    const bb = map.getBounds(), near = bb.pad(0.5);
+    // bridges: two side lines, their ends left open
+    // thin and light, like the marks at the ends of curves (2026-11-04, the user's direction); the points kept at least 3 px apart
+    const off = LINE_W / 2 + 2.5;
+    for (const [a, b] of splitSkip(runsOf(V, "B"), near, skip)) {
+      const keep = [a]; let q = toPt(a);
+      for (let i = a + 1; i <= b; i++) { const p = toPt(i); if (i === b || p.distanceTo(q) >= 3) { keep.push(i); q = p; } }
+      const dirs = keep.map((i) => dirAt(i));
+      for (const sg of [-1, 1]) {
+        const pts = keep.map((i, k) => { const p = toPt(i), [dx, dy] = dirs[k]; return toLL(L.point(p.x - dy * off * sg, p.y + dx * off * sg)); });
+        L.polyline(pts, { color: INK === "#222" ? "#555" : INK, weight: 1, smoothFactor: 0, interactive: false }).addTo(geoL);
+      }
+    }
+    // tunnel portals: a small arc at each end, bulging into the tunnel (as on the GSI maps)
+    for (const [a, b] of splitSkip(runsOf(V, "T"), near, skip)) {
+      for (const [i, inward] of [[a, 1], [b, -1]]) {
+        const p = toPt(i), [dx, dy] = dirAt(i), ux = dx * inward, uy = dy * inward;
+        const c = L.point(p.x - ux * PORTAL_R * 0.5, p.y - uy * PORTAL_R * 0.5), ang = Math.atan2(uy, ux), pts = [];
+        for (let t = -65; t <= 65; t += 10) { const q = ang + t * Math.PI / 180; pts.push(toLL(L.point(c.x + Math.cos(q) * PORTAL_R, c.y + Math.sin(q) * PORTAL_R))); }
+        L.polyline(pts, { color: INK, weight: 1.5, interactive: false }).addTo(geoL);
+      }
+    }
+    // the start and the end of each curve (a run turning one way): a short mark across the line
+    const ends = V.elements ? V.elements.slice(1).map((e) => [e[0], e[0], 0]) : V.curves;
+    for (const [s0, s1, R] of ends) {
+      if (R >= 5000) continue;
+      for (const s of (s0 === s1 ? [s0] : [s0, s1])) {
+        const ll = pointAt(s); if (!near.contains(ll) || skip(s)) continue;
+        const p = map.latLngToLayerPoint(ll), [dx, dy] = dirAt(idxOf(s)), h = LINE_W / 2 + 2; // 2 px beyond the line on each side (2026-11-03, the user chose the thinner mark)
+        seg(L.point(p.x - dy * h, p.y + dx * h), L.point(p.x + dy * h, p.y - dx * h)).addTo(geoL);
+      }
+    }
+    // limit zones (the track's own limit, in 5 km/h steps): a sign at the start, a crossed one at the end, inside the curve
+    if (opt.zones && V.zone && !other) {
+      const zs = []; let a = null, v0 = null;
+      for (let i = 0; i <= V.zone.length; i++) {
+        const v = i < V.zone.length ? Math.floor(Math.min(V.zone[i], 130) / 5) * 5 : 130;
+        if (v !== v0) { if (a !== null && v0 < 130) zs.push([a * V.dx, i * V.dx, v0]); a = i; v0 = v; }
+      }
+      const sign = (s, v, end) => {
+        const ll = pointAt(s); if (!bb.contains(ll)) return;
+        const i = idxOf(s), p = map.latLngToLayerPoint(ll), [dx, dy] = dirAt(i), sg = V.k[i] > 0 ? -1 : 1, o = 16; // inside the curve
+        const q = L.point(p.x - dy * o * sg, p.y + dx * o * sg);
+        L.marker(toLL(q), { interactive: false, icon: L.divIcon({ className: "zs-label", iconSize: [0, 0], html: `<span class="${end ? "end" : ""}" style="transform:translate(-50%,-50%)">${end ? "" : v}</span>` }) }).addTo(rLabels);
+      };
+      // a crossed sign only where the limit ends (back to 130); where it changes to another value, the new value's sign alone (2026-11-04, the user's direction)
+      zs.forEach(([s0, s1, v], j) => { sign(s0, v, false); if (!(zs[j + 1] && zs[j + 1][0] === s1)) sign(s1, v, true); });
+    }
+    // radii, along the line on the outside of the curve: in the middle of the part in view
+    if (!opt.radius) return;
+    const vb = bb.pad(-0.03);
+    const arcs = V.elements ? V.elements.filter((e) => e[2] === "C").map(([a, b, , R]) => [a, b, R, V.k[idxOf((a + b) / 2)] > 0 ? "左" : "右"]) : V.curves;
+    for (const [s0, s1, R, dir] of arcs) {
+      if (R >= (V.elements ? 1e9 : 1600) || skip((s0 + s1) / 2)) continue;
+      const ia = idxOf(s0), ib = Math.min(V.s.length - 1, idxOf(s1) + 1), vis = [];
+      for (let i = ia; i <= ib; i++) if (vb.contains([V.lat[i], V.lon[i]])) vis.push(i);
+      if (!vis.length) continue;
+      const im = vis[Math.floor(vis.length / 2)], p = toPt(im), [dx, dy] = dirAt(im), sg = dir === "左" ? 1 : -1, o = 13;
+      let deg = Math.atan2(dy, dx) * 180 / Math.PI; if (deg > 90) deg -= 180; if (deg < -90) deg += 180;
+      const q = L.point(p.x - dy * o * sg, p.y + dx * o * sg);
+      L.marker(toLL(q), { interactive: false, icon: L.divIcon({ className: "cv-label", iconSize: [0, 0], html: `<span style="transform:translate(-50%,-50%) rotate(${deg.toFixed(1)}deg)${other ? ";color:" + GRAY : ""}">R ${R}</span>` }) }).addTo(rLabels);
+    }
+  }
+  let drawnZoom = null;
+  map.on("zoomend moveend", () => { if (D && V && zoomNow() !== drawnZoom) { drawMap(); return; } drawGeo(); placeNames(); toggles(); });
+
+  // the profile
+  const cv = $("cv"), ctx = cv.getContext("2d");
+  function drawProfile() {
+    if (!V) return;
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const L0 = 44, R0 = 8, pw = W - L0 - R0, span = win * 1000, s0 = cur - span / 2, s1 = cur + span / 2;
+    const X = (s) => L0 + (s - s0) / span * pw;
+    // rows: names, profile, plan (curvature), speed, chainage
+    // rows: names, profile, plan (curvature), speed, chainage. A short panel (phones) packs them closer
+    const sm = H < 300;
+    const rName = sm ? [0, 24] : [0, 30], rSpd = sm ? [H - 48, H - 20] : [H - 74, H - 22], rPlan = sm ? [H - 74, H - 52] : [H - 112, H - 80], rPro = sm ? [26, H - 78] : [32, H - 118];
+    ctx.font = `11px ${FONT}`; ctx.textBaseline = "middle";
+    // elevation range in view
+    let lo = Infinity, hi = -Infinity;
+    for (let i = Math.max(0, Math.floor(s0 / 20)); i < Math.min(V.z.length, Math.ceil(s1 / 20) + 1); i++) {
+      lo = Math.min(lo, V.z[i], V.ground[i] ?? Infinity); hi = Math.max(hi, V.z[i], V.ground[i] ?? -Infinity);
+    }
+    if (!isFinite(lo)) { lo = 0; hi = 100; }
+    const pad = Math.max(5, (hi - lo) * 0.12); lo -= pad; hi += pad;
+    const Y = (z) => rPro[1] - (z - lo) / (hi - lo) * (rPro[1] - rPro[0]);
+    // grid and elevation labels
+    ctx.strokeStyle = "#eef1f5"; ctx.fillStyle = "#5a6577"; ctx.textAlign = "right";
+    const nLab = Math.max(2, Math.floor((rPro[1] - rPro[0]) / 16)); // elevation labels at least 16 px apart
+    const step = [5, 10, 20, 50, 100, 200, 500].find((q) => (hi - lo) / q <= nLab) || 1000;
+    for (let z = Math.ceil(lo / step) * step; z <= hi; z += step) { ctx.beginPath(); ctx.moveTo(L0, Y(z)); ctx.lineTo(W - R0, Y(z)); ctx.stroke(); ctx.fillText(`${z} m`, L0 - 4, Y(z)); }
+    // ground
+    ctx.beginPath(); let started = false;
+    const i0 = Math.max(0, Math.floor(s0 / 20)), i1 = Math.min(V.z.length - 1, Math.ceil(s1 / 20));
+    for (let i = i0; i <= i1; i++) { const g = V.ground[i]; if (g == null) continue; const x = X(V.ps[i]), y = Y(g); if (!started) { ctx.moveTo(x, rPro[1]); ctx.lineTo(x, y); started = true; } else ctx.lineTo(x, y); }
+    ctx.lineTo(X(V.ps[i1]), rPro[1]); ctx.closePath(); ctx.fillStyle = "#e9dcc3"; ctx.fill();
+    ctx.beginPath(); started = false;
+    for (let i = i0; i <= i1; i++) { const g = V.ground[i]; if (g == null) continue; const x = X(V.ps[i]), y = Y(g); started ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), started = true); }
+    ctx.strokeStyle = "#a08455"; ctx.lineWidth = 1; ctx.stroke();
+    // structures: tunnels as a band, bridges as piers
+    for (let i = i0; i < i1; i++) {
+      const st = V.struct[i], x = X(V.ps[i]), x2 = X(V.ps[i + 1]);
+      if (st === "T") { ctx.fillStyle = "rgba(122,74,31,.18)"; ctx.fillRect(x, Y(V.z[i]) - 9, x2 - x + 0.5, 9); }
+      if (st === "B" && i % Math.max(1, Math.round(span / pw / 20 * 6)) === 0 && V.ground[i] != null) { ctx.strokeStyle = "#777"; ctx.beginPath(); ctx.moveTo(x, Y(V.z[i])); ctx.lineTo(x, Y(V.ground[i])); ctx.stroke(); }
+    }
+    // formation
+    ctx.beginPath();
+    for (let i = i0; i <= i1; i++) { const x = X(V.ps[i]), y = Y(V.z[i]); i === i0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.strokeStyle = "#1c2433"; ctx.lineWidth = 2; ctx.stroke(); ctx.lineWidth = 1;
+    // grades: segments of the same grade (per 100 m), labelled where there is room
+    ctx.textAlign = "center"; ctx.fillStyle = "#1c2433";
+    let gs = Math.max(0, Math.floor(s0 / 100) * 100), gPrev = null, gFrom = gs;
+    const flush = (to) => { if (gPrev == null) return; const xa = X(gFrom), xb = X(to); if (xb - xa > 46) { const zm = Y(at(V.z, 20, (gFrom + to) / 2)); ctx.fillText(`${gPrev > 0 ? "+" : ""}${gPrev.toFixed(1)}‰`, (xa + xb) / 2, Math.max(rPro[0] + 8, zm - 14)); } ctx.strokeStyle = "#9aa4b5"; ctx.beginPath(); ctx.moveTo(xb, Y(at(V.z, 20, to)) - 4); ctx.lineTo(xb, Y(at(V.z, 20, to)) + 4); ctx.stroke(); };
+    for (let s = gs; s < Math.min(s1, V.ps[V.ps.length - 1]); s += 100) {
+      const g = Math.round(((at(V.z, 20, s + 100) - at(V.z, 20, s)) / 100) * 10000) / 10;
+      if (gPrev == null || Math.abs(g - gPrev) > 0.3) { flush(s); gPrev = g; gFrom = s; }
+    }
+    flush(Math.min(s1, V.ps[V.ps.length - 1]));
+    // stations
+    ctx.textAlign = "center";
+    let lastX = -1e9;
+    for (const [n, s, stop] of V.stations) {
+      if (s < s0 || s > s1) continue;
+      const x = X(s); ctx.strokeStyle = stop ? "#1c2433" : "#9aa4b5"; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(x, rName[1]); ctx.lineTo(x, rPro[1]); ctx.stroke(); ctx.setLineDash([]);
+      if (x - lastX > 40) { ctx.font = stop ? `bold 12px ${FONT}` : `11px ${FONT}`; ctx.fillStyle = "#1c2433"; ctx.fillText(n, x, sm ? 12 : 14); if (!sm) { ctx.fillStyle = "#5a6577"; ctx.font = "10px sans-serif"; ctx.fillText((s / 1000).toFixed(1), x, 26); } lastX = x; }
+    }
+    ctx.font = `11px ${FONT}`;
+    // plan: curvature (up = left, down = right), with radii
+    const pm = (rPlan[0] + rPlan[1]) / 2, ph = (rPlan[1] - rPlan[0]) / 2, KM = 1 / 160;
+    ctx.strokeStyle = "#cfd5df"; ctx.beginPath(); ctx.moveTo(L0, pm); ctx.lineTo(W - R0, pm); ctx.stroke();
+    ctx.fillStyle = "#5a6577"; ctx.textAlign = "right"; ctx.fillText("平面", L0 - 4, pm);
+    ctx.beginPath(); const j0 = idxOf(Math.max(0, s0)), j1 = Math.min(V.s.length - 1, idxOf(s1) + 1);
+    for (let j = j0; j <= j1; j++) { const x = X(V.s[j]), y = pm - Math.max(-1, Math.min(1, V.k[j] / KM)) * ph; j === j0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.strokeStyle = "#1f5fa8"; ctx.stroke();
+    ctx.textAlign = "center"; ctx.fillStyle = "#1f5fa8";
+    for (const [a, b, R, dir] of V.curves) { if (b < s0 || a > s1 || R >= 1600) continue; const xa = X(a), xb = X(b); if (xb - xa > 30) ctx.fillText(`R${R}`, (xa + xb) / 2, dir === "左" ? rPlan[1] - 2 : rPlan[0] + 4); }
+    // speed: the limit (bands) and the express
+    if (!V.lim) { readout(); drawCur(); return; } // a section in 「すべての線形」: no running
+    const sy = (v) => rSpd[1] - v / 140 * (rSpd[1] - rSpd[0]);
+    ctx.fillStyle = "#5a6577"; ctx.textAlign = "right"; ctx.fillText("速度", L0 - 4, (rSpd[0] + rSpd[1]) / 2);
+    for (const v of [0, 70, 130]) { ctx.strokeStyle = "#eef1f5"; ctx.beginPath(); ctx.moveTo(L0, sy(v)); ctx.lineTo(W - R0, sy(v)); ctx.stroke(); }
+    const k0 = Math.max(0, Math.floor(s0 / V.dx)), k1 = Math.min(V.lim.length - 1, Math.ceil(s1 / V.dx));
+    const stp = Math.max(1, Math.floor((k1 - k0) / pw / 2));
+    for (let k = k0; k < k1; k += stp) { ctx.fillStyle = BANDS[bandOf(V.lim[k])][1]; ctx.globalAlpha = 0.25; ctx.fillRect(X(k * V.dx), sy(V.lim[k]), X((k + stp) * V.dx) - X(k * V.dx) + 0.5, rSpd[1] - sy(V.lim[k])); }
+    ctx.globalAlpha = 1; ctx.beginPath();
+    for (let k = k0; k <= k1; k += stp) { const x = X(k * V.dx), y = sy(V.v[k]); k === k0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.strokeStyle = "#1c2433"; ctx.lineWidth = 1.5; ctx.stroke(); ctx.lineWidth = 1;
+    drawCur();
+    readout();
+  }
+  function drawCur() {
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    const L0 = 44, R0 = 8, pw = W - L0 - R0, span = win * 1000, s0 = cur - span / 2, s1 = cur + span / 2, sm = H < 300, rName = sm ? [0, 24] : [0, 30];
+    const X = (s) => L0 + (s - s0) / span * pw;
+    // chainage axis
+    const kstep = [0.2, 0.5, 1, 2, 5, 10].find((q) => win / q <= 10);
+    ctx.fillStyle = "#5a6577"; ctx.textAlign = "center";
+    for (let km = Math.ceil(s0 / 1000 / kstep) * kstep; km * 1000 <= s1; km += kstep) { const x = X(km * 1000); ctx.strokeStyle = "#cfd5df"; ctx.beginPath(); ctx.moveTo(x, H - 20); ctx.lineTo(x, H - 15); ctx.stroke(); ctx.fillText(km.toFixed(kstep < 1 ? 1 : 0), x, H - 8); }
+    ctx.save(); ctx.textAlign = "left"; ctx.fillText("km", 4, H - 8); ctx.restore(); // the unit once, at the left (the labels overlapped with a unit on each)
+    // the current chainage
+    ctx.strokeStyle = "#d62728"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(cur), rName[1]); ctx.lineTo(X(cur), H - 18); ctx.stroke(); ctx.lineWidth = 1;
+  }
+  function readout() {
+    const el = V.elements && V.elements.find((e) => cur >= e[0] && cur <= e[1]);
+    const g = gradeAt(cur), c = curveAt(cur), st = at(V.struct, 20, cur), lim = V.lim ? at(V.lim, V.dx, cur) : null, v = V.v ? at(V.v, V.dx, cur) : null;
+    const gr = at(V.ground, 20, cur), z = at(V.z, 20, cur);
+    const set = (id, t) => { $(id).textContent = t; };
+    set("r_s", (cur / 1000).toFixed(2)); set("r_z", z.toFixed(1));
+    const hh = gr == null ? null : z - gr; set("r_h", hh == null ? "—" : (hh > 0.05 ? "+" : hh < -0.05 ? "−" : "") + Math.abs(hh).toFixed(1)); // above the ground (+), below (−)
+    set("r_i", (g > 0 ? "+" : g < 0 ? "−" : "") + Math.abs(g).toFixed(1));
+    set("r_p", el ? (el[2] === "C" ? `R${el[3]} ${V.k[idxOf(cur)] > 0 ? "左" : "右"}` : el[2] === "T" ? `緩和 ${el[1] - el[0]}` : "直線") : c && c[2] < 5000 ? `R${c[2]} ${c[3]}` : "直線");
+    set("r_t", st === "T" ? "トンネル" : st === "B" ? "橋梁" : "土工"); set("r_l", lim ?? "—");
+    if (V.t) { // the train: its speed, and the running time from the first station (stops excluded), interpolated between the 100 m points
+      const k = Math.max(0, Math.min(V.t.length - 1.001, cur / V.tdx)), k0 = Math.floor(k), te = V.t[k0] + (V.t[Math.min(V.t.length - 1, k0 + 1)] - V.t[k0]) * (k - k0);
+      set("r_e", (te / 60).toFixed(1)); set("r_v", v ?? "—");
+    }
+  }
+  let raf = 0;
+  const redraw = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; drawProfile(); }); };
+  // 「すべての線形」では、地図の中心に最も近い区間を縦断面図に出す
+  function nearest(ll) {
+    if (sel >= 0 || cmpOn) return [V, ...chainageNear(ll)];
+    let best = null;
+    for (const S of D.secs) { const [s, d] = withV(S, () => chainageNear(ll)); if (!best || d < best[2]) best = [S, s, d]; }
+    return best;
+  }
+  map.on("move", () => {
+    if (!V || fromProfile) return;
+    const [W, s, d] = nearest(map.getCenter());
+    if (d < 3000) { V = W; cur = s; $("sum").innerHTML = summary(); redraw(); }
+  });
+  map.on("moveend", () => { fromProfile = false; });
+  function setCur(s) {
+    cur = Math.max(0, Math.min(V.s[V.s.length - 1], s));
+    fromProfile = true; map.setView(pointAt(cur), map.getZoom(), { animate: false }); fromProfile = false;
+    redraw();
+  }
+  // dragging and scrolling the profile
+  const prof = $("prof"); let drag = null;
+  prof.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, s: cur, moved: false }; prof.setPointerCapture(e.pointerId); prof.style.cursor = "grabbing"; });
+  prof.addEventListener("pointermove", (e) => {
+    if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 3) drag.moved = true;
+    setCur(drag.s - dx / (cv.clientWidth - 52) * win * 1000);
+  });
+  const end = (e) => {
+    if (drag && !drag.moved) { const r = cv.getBoundingClientRect(); setCur(cur + ((e.clientX - r.left - 44) / (r.width - 52) - 0.5) * win * 1000); }
+    drag = null; prof.style.cursor = "";
+  };
+  prof.addEventListener("pointerup", end); prof.addEventListener("pointercancel", () => { drag = null; });
+  prof.addEventListener("wheel", (e) => { e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; setCur(cur + d / (cv.clientWidth - 52) * win * 1000); }, { passive: false });
+  // the map measures itself again when its own size changes (2026-11-04: since the profile has a fixed height, opening the settings changes
+  // the map only, and watching the profile alone left the map's centre away from the cross: the user's report). Then the current point
+  // goes back under the cross
+  const ro = new ResizeObserver(() => { map.invalidateSize({ pan: false }); if (V && D) { fromProfile = true; map.setView(pointAt(cur), map.getZoom(), { animate: false }); fromProfile = false; } redraw(); });
+  ro.observe(prof); ro.observe($("map"));
+
+  function segment(el, items, get, set) {
+    el.innerHTML = "";
+    for (const [v, label] of items) {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.setAttribute("aria-pressed", String(get() === v));
+      b.onclick = () => { set(v); for (const x of el.children) x.setAttribute("aria-pressed", String(x === b)); };
+      el.appendChild(b);
+    }
+  }
+  // label and value pairs (2026-11-04, the user's request: not one sentence cut by dots)
+  function summary() {
+    const it = (k, v) => `<span><b>${k}</b>${v}</span>`;
+    if (sel >= 0 || cmpOn) return ""; // a system: the running time and the car are in the train table
+    const km = D.secs.reduce((a, S) => a + S.ps[S.ps.length - 1], 0) / 1000;
+    return it("区間", `${D.secs.length}（計 ${km.toFixed(1)} km）`) + it("縦断面図", V.name);
+  }
+  function useSel(i) {
+    const keep = V ? map.getCenter() : null;
+    sel = i; opt.sel = i; if (i >= 0) opt.sys = i; saveOpt();
+    $("sysSel").value = String(i >= 0 ? i : (opt.sys ?? 0)); $("sysSel").disabled = i < 0;
+    SV = i >= 0 ? viewOf(i) : null; V = SV || V || D.secs[0];
+    drawMap();
+    // the map center 3 km or more off the chosen system (a short system far away, 2026-11-06): show the whole system, the position at its middle
+    if (keep) { const [W, s, d] = nearest(keep); V = W; if (d < 3000) cur = s; else if (SV) { V = SV; cur = SV.s[SV.s.length - 1] / 2; fromProfile = true; map.fitBounds(L.latLngBounds(SV.lat.map((la, k) => [la, SV.lon[k]])), { animate: false }); fromProfile = false; } }
+    $("sum").innerHTML = summary(); $("sum").hidden = sel >= 0;
+    showTrain();
+    redraw();
+  }
+  function showTrain() {
+    const T = SV && SV.train; $("train").hidden = !T;
+    if (T) { const set = (id, t) => { $(id).textContent = t; }; set("r_rt", SV.run_min); set("r_ty", T.type); set("r_tl", T.tilt ? "あり" : "なし"); set("r_n", T.cars); set("r_len", T.length); set("r_vm", T.vmax); }
+  }
+  // the comparison of the variants (2026-11-05)
+  function cmpPrep() {
+    const g = CMP.groups[cmpG];
+    cmpViews = g.variants.map((v) => {
+      if (g.kind === "system") return buildView(opt.flat && v.system.alt ? { ...v.system, ...v.system.alt } : v.system, D.secs);
+      const P = prepSec(v.section, -1); P.z = opt.flat ? P.zAlt : P.zBase; P.struct = opt.flat ? P.structAlt : P.structBase; P.name = v.name;
+      return P;
+    });
+  }
+  function cmpTable() {
+    const g = CMP.groups[cmpG], f1 = (x) => (x == null ? "—" : Number(x).toFixed(1)), chip = (k) => `<i class="c" style="background:${CMP_COLORS[k % CMP_COLORS.length]}"></i>`;
+    let h;
+    if (g.kind === "section") {
+      h = "<thead><tr><th>案</th><th>勾配の上限</th><th>線形</th><th>長さ<br>km</th><th>トンネル km<br>指定なし／地平化</th><th>橋梁 km<br>指定なし／地平化</th>" +
+        "<th>地平駅の範囲外<br>（駅地平化、m）</th><th>半径 300 m<br>未満の曲線</th><th>当てはめの<br>ずれ 最大 m</th><th>備考</th></tr></thead><tbody>" +
+        g.variants.map((v, k) => {
+          const m = v.metrics, out = m.out_gs.length ? m.out_gs.map(([n, hh]) => `${n} ${hh > 0 ? "+" : "−"}${Math.abs(hh).toFixed(1)}`).join("、") : "なし";
+          return `<tr data-k="${k}"${k === cmpV ? ' class="on"' : ""}><td class="l">${chip(k)}${v.name}</td><td class="l">${v.grade}</td><td class="l">${v.plan}</td>` +
+            `<td>${m.length_km.toFixed(2)}</td><td>${f1(m.tunnel_free)}／${f1(m.tunnel_gs)}</td><td>${f1(m.bridge_free)}／${f1(m.bridge_gs)}</td>` +
+            `<td class="l${m.out_gs.length ? " bad" : ""}">${out}</td><td>${m.curves_lt300}</td><td>${f1(m.dev_max)}</td><td class="l">${v.note}</td></tr>`;
+        }).join("") + "</tbody>";
+    } else {
+      h = "<thead><tr><th>案</th><th>車両の性能</th><th>走行時間 分<br>指定なし／地平化</th><th>20‰ 以上の上り<br>長さ km（地平化）</th><th>そこでの速度 km/h<br>最低・平均</th></tr></thead><tbody>" +
+        g.variants.map((v, k) => {
+          const m = v.metrics;
+          return `<tr data-k="${k}"${k === cmpV ? ' class="on"' : ""}><td class="l">${chip(k)}${v.name}</td><td class="l">${v.note}</td><td>${f1(m.run_min)}／${f1(m.run_min_gs)}</td>` +
+            `<td>${f1(m.steep_km)}</td><td>${m.steep_vmin ?? "—"}・${m.steep_vmean_up ?? "—"}</td></tr>`;
+        }).join("") + "</tbody>";
+    }
+    $("cmp").innerHTML = h;
+  }
+  function useCmp(gi, vi) {
+    const keep = V ? map.getCenter() : null;
+    const g = CMP.groups[gi];
+    cmpOn = true; cmpG = gi; cmpPrep();
+    cmpV = vi ?? Math.max(0, g.variants.findIndex((v) => v.adopted));
+    Object.assign(opt, { cmp: true, cmpG: gi, cmpV }); saveOpt();
+    sel = -2; V = cmpViews[cmpV]; SV = g.kind === "system" ? V : null;
+    $("sysSel").hidden = true; $("cmpSel").hidden = false; $("cmpSel").value = String(gi); $("cmpFold").hidden = false; cmpFoldSet(); $("sum").hidden = true;
+    drawMap(); cmpTable();
+    // the map stays where it is if the variant passes near its centre; otherwise it shows the whole variant (from 紗那, say, to 背蘂線)
+    const [s0, d0] = keep ? chainageNear(keep) : [0, Infinity];
+    if (d0 < 3000) cur = s0;
+    else { cur = V.s[V.s.length - 1] / 2; fromProfile = true; map.fitBounds(L.latLngBounds(V.lat.map((la, i) => [la, V.lon[i]])), { animate: false }); fromProfile = false; }
+    showTrain();
+    redraw();
+  }
+  async function enterCmp() {
+    if (!CMP) {
+      $("msg").hidden = false; $("msg").textContent = "案を読み込んでいます…";
+      try { CMP = await loadVariants(); } catch (e) { $("msg").textContent = "案のデータを読み込めませんでした（" + e.message + "）"; return false; }
+      $("msg").hidden = true;
+      $("cmpSel").innerHTML = CMP.groups.map((g, i) => `<option value="${i}">${g.name}</option>`).join("");
+    }
+    const gi = Number.isInteger(opt.cmpG) && opt.cmpG < CMP.groups.length ? opt.cmpG : 0;
+    const vi = Number.isInteger(opt.cmpV) && opt.cmpV < CMP.groups[gi].variants.length ? opt.cmpV : null;
+    useCmp(gi, vi);
+    return true;
+  }
+  function leaveCmp() {
+    cmpOn = false; opt.cmp = false; saveOpt();
+    $("sysSel").hidden = false; $("cmpSel").hidden = true; $("cmpBox").hidden = true; $("cmpFold").hidden = true;
+  }
+  // the table open or folded (kept on this device)
+  function cmpFoldSet() { const open = !opt.cmpFolded; $("cmpBox").hidden = !open; $("cmpFold").setAttribute("aria-expanded", String(open)); }
+
+  load().then((d) => {
+    D = prepare(d);
+    // the display: all the alignments, or one system chosen from a menu (2026-11-04, the user's two modes; the menu because the systems keep growing)
+    const lastSys = () => (Number.isInteger(opt.sys) && opt.sys >= 0 && opt.sys < D.systems.length ? opt.sys : 0);
+    $("sysSel").innerHTML = D.systems.map((y, i) => `<option value="${i}">${y.name}</option>`).join("");
+    $("sysSel").onchange = (e) => { opt.sys = Number(e.target.value); useSel(opt.sys); segment($("varSeg"), MODES, modeNow, mode); };
+    // the third mode (2026-11-05): the comparison of the variants
+    const MODES = [[0, "すべての線形"], [1, "系統"], [2, "案の比較"]];
+    const modeNow = () => (cmpOn ? 2 : sel >= 0 ? 1 : 0);
+    const mode = async (m) => {
+      if (m === 2) { if (!(await enterCmp())) segment($("varSeg"), MODES, modeNow, mode); return; }
+      if (cmpOn) leaveCmp();
+      useSel(m ? lastSys() : -1);
+    };
+    $("cmpSel").onchange = (e) => useCmp(Number(e.target.value), null);
+    $("cmpFold").onclick = () => { opt.cmpFolded = !opt.cmpFolded; saveOpt(); cmpFoldSet(); };
+    $("cmp").onclick = (e) => { const tr = e.target.closest("tr[data-k]"); if (tr) useCmp(cmpG, Number(tr.dataset.k)); };
+    segment($("varSeg"), MODES, modeNow, mode);
+    segment($("winSeg"), WINS.map((w) => [w, `${w} km`]), () => win, (w) => { win = w; redraw(); });
+    const OPTS = [["orig", "元の折れ線"], ["verts", "折れ線の頂点"], ["radius", "曲線半径"], ["zones", "制限速度区間"], ["color", "制限速度の色分け"], ["others", "他の区間"]];
+    $("opts").innerHTML = OPTS.map(([k, t]) => `<label><input type="checkbox" id="o_${k}" autocomplete="off"${opt[k] ? " checked" : ""}> ${t}</label>`).join("");
+    for (const [k] of OPTS) $("o_" + k).onchange = (e) => { opt[k] = e.target.checked; saveOpt(); if (k === "color" || k === "others") drawMap(); else { toggles(); drawGeo(); } };
+    // ［駅地平化］: it replaces the profiles of all the sections, so it sits apart from the display options, next to the window buttons
+    $("o_flat").checked = !!opt.flat;
+    $("o_flat").onchange = (e) => { opt.flat = e.target.checked; saveOpt(); applyFlat(); if (cmpOn) useCmp(cmpG, cmpV); else useSel(sel); };
+    // one fold (2026-11-04, the user's choice, after two nested folds): closed, every setting is hidden (the window buttons, ［駅地平化］,
+    // the display and system menu, the display options), leaving the two tables and the profile under the map
+    const fold = (open) => { opt.fold = !open; $("setting").hidden = !open; $("fold").setAttribute("aria-expanded", String(open)); };
+    $("fold").onclick = () => { fold(!!opt.fold); saveOpt(); };
+    fold(!opt.fold);
+    $("msg").hidden = true; $("read").hidden = false;
+    applyFlat();
+    const T = D.secs[0];
+    map.fitBounds(L.latLngBounds(T.lat.map((la, i) => [la, T.lon[i]])));
+    const s0 = Number.isInteger(opt.sel) && opt.sel < D.systems.length ? opt.sel : 0; // the last display (kept on this device)
+    useSel(s0); segment($("varSeg"), MODES, modeNow, mode);
+    if (opt.cmp) enterCmp().then(() => segment($("varSeg"), MODES, modeNow, mode)); // the comparison, if it was open last time
+    setTimeout(() => { map.setView(withV(T, () => pointAt(81800)), 14); }, 0); // start at 紗那
+  }).catch((e) => { $("msg").textContent = "データを読み込めませんでした（" + e.message + "）"; });
+})();
+</script>
+</body>
+</html>

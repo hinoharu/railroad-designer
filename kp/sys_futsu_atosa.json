@@ -1,0 +1,1 @@
+{"name": "普通内保阿登佐岳", "note": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「阿登佐線 普通」は 731系だが、線は非電化で車両指定の誤り（ユーザー、11-05）。隣の老門線の普通と同じキハ40形として扱う", "pieces": [["atosa_w", "end", "start"], ["ipg", "J:atosa_w:start", "J:atosa_e1:start"], ["atosa_e1", "start", "end"], ["atosa_e2", "start", "end"]], "stops": ["内保", "択捉神居古潭", "散布泊", "阿登佐岳"]}

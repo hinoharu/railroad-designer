@@ -1012,7 +1012,16 @@
       "安渡移矢岬",
       "安渡移矢"
      ]
-    ]
+    ],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1051,7 +1060,12 @@
     ],
     "file": "route_kita_w.json",
     "turnback": false,
-    "turnback_end": true
+    "turnback_end": true,
+    "hybrid": {
+     "auto": true,
+     "PREFIX": "kita_w_",
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+    }
    },
    "fit": {
     "trunk": "minami",
@@ -1079,7 +1093,16 @@
       "植尻",
       "仁岸寄"
      ]
-    ]
+    ],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1130,7 +1153,16 @@
       "仁岸寄",
       "古釜布"
      ]
-    ]
+    ],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1172,7 +1204,12 @@
      "白糠泊"
     ],
     "file": "route_kita_e.json",
-    "turnback": false
+    "turnback": false,
+    "hybrid": {
+     "auto": true,
+     "PREFIX": "kita_e_",
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+    }
    },
    "fit": {
     "trunk": "kita_w",
@@ -1205,7 +1242,16 @@
       "知東"
      ]
     ],
-    "start_z_from": "kita_w"
+    "start_z_from": "kita_w",
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1236,7 +1282,12 @@
      "遠音別"
     ],
     "file": "route_chacha.json",
-    "turnback": false
+    "turnback": false,
+    "hybrid": {
+     "auto": true,
+     "PREFIX": "chacha_",
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+    }
    },
    "fit": {
     "trunk": "minami",
@@ -1254,7 +1305,16 @@
    "profile": {
     "GCAP": 0.0333,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1286,7 +1346,12 @@
      "国後蘂取"
     ],
     "file": "route_onne.json",
-    "turnback": false
+    "turnback": false,
+    "hybrid": {
+     "auto": true,
+     "PREFIX": "onne_",
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+    }
    },
    "fit": {
     "trunk": "kita_e",
@@ -1304,7 +1369,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1351,7 +1425,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1383,7 +1466,12 @@
      "岸内"
     ],
     "file": "route_seoi.json",
-    "turnback": false
+    "turnback": false,
+    "hybrid": {
+     "auto": true,
+     "PREFIX": "seoi_",
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+    }
    },
    "fit": {
     "trunk": "onne",
@@ -1401,7 +1489,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1443,7 +1540,16 @@
    "profile": {
     "GCAP": 0.0333,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1487,7 +1593,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1530,7 +1645,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1572,7 +1696,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",
@@ -1600,7 +1733,12 @@
      "歌分"
     ],
     "file": "route_fueshima.json",
-    "turnback": false
+    "turnback": false,
+    "hybrid": {
+     "auto": true,
+     "PREFIX": "fueshima_",
+     "note": "2026-11-07：今の規則のままの縦断でトンネル駅・高架駅・60 m 超の橋梁が出たので、自動の探索（docs/kunashiri.md）"
+    }
    },
    "fit": {
     "trunk": "minami",
@@ -1617,7 +1755,16 @@
    "profile": {
     "GCAP": 0.025,
     "costs": "single",
-    "double": []
+    "double": [],
+    "rules": {
+     "BRIDGE_H1": 60,
+     "BRIDGE_H2": 100,
+     "BRIDGE_SPAN": 300,
+     "W_BH2": 100,
+     "DEPTH_MAX": 40,
+     "EXIT_R": 200
+    },
+    "only_gs": true
    },
    "src": "2026-11-07 国後島（docs/kunashiri.md）",
    "island": "国後",

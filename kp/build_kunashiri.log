@@ -14,3 +14,108 @@
 == 区間 kofu（国後北線 古釜布支線（仁岸寄〜古釜布））ハッシュ 4845108d3b4e
   $ rm -f branch_kofu_cands.json
   $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kofu route_kofu.json fit_kita_w.json start end=fit_minami.json > ipb_kofu.log 2>&1
+  $ ROUTE='route_kofu.json' python3 fit2route.py kofu > geo_kofu.log 2>&1
+  $ python3 ground.py route_fkofu.json ground_fkofu.json > ground_kofu.log 2>&1
+  高さの指定表 _free： {'start_z': 26.4, 'end_z': 4.0} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 21.5, 'end_z': 9.8} 0 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_fkofu.json costs_single.json design_fkofu_free.json height_spec_kofu_free.json > d_kofu_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_fkofu.json costs_single.json design_fkofu.json height_spec_kofu.json > d_kofu.log 2>&1
+== 区間 kita_e（国後北線 東側（仁岸寄〜奔別〜国後蘂取〜遠音別〜白糠泊））ハッシュ c93631f2c05b
+  $ rm -f branch_kita_e_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kita_e route_kita_e.json fit_kita_w.json end=fit_minami.json > ipb_kita_e.log 2>&1
+  $ ROUTE='route_kita_e.json' python3 fit2route.py kita_e > geo_kita_e.log 2>&1
+  $ python3 ground.py route_fkita_e.json ground_fkita_e.json > ground_kita_e.log 2>&1
+  高さの指定表 _free： {'end_z': 9.2, 'start_z': 26.4} 0 駅を指定
+  高さの指定表 _gs： {'end_z': 9.2, 'start_z': 21.5} 18 駅を指定
+  $ GCAP='0.0333' KYAKU25_ADD='[["仁岸寄", "知東"]]' python3 design3.py ground_fkita_e.json costs_single.json design_fkita_e_free.json height_spec_kita_e_free.json > d_kita_e_free.log 2>&1
+  $ GCAP='0.0333' KYAKU25_ADD='[["仁岸寄", "知東"]]' python3 design3.py ground_fkita_e.json costs_single.json design_fkita_e.json height_spec_kita_e.json > d_kita_e.log 2>&1
+  駅の高さ 南利寄: 地盤から -18.4 m（地平駅：範囲外）
+== 区間 kuko_k（国後空港線（狩士別〜国後空港））ハッシュ fe86d477da7c
+  $ rm -f branch_kuko_k_cands.json
+  $ VMAX='130' TILT='0' TRAIN='130' python3 ipfit_branch.py kuko_k route_kuko_k.json fit_minami.json start > ipb_kuko_k.log 2>&1
+  $ ROUTE='route_kuko_k.json' python3 fit2route.py kuko_k > geo_kuko_k.log 2>&1
+  $ python3 ground.py route_fkuko_k.json ground_fkuko_k.json > ground_kuko_k.log 2>&1
+  高さの指定表 _free： {'start_z': 95.7} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 106.1} 2 駅を指定
+  $ GCAP='0.0333' python3 design3.py ground_fkuko_k.json costs_single.json design_fkuko_k_free.json height_spec_kuko_k_free.json > d_kuko_k_free.log 2>&1
+  $ GCAP='0.0333' python3 design3.py ground_fkuko_k.json costs_single.json design_fkuko_k.json height_spec_kuko_k.json > d_kuko_k.log 2>&1
+== 区間 tofutsu（東沸湖線（尾路久根〜東沸湖））ハッシュ 4bcb18bde896
+  $ rm -f branch_tofutsu_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py tofutsu route_tofutsu.json fit_minami.json start > ipb_tofutsu.log 2>&1
+  $ ROUTE='route_tofutsu.json' python3 fit2route.py tofutsu > geo_tofutsu.log 2>&1
+  $ python3 ground.py route_ftofutsu.json ground_ftofutsu.json > ground_tofutsu.log 2>&1
+  高さの指定表 _free： {'start_z': 76.6} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 79.4} 4 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_ftofutsu.json costs_single.json design_ftofutsu_free.json height_spec_tofutsu_free.json > d_tofutsu_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_ftofutsu.json costs_single.json design_ftofutsu.json height_spec_tofutsu.json > d_tofutsu.log 2>&1
+== 区間 heuke（平浮線（留夜別〜平浮泊））ハッシュ 0b6d2a7102ec
+  $ rm -f branch_heuke_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py heuke route_heuke.json fit_minami.json start > ipb_heuke.log 2>&1
+  $ ROUTE='route_heuke.json' python3 fit2route.py heuke > geo_heuke.log 2>&1
+  $ python3 ground.py route_fheuke.json ground_fheuke.json > ground_heuke.log 2>&1
+  高さの指定表 _free： {'start_z': 8.1} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.1} 3 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_fheuke.json costs_single.json design_fheuke_free.json height_spec_heuke_free.json > d_heuke_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_fheuke.json costs_single.json design_fheuke.json height_spec_heuke.json > d_heuke.log 2>&1
+== 区間 keromoi（計呂萌線（国後泊〜計呂萌））ハッシュ 243c20b5dd37
+  $ rm -f branch_keromoi_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py keromoi route_keromoi.json fit_minami.json start > ipb_keromoi.log 2>&1
+  $ ROUTE='route_keromoi.json' python3 fit2route.py keromoi > geo_keromoi.log 2>&1
+  $ python3 ground.py route_fkeromoi.json ground_fkeromoi.json > ground_keromoi.log 2>&1
+  高さの指定表 _free： {'start_z': 7.4} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.4} 2 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_fkeromoi.json costs_single.json design_fkeromoi_free.json height_spec_keromoi_free.json > d_keromoi_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_fkeromoi.json costs_single.json design_fkeromoi.json height_spec_keromoi.json > d_keromoi.log 2>&1
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 810147a1da68
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima_free.json height_spec_fueshima_free.json > d_fueshima_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 新白糠信号場: 地盤から -30.3 m（地平駅：範囲外）
+  駅の高さ 南白糠: 地盤から -14.1 m（地平駅：範囲外）
+  駅の高さ 笛島: 地盤から -23.5 m（地平駅：範囲外）
+== 区間 chacha（爺爺線（岡布〜遠音別））ハッシュ bc20444c3200
+  $ rm -f branch_chacha_cands.json
+  $ VMAX='130' TILT='0' TRAIN='130' python3 ipfit_branch.py chacha route_chacha.json fit_minami.json start end=fit_kita_e.json > ipb_chacha.log 2>&1
+  $ ROUTE='route_chacha.json' python3 fit2route.py chacha > geo_chacha.log 2>&1
+  $ python3 ground.py route_fchacha.json ground_fchacha.json > ground_chacha.log 2>&1
+  高さの指定表 _free： {'start_z': 133.9, 'end_z': 51.7} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 133.9, 'end_z': 8.7} 3 駅を指定
+  $ GCAP='0.0333' python3 design3.py ground_fchacha.json costs_single.json design_fchacha_free.json height_spec_chacha_free.json > d_chacha_free.log 2>&1
+  $ GCAP='0.0333' python3 design3.py ground_fchacha.json costs_single.json design_fchacha.json height_spec_chacha.json > d_chacha.log 2>&1
+  駅の高さ 東爺爺: 地盤から -30.1 m（地平駅：範囲外）
+== 区間 onne（遠音別線（遠音別〜上遠根別〜国後蘂取））ハッシュ 62aea1b794eb
+  $ rm -f branch_onne_cands.json
+  $ VMAX='95' TILT='0' TRAIN='125' python3 ipfit_branch.py onne route_onne.json fit_kita_e.json start end > ipb_onne.log 2>&1
+  $ ROUTE='route_onne.json' python3 fit2route.py onne > geo_onne.log 2>&1
+  $ python3 ground.py route_fonne.json ground_fonne.json > ground_onne.log 2>&1
+  高さの指定表 _free： {'start_z': 51.7, 'end_z': 67.7} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.7, 'end_z': 4.5} 4 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_fonne.json costs_single.json design_fonne_free.json height_spec_onne_free.json > d_onne_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_fonne.json costs_single.json design_fonne.json height_spec_onne.json > d_onne.log 2>&1
+  駅の高さ 底吼: 地盤から -58.7 m（地平駅：範囲外）
+  駅の高さ 円山: 地盤から -18.6 m（地平駅：範囲外）
+  駅の高さ 上遠根別: 地盤から -44.4 m（地平駅：範囲外）
+== 区間 kishi（岸内線（岸内〜南利寄））ハッシュ 96a99dd7dbad
+  $ rm -f branch_kishi_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py kishi route_kishi.json fit_minami.json start end=fit_kita_e.json > ipb_kishi.log 2>&1
+  $ ROUTE='route_kishi.json' python3 fit2route.py kishi > geo_kishi.log 2>&1
+  $ python3 ground.py route_fkishi.json ground_fkishi.json > ground_kishi.log 2>&1
+  高さの指定表 _free： {'start_z': 63.8, 'end_z': 79.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 64.3, 'end_z': 95.6} 1 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_fkishi.json costs_single.json design_fkishi_free.json height_spec_kishi_free.json > d_kishi_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_fkishi.json costs_single.json design_fkishi.json height_spec_kishi.json > d_kishi.log 2>&1
+== 区間 seoi（瀬生線（上遠根別〜瀬生〜岸内））ハッシュ 3ab2a09d6cf7
+  $ rm -f branch_seoi_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py seoi route_seoi.json fit_onne.json start end=fit_minami.json > ipb_seoi.log 2>&1
+  $ ROUTE='route_seoi.json' python3 fit2route.py seoi > geo_seoi.log 2>&1
+  $ python3 ground.py route_fseoi.json ground_fseoi.json > ground_seoi.log 2>&1
+  高さの指定表 _free： {'start_z': 315.0, 'end_z': 63.8} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 292.0, 'end_z': 64.3} 4 駅を指定
+  $ GCAP='0.025' python3 design3.py ground_fseoi.json costs_single.json design_fseoi_free.json height_spec_seoi_free.json > d_seoi_free.log 2>&1
+  $ GCAP='0.025' python3 design3.py ground_fseoi.json costs_single.json design_fseoi.json height_spec_seoi.json > d_seoi.log 2>&1
+完了

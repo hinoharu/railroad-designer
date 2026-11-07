@@ -83,3 +83,17 @@
   問題が残る駅間 ['新白糠信号場・南白糠', '南白糠・笛島', '笛島・東笛島', '東笛島・歌分']：探す勾配を 1‰ 下げて（{'新白糠信号場|南白糠': 0.024, '南白糠|笛島': 0.024, '笛島|東笛島': 0.024, '東笛島|歌分': 0.024}）探索からやり直す
 == 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 05d0b2b8316c・縦断 844affc5afe6
   $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["新白糠信号場", "南白糠"], ["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' GSEG='{"新白糠信号場|南白糠": 0.024, "南白糠|笛島": 0.024, "笛島|東笛島": 0.024, "東笛島|歌分": 0.024}' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1
+  $ ROUTE='route_fueshima_hyb.json' python3 fit2route.py fueshima > geo_fueshima.log 2>&1
+  $ python3 ground.py route_ffueshima.json ground_ffueshima.json > ground_fueshima.log 2>&1
+  高さの指定表 _free： {'start_z': 9.2} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 9.2} 5 駅を指定
+  $ GCAP='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' python3 design3.py ground_ffueshima.json costs_single.json design_ffueshima.json height_spec_fueshima.json > d_fueshima.log 2>&1
+  駅の高さ 南白糠: 地盤から +14.4 m（地平駅：範囲外）
+  駅の高さ 東笛島: 地盤から -40.5 m（地平駅：範囲外）
+  問題が残る駅間 ['新白糠信号場・南白糠', '南白糠・笛島', '笛島・東笛島', '東笛島・歌分']：探す勾配を 1‰ 下げて（{'新白糠信号場|南白糠': 0.023, '南白糠|笛島': 0.023, '笛島|東笛島': 0.023, '東笛島|歌分': 0.023}）探索からやり直す
+== 区間 fueshima（笛島線（白糠泊〜歌分））ハッシュ 経路 ff6652fa0735・線形 b32f7f06c695・縦断 ec3365212248
+  $ ROUTE='route_fueshima.json' OUT='route_fueshima_hyb.json' PREFIX='fueshima_' GDEF='0.025' BRIDGE_H1='60' BRIDGE_H2='100' BRIDGE_SPAN='300' W_BH2='100' DEPTH_MAX='40' EXIT_R='200' SEGS='[["新白糠信号場", "南白糠"], ["南白糠", "笛島"], ["笛島", "東笛島"], ["東笛島", "歌分"]]' LAMBDA='1.0' GSEG='{"新白糠信号場|南白糠": 0.023, "南白糠|笛島": 0.023, "笛島|東笛島": 0.023, "東笛島|歌分": 0.023}' python3 devline_hybrid.py > hyb_fueshima.log 2>&1
+  $ rm -f branch_fueshima_cands.json
+  $ VMAX='85' TILT='0' TRAIN='80' python3 ipfit_branch.py fueshima route_fueshima_hyb.json fit_minami.json start > ipb_fueshima.log 2>&1

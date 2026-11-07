@@ -171,7 +171,7 @@ def solve(core, js, je, sweeps=F.SWEEPS):
     return dict(cost=float(cost), maxdev=float(mx), V=V_.tolist(), Rs=list(map(float, Rs)), dense=dense.tolist())
 
 # 分岐器の候補の制限（2026-11-08、ユーザーの指摘：分岐器が停車場中心の真上に置かれ、構内の有効長が取れない。分岐点の本線が急勾配）
-# JMIN：停車場中心から分岐器までの最小距離（m）。支線を通る列車の進む側（start は向き τ の側、end は τ と反対の側）に置く。
+# JMIN：停車場中心から分岐器までの最小距離（m）。列車が幹線から支線へ入るときに通る駅の、進行方向の先（−τ の側）に置く。
 #   候補の範囲がすべて近すぎるときは、最小距離の所から JEXT（300 m）先まで 10 m 刻みで候補を延ばす。幹線が駅で終わっていて置けないときは今までどおり（注意を出す）
 # GJ：分岐点の本線の勾配の上限（‰）。超える候補は除く（残らなければ除かずに注意を出す）
 JMIN = float(os.environ.get('JMIN', '0')); GJ = float(os.environ.get('GJ', '0')); JEXT = float(os.environ.get('JEXT', '300'))
@@ -184,7 +184,7 @@ def restrict(lo, hi, tau, w):
     fit_of = lambda sg: float(np.interp(sg, RS, TS)); ground_of = lambda sf: float(np.interp(sf, TS, RS))
     name, c = min(((n_, fit_of(c_)) for n_, c_ in rt['stations']), key=lambda x: abs(x[1] - (lo + hi) / 2))
     if JMIN > 0:
-        side = tau if w == 'start' else -tau
+        side = -tau   # 列車が幹線から支線へ入るときに通る駅の先（進行方向の先）に置く。start・end とも −τ の側（2026-11-08 に確かめた：国後空港線・古釜布支線）
         ok = [s_ for s_ in cands if side * (s_ - c) >= JMIN]
         if not ok:
             a_ = c + side * JMIN; b_ = a_ + side * JEXT; a_, b_ = sorted((a_, b_))

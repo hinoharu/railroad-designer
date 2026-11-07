@@ -1,0 +1,16 @@
+== 区間 ipg：古い手順（計算しない）。特急の経路。交点法（ipfit_all.py、pipe3.sh・rerun_ip.sh）。縦断は design3.py …
+== 区間 sanpu：古い手順（計算しない）。散布線。古い手順（rerun_branch.sh：ipfit_branch.py の位置引数だけ、端の高さは rerun…
+== 区間 kita_w（国後北線 西側（国後泊〜軽別〜植尻〜仁岸寄））ハッシュ 88e4ce7102e2
+  $ rm -f branch_kita_w_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kita_w route_kita_w.json fit_minami.json start > ipb_kita_w.log 2>&1
+  $ ROUTE='route_kita_w.json' python3 fit2route.py kita_w > geo_kita_w.log 2>&1
+  $ python3 ground.py route_fkita_w.json ground_fkita_w.json > ground_kita_w.log 2>&1
+  高さの指定表 _free： {'start_z': 7.5} 0 駅を指定
+  高さの指定表 _gs： {'start_z': 8.7} 15 駅を指定
+  $ GCAP='0.0333' KYAKU25_ADD='[["植尻", "仁岸寄"]]' python3 design3.py ground_fkita_w.json costs_single.json design_fkita_w_free.json height_spec_kita_w_free.json > d_kita_w_free.log 2>&1
+  $ GCAP='0.0333' KYAKU25_ADD='[["植尻", "仁岸寄"]]' python3 design3.py ground_fkita_w.json costs_single.json design_fkita_w.json height_spec_kita_w.json > d_kita_w.log 2>&1
+  駅の高さ 一菱内: 地盤から -40.4 m（地平駅：範囲外）
+  駅の高さ 鸚居温泉: 地盤から +19.5 m（地平駅：範囲外）
+== 区間 kofu（国後北線 古釜布支線（仁岸寄〜古釜布））ハッシュ 4845108d3b4e
+  $ rm -f branch_kofu_cands.json
+  $ VMAX='130' TILT='1' TRAIN='160' python3 ipfit_branch.py kofu route_kofu.json fit_kita_w.json start end=fit_minami.json > ipb_kofu.log 2>&1

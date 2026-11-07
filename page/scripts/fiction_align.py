@@ -166,6 +166,17 @@ def main():
     otoshi = sec_simple("otoshi", "乙知志線（乙知志〜択捉原〜北乙）", "route_otoshi.json", [moyoro])
     moke = sec_simple("moke", "萌消線（萌消〜満前）", "route_moke.json", [trunk])
     sections = [trunk, sanpu, shibw, shibr, moyoro, rakki, toshi, otamoi, sesibe, tanne, kuko, sanroku_n, sanroku_s, furu, atosa_w, atosa_e1, atosa_e2, noto, yorib, otoshi, moke]
+    # 国後島（2026-11-07）：入力表 kp/tables/sections.json から機械的に。上位の区間（parents・start_z_from）の駅は二重に出さない。
+    # only_gs の区間は縦断が 1 つなので alt なし
+    sys.path.insert(0, str(KP / "tables")); import net  # noqa: E402
+    by_id = {}
+    for s in sorted([x for x in net.SECTIONS if x["island"] == "国後"], key=lambda x: (x["rank"], net.SECTIONS.index(x))):
+        if not (KP / f"fit_{s['id']}.json").exists(): continue   # まだ計算していない区間は出さない
+        par = [p["section"] for p in s.get("parents", [])] + ([s["profile"]["start_z_from"]] if "start_z_from" in s["profile"] else [])
+        skip = {n for pid in par if pid in by_id for n, *_ in by_id[pid]["stations"]}
+        free, gs = net.design_files(s["id"]); rt = json.load(open(KP / s["route"]["file"]))
+        S_ = section(s["id"], s["name"], s["id"], rt["points"], skip_names=skip, design=free, alt=None if free == gs else gs)
+        by_id[s["id"]] = S_; sections.append(S_)
     SEC_IDX = {S["id"]: i for i, S in enumerate(sections)}
     # systems: the express (the trunk as a whole) and the local train 大岬→紗那 (keito.py: the branch, then the trunk from the junction)
     tk = variant("特急 蘂取→兵至平", "ipgh", 100000, 30)
@@ -197,6 +208,11 @@ def main():
                 "alt": {"lim": r(kg["lim"]), "v": r(kg["v"]), "zone": r(kg["zone"]), "run_min": round(kg["run_min"], 1)}}
     NETS = {y["id"]: y for y in NET["systems"]}
     K2 = ("tokkyu_moyoro", "futsu_shibetoro", "tokkyu_rakki", "kyuko", "kaisoku_kuko", "futsu_tokite", "futsu_sanroku", "futsu_furu", "futsu_atosa", "futsu_noto", "futsu_yorib", "futsu_otoshi", "futsu_moke")
+    # 国後島の系統（2026-11-07）：入力表 systems.json の、区間がすべてページにあり、走行の結果があるもの
+    for y in net.SYSTEMS:
+        if y["id"] in K2 or "sys_name" not in y or not all(x in SEC_IDX for x in y["sections"]): continue
+        if (KP / f"keito2_{y['sys_name']}.json").exists():
+            NETS.setdefault(y["id"], dict(y, car=f"{y['car_type']} {y['cars']} 両（{y['TRAIN']} m）", keito2=f"sys_{y['id']}.json")); K2 = K2 + (y["id"],)
     k2 = [system_k2(NETS[i]) for i in K2]
     for y, ny in [(tokkyu, NETS["tokkyu"]), (futsu, NETS["futsu_sanpu"])] + [(k, NETS[i]) for k, i in zip(k2, K2)]:
         y["train"] = car_info(y, ny); y["t"] = elapsed(y["v"])[::10]; y["tdx"] = 100   # every 100 m (the page interpolates), to keep the data small

@@ -62,6 +62,17 @@ s_need = 2 * STN_HALF + abs(dZ) / GMAX
 def zt(s): return zA + sg * min(max(s - STN_HALF, 0) * GMAX, abs(dZ))
 db = lambda i, j: math.hypot(i - sb[0], j - sb[1]) * H
 print(f'{A}→{B}：作図 {Ldraw / 1000:.2f} km、駅の地盤 {zA:.0f} → {zB:.0f} m、{GMAX * 1000:.0f}‰ で要る長さ {s_need / 1000:.2f} km、格子 {nx}×{ny}（{H:.0f} m）、幅 K={K}', flush=True)
+# 元の折れ線の費用 C(0) を同じ尺度で出すだけ（EVAL_DRAW=出力.json。段階的な探索の基準。2026-11-07、国後島）：作図の線を BIN ごとに
+# たどり、同じ展開線の高さ zt(s) との差の費用を足す。線が短くて駅 B の高さに届かない場合もそのまま足す（勾配で届かない駅間は別の規則）
+if os.environ.get('EVAL_DRAW'):
+    from scipy.ndimage import map_coordinates
+    cum = np.r_[0, np.cumsum(np.hypot(*np.diff(seg, axis=0).T))]; ss = np.arange(0, cum[-1], BIN)
+    px = np.interp(ss, cum, seg[:, 0]); py = np.interp(ss, cum, seg[:, 1])
+    gz = map_coordinates(G, [(py - y0) / H, (px - x0) / H], order=1, mode='nearest')
+    cdraw = float(sum(BIN * cm(float(gz[k]) - zt(float(ss[k]))) for k in range(len(ss))))
+    print(f'  元の折れ線の費用 {cdraw:.3g}（{cum[-1] / 1000:.2f} km）', flush=True)
+    json.dump({'from': A, 'to': B, 'cost_draw': cdraw, 'length': float(cum[-1]), 'GMAX': GMAX, 'H': H, 'MARGIN': MARGIN}, open(os.environ['EVAL_DRAW'], 'w'), ensure_ascii=False)
+    raise SystemExit
 maxbin = int((s_need + 3 * math.hypot(*(seg[-1] - seg[0])) + 3000) / BIN)
 layers = {0: {(sa[0], sa[1], ha, 0): (0.0, None)}}   # 距離の刻み → {状態: (費用, (前の刻み, 前の状態))}
 best = None

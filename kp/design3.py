@@ -66,17 +66,31 @@ STN_H = []
 # 橋梁の高さの費用（費用の表の c_bridge_h は 0：資料がない）。高さに費用がないと、高架を低く抑える理由がなく、勾配の変化の少なさだけで
 # 高い所を通る（標後〜瀬石温泉で高さ 20〜29 m）。仮に、高さ 1 m あたり浅い土工 1 m 分の費用とする（根拠の記録なし。2026-11-03）
 W_BH = float(__import__('os').environ.get('W_BH', '1.0'))   # (節点の番号, 下限の標高, 上限の標高)
+# 橋梁の高さの境（2026-11-07、ユーザーの判断。国後島から）：高さ（施工基面−地盤）が BRIDGE_H1（60 m）を超える分に、1 m あたり W_BH2 の
+# 非常に大きな罰則。深い谷の河川（峡谷）を渡る所＝橋梁の区間のうち H1 超の部分が連続 BRIDGE_SPAN（300 m）以下で、両側に H1 以下の
+# 地盤がある所は、境を BRIDGE_H2（100 m、高千穂橋梁の程度）にする。大河川のように両脇に高い地盤がない所はだめ。BRIDGE_H1 を 0 にすると切
+BRIDGE_H1 = float(_os.environ.get('BRIDGE_H1', '0')); BRIDGE_H2 = float(_os.environ.get('BRIDGE_H2', '100')); BRIDGE_SPAN = float(_os.environ.get('BRIDGE_SPAN', '300'))
+W_BH2 = float(_os.environ.get('W_BH2', '100'))   # 境を超える高さ 1 m あたりの重み（浅い土工 1 m 分の 100 倍。仮の値）
+# 駅の深さ（2026-11-07、ユーザーの判断）：停車場中心の施工基面 z ≥（中心から EXIT_R 以内の地盤の最低の標高）− DEPTH_MAX。
+# 「深さ 40 m まで。100〜200 m の水平移動で地表に出られるなら不問」を 1 本の条件にした。DEPTH_MAX を 0 にすると切
+DEPTH_MAX = float(_os.environ.get('DEPTH_MAX', '0')); EXIT_R = float(_os.environ.get('EXIT_R', '200'))
+BRIDGE_THR = None   # 節点ごとの境（lp の前に決める）
 def lp(sn, gn, lim, state, Pn, tangn):
     """Pn・tangn：節点ごとの費用の表と土工の接線（単線と複線を区間ごとに使い分ける。2026-11-04）"""
     n = len(sn); nz, nw, nu, ne, nsl = n, n, n - 2, 2 * (n - 1), n
-    FL = [q for q in STN_H if q[3]]; nf = 2 * len(FL); N = nz + nw + nu + ne + nf + nsl   # 地平駅ごとに準地平の分（上・下）の変数
+    FL = [q for q in STN_H if q[3]]; nf = 2 * len(FL)
+    HB = [i for i in range(n) if state[i] == 2 and BRIDGE_H1 > 0]; nb2 = len(HB)   # 境を超える高さの変数（橋梁の節点ごと）
+    N = nz + nw + nu + ne + nf + nsl + nb2   # 地平駅ごとに準地平の分（上・下）の変数
     c = np.concatenate([np.zeros(nz), np.where(state == 0, 1.0, np.where(state == 2, W_BH, 0.0)), np.full(nu, MU), np.full(n - 1, NU1), np.full(n - 1, NU2),
-                        np.tile([W_FLAT_UP, W_FLAT_CUT], len(FL)), np.full(nsl, W_SLACK)])
+                        np.tile([W_FLAT_UP, W_FLAT_CUT], len(FL)), np.full(nsl, W_SLACK), np.full(nb2, W_BH2)])
     rows = []; b = []
-    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H), N)); r = 0
+    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2, N)); r = 0
     for i in range(n):
         if state[i] == 2:   # 橋梁の高さの費用：w ≥ z − g（高さ 1 m あたり W_BH）
             A[r, i] = 1; A[r, nz + i] = -1; b.append(gn[i]); r += 1
+    for j, i in enumerate(HB):   # 境を超える分：w2 ≥ z − g − thr（1 m あたり W_BH2）
+        A[r, i] = 1; A[r, nz + nw + nu + ne + nf + nsl + j] = -1; b.append(gn[i] + (BRIDGE_THR[i] if BRIDGE_THR is not None else BRIDGE_H1)); r += 1
+    for i in range(n):
         if state[i] != 0: continue
         for side, a, k0 in tangn[i]:   # w ≥ a·side·(g−z) + k0   →  −a·side·z − w ≤ −k0 − a·side·g
             A[r, i] = -a * side; A[r, nz + i] = -1; b.append(-k0 - a * side * gn[i]); r += 1
@@ -111,21 +125,21 @@ def lp(sn, gn, lim, state, Pn, tangn):
     if FLAT_MODE == 'lex':
         # 駅ありき（2026-11-04、ユーザーの判断）：第 1 段で地平（FLAT_IN）からの離れの合計を最小にし（工事費は見ない。守るべき条件のゆとりも同じ重み）、
         # 第 2 段でその離れを超えない範囲で工事費を最小にする。罰則の数値を使わない
-        bnd = [(None, None)] * nz + [(0, None)] * (nw + nu) + ub_e + [(0, None)] * nf + [(0, None)] * nsl
+        bnd = [(None, None)] * nz + [(0, None)] * (nw + nu) + ub_e + [(0, None)] * nf + [(0, None)] * nsl + [(0, None)] * nb2
         # 優先の順：個別の高さの指定・分岐器の高さ・構造物の条件（ゆとり sl）＞ 地平駅の離れ ＞ 工事費。第 1 段で sl を W_SLACK 倍に重くして、
         # 地平駅のために指定の駅を動かさない（2026-11-04、振別が指定から +19 m 外れたため）
-        c1 = np.zeros(N); c1[nz + nw + nu + ne:nz + nw + nu + ne + nf] = 1.0; c1[N - nsl:] = W_SLACK
+        c1 = np.zeros(N); c1[nz + nw + nu + ne:nz + nw + nu + ne + nf] = 1.0; c1[nz + nw + nu + ne + nf:nz + nw + nu + ne + nf + nsl] = W_SLACK
         r1 = linprog(c1, A_ub=A, b_ub=b, bounds=bnd, method="highs")
         if not r1.success: raise SystemExit(r1.message)
-        D1 = float(r1.x[nz + nw + nu + ne:nz + nw + nu + ne + nf].sum()); S1 = float(r1.x[N - nsl:].sum())
-        row = np.zeros((2, N)); row[0, nz + nw + nu + ne:nz + nw + nu + ne + nf] = 1; row[1, N - nsl:] = 1
+        D1 = float(r1.x[nz + nw + nu + ne:nz + nw + nu + ne + nf].sum()); S1 = float(r1.x[nz + nw + nu + ne + nf:nz + nw + nu + ne + nf + nsl].sum())
+        row = np.zeros((2, N)); row[0, nz + nw + nu + ne:nz + nw + nu + ne + nf] = 1; row[1, nz + nw + nu + ne + nf:nz + nw + nu + ne + nf + nsl] = 1
         from scipy.sparse import vstack as _vs
         c2 = c.copy(); c2[nz + nw + nu + ne:nz + nw + nu + ne + nf] = 0
         res = linprog(c2, A_ub=_vs([A, csr_matrix(row)]).tocsr(), b_ub=np.concatenate([b, [D1 + 0.01 + 1e-4 * D1, S1 + 0.01 + 1e-4 * S1]]), bounds=bnd, method="highs")
     else:
-        res = linprog(c, A_ub=A, b_ub=b, bounds=[(None, None)] * nz + [(0, None)] * (nw + nu) + ub_e + [(0, FLAT_SEMI[1] - FLAT_IN[1]), (0, FLAT_IN[0] - FLAT_SEMI[0])] * len(FL) + [(0, None)] * nsl, method="highs")
+        res = linprog(c, A_ub=A, b_ub=b, bounds=[(None, None)] * nz + [(0, None)] * (nw + nu) + ub_e + [(0, FLAT_SEMI[1] - FLAT_IN[1]), (0, FLAT_IN[0] - FLAT_SEMI[0])] * len(FL) + [(0, None)] * nsl + [(0, None)] * nb2, method="highs")
     if not res.success: raise SystemExit(res.message)
-    return res.x[:nz], res.x[N - nsl:]
+    return res.x[:nz], res.x[nz + nw + nu + ne + nf:nz + nw + nu + ne + nf + nsl]
 
 def solve_C_mixed(s, h, C, Pof):
     """structdp.solve_C と同じ（構造物の切り替えの費用：坑口・橋台）。費用の表を位置ごとに Pof(i) で選ぶ（単線・複線、2026-11-04）"""
@@ -177,6 +191,10 @@ if __name__ == "__main__":
         STN_H.append((k, g0 + lo_, g0 + hi_, v == '地平'))
     # 線の端の施工基面の標高（m）を固定する（支線が幹線につながる分岐器の位置。2026-11-04）：{"end_z": 標高}
     if 'end_z' in spec: STN_H.append((len(sn) - 1, spec['end_z'], spec['end_z'], False))
+    if DEPTH_MAX > 0:   # 駅の深さの上限（2026-11-07）：z ≥（中心から EXIT_R 以内の地盤の最低）− DEPTH_MAX。上限は置かない（大きな値）
+        for name, c in r["stations"]:
+            k = int(np.argmin(np.abs(sn - c))); gmin = float(np.nanmin(g[np.abs(s - c) <= EXIT_R]))
+            STN_H.append((k, gmin - DEPTH_MAX, 1e4, False))
     if 'start_z' in spec: STN_H.append((0, spec['start_z'], spec['start_z'], False))   # 始点も幹線につながる線（両端の分岐、2026-11-04）
     # 高架にする区間：駅と駅の間の指定（両端の駅の構内 110 m と、地平から橋梁の最低の高さへ上がる長さ (2 + 3) m ÷ 25‰ = 200 m を除く）と、湿地
     force_B = np.zeros(len(s), bool)
@@ -201,10 +219,23 @@ if __name__ == "__main__":
     # （地盤−施工基面 ≥ 8 m）で指定の高さに届かないまま抜けられなかった（沼田）。INIT_SPEC=0 で、それまでの決め方（出発点そのまま）
     if STN_H and __import__('os').environ.get('INIT_SPEC', '1') == '1':
         zn, _ = lp(sn, gn, lim, np.zeros(len(sn), int), Pn, tangn); z = np.interp(s, sn, zn)
+    def bridge_thr(state, zn):
+        """節点ごとの橋梁の高さの境：ふつう BRIDGE_H1。橋梁の連続する節点のうち、いまの高さが H1 を超える部分が BRIDGE_SPAN 以下で
+        両側に H1 以下の橋梁の節点か橋梁でない節点がある（峡谷）なら BRIDGE_H2（2026-11-07）"""
+        thr = np.full(len(sn), BRIDGE_H1); hb = zn - gn; i = 0
+        while i < len(sn):
+            if state[i] == 2 and hb[i] > BRIDGE_H1:
+                j = i
+                while j < len(sn) and state[j] == 2 and hb[j] > BRIDGE_H1: j += 1
+                if sn[j - 1] - sn[i] <= BRIDGE_SPAN and i > 0 and j < len(sn): thr[i:j] = BRIDGE_H2
+                i = j
+            else: i += 1
+        return thr
     for it in range(3):
         st, tot = classify(z)
         # 節点ごとの状態（その節点の前後 50 m で最も多い状態）
         state = np.array([np.bincount(st[(s >= x - NODE / 2) & (s <= x + NODE / 2)], minlength=3).argmax() for x in sn])
+        if BRIDGE_H1 > 0: BRIDGE_THR = bridge_thr(state, np.interp(sn, s, z))
         zn, slack = lp(sn, gn, lim, state, Pn, tangn); z = np.interp(s, sn, zn)
         h = g - z; print(f"  くり返し {it + 1}：費用 {tot:.3g}  トンネル {np.sum(st == 1) * 20 / 1000:.1f} km・橋梁 {np.sum(st == 2) * 20 / 1000:.1f} km  条件のゆとり 最大 {slack.max():.1f} m", flush=True)
     st, tot = classify(z)

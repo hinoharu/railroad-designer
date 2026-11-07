@@ -13,6 +13,11 @@ from ground import elev
 ROUTE = os.environ.get('ROUTE', 'route_sesibe.json'); OUT = os.environ.get('OUT', 'route_sesibe_hyb.json'); PREFIX = os.environ.get('PREFIX', '')
 GDEF = float(os.environ.get('GDEF', '0.025')); GMAP = {tuple(k.split('|')): v for k, v in json.loads(os.environ.get('GMAP', '{}')).items()}
 RATIO = 1.1; WS = [300, 600, 1000, 1500, 2000]
+# 問題の残る駅間（SEGS：[["A","B"], ...]。縦断でトンネル駅・高架駅・高い橋梁が出た駅間。build.py が hyb_<id>_segs.json に書く）は、
+# 元の折れ線の費用 C(0) と比べ、帯 W で探した費用 C(W) が C(0)÷R 以下になる最初の段（STAGES：[[W, R], ...]）を採る
+# （2026-11-07、ユーザー：橋梁の高さなどがどうしても高くなりすぎる場合、段階的に広げる。数値は仮：docs/thresholds.md）
+SEGS = {tuple(x) for x in json.loads(os.environ.get('SEGS', '[]'))}
+STAGES = [tuple(x) for x in json.loads(os.environ.get('STAGES', '[[300, 3], [300, 2], [600, 2], [1000, 2], [1500, 2], [2000, 2]]'))]
 # 探す勾配は上限の 25‰。ただし、25‰ ちょうどで探した結果、縦断で駅が範囲外になった駅間は 1‰ 低く探す（線形の当てはめと駅の前後の水平な区間の余裕）：
 # 蘂取→良宇仁（25‰ では良宇仁 −11.8 m。蘂取の高さは特急の経路の起点で決まり、良宇仁へ上る長さが足りない）
 GSEG = {('蘂取', '良宇仁'): 0.024}; GSEG.update({tuple(k.split('|')): v for k, v in json.loads(os.environ.get('GSEG', '{}')).items()})
@@ -23,6 +28,20 @@ for k, (a, b) in enumerate(zip(names, names[1:])):
     G = GMAP.get((a, b), GDEF)
     za, zb = elev(*D[0]), elev(*D[-1]); need = 110 + abs(zb - za) / G
     use = D; how = '作図の線'
+    if need <= Ld and (a, b) in SEGS:   # 段階的な探索（問題の残る駅間）
+        GS = GSEG.get((a, b), G); env0 = dict(os.environ, GMAX=str(GS), K='1500', MARGIN='3000', STATION_ONLY='0', HB='draw')
+        f0 = f"{PREFIX}draw_{a}_{b}.json"
+        if not os.path.exists(f0): subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f0], env=dict(env0, CORRIDOR='0', EVAL_DRAW=f0), stdout=subprocess.DEVNULL, check=False)
+        c0 = json.load(open(f0))['cost_draw']; tried = []
+        for W, R in STAGES:
+            f = f"{PREFIX}{'dev4' if GS == G else 'dev7'}_{a}_{b}_{W}.json"
+            if not os.path.exists(f):
+                subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W)), stdout=subprocess.DEVNULL, check=False)
+                if not os.path.exists(f): subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f], env=dict(env0, CORRIDOR=str(W), K='8000'), stdout=subprocess.DEVNULL, check=False)
+            cw = json.load(open(f))['cost'] if os.path.exists(f) else None; tried.append((W, R, cw))
+            if cw is not None and cw <= c0 / R:
+                use = json.load(open(f))['points']; computed.append([a, b]); how = f'探した線（帯 {W} m、費用 {cw / c0:.0%}。段 {len(tried)}）'; break
+        print(f'{a}→{b}：問題の残る駅間。元の折れ線の費用 {c0:.3g}、段ごと ' + '、'.join(f'帯 {W}・1/{R}：{cw:.3g}（{cw / c0:.0%}）' if cw is not None else f'帯 {W}：なし' for W, R, cw in tried) + f' → {how}', flush=True)
     if need > Ld:
         res = {}
         for W in [0] + WS:

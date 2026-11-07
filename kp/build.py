@@ -142,6 +142,7 @@ def detect_problems(s):
     return sorted(bad, key=lambda ab: names.index(ab[0]))
 
 def segs_file(b): return f'hyb_{b}_segs.json'
+def gseg_file(b): return f'hyb_{b}_gseg.json'   # 探す勾配を下げた駅間：{"A|B": 勾配}（2 回探しても駅が範囲外のままの駅間。1 回に 1‰ 下げる）
 def hybrid_env(s, rf):
     """devline_hybrid.py の環境変数。auto の区間は、勾配の上限 GDEF を profile.GCAP、非電化（KYAKU25_ADD）の駅間の上限 GMAP を 25‰ にし、
     問題のある駅間 SEGS を hyb_<id>_segs.json から渡す"""
@@ -155,6 +156,7 @@ def hybrid_env(s, rf):
             lo, hi = sorted((stops.index(a_), stops.index(b_)))
             for k in range(lo, hi): gmap.setdefault(f'{stops[k]}|{stops[k + 1]}', min(0.025, float(env['GDEF'])))
         if os.path.exists(segs_file(b)): env['SEGS'] = json.dumps(json.load(open(segs_file(b))), ensure_ascii=False)
+        if os.path.exists(gseg_file(b)): hy = dict(hy, GSEG={**hy.get('GSEG', {}), **json.load(open(gseg_file(b)))})
         if 'STAGES' in hy: env['STAGES'] = json.dumps(hy['STAGES'])
         if 'LAMBDA' in hy: env['LAMBDA'] = hy['LAMBDA']   # 連続的な基準（離れ 1 m² の重み）。与えなければ STAGES の段階的な基準
     if gmap: env['GMAP'] = json.dumps(gmap, ensure_ascii=False)
@@ -171,7 +173,7 @@ def section_hash(s):
     if s['method'] == 'legacy': HR[i] = HF[i] = H[i] = file_hash(*net.design_files(i)); return H[i]
     d = net.deps(s)
     HR[i] = sha(s['island'], s['route'])
-    segs = file_hash(segs_file(i)) if s['route'].get('hybrid', {}).get('auto') else ''   # 自動の探索で探した駅間（hyb_<id>_segs.json）
+    segs = file_hash(segs_file(i), gseg_file(i)) if s['route'].get('hybrid', {}).get('auto') else ''   # 自動の探索で探した駅間と下げた勾配（hyb_<id>_segs.json・_gseg.json）
     HF[i] = sha(HR[i], s['fit'], s['run'], [HF[x] for x in d], segs)
     H[i] = sha(HF[i], s['profile'], [H[x] for x in d])
     return H[i]
@@ -209,9 +211,19 @@ def build_section(s):
     probs = detect_problems(s); old = [tuple(x) for x in json.load(open(segs_file(b)))] if os.path.exists(segs_file(b)) else []
     new = sorted(set(old) | set(probs), key=lambda ab: s['route']['stops'].index(ab[0]))
     if not probs: print('  問題のある駅間なし'); return False
-    if new == old: print(f'  問題が残る駅間 {["・".join(x) for x in probs]}（探す駅間は増えないので、ここで止める）'); return False
-    json.dump([list(x) for x in new], open(segs_file(b), 'w'), ensure_ascii=False)
-    print(f'  問題のある駅間 {["・".join(x) for x in probs]} を探す駅間に足し（合計 {len(new)}）、探索からやり直す', flush=True); return True
+    if new != old:
+        json.dump([list(x) for x in new], open(segs_file(b), 'w'), ensure_ascii=False)
+        print(f'  問題のある駅間 {["・".join(x) for x in probs]} を探す駅間に足し（合計 {len(new)}）、探索からやり直す', flush=True); return True
+    # 探した駅間の駅が範囲外のまま（択捉島の規則：探す勾配を 1‰ 下げて探し直す。devline_hybrid.py の GSEG。2026-11-07 に自動にした）。
+    # 探した線は勾配の上限ぎりぎりの長さになりがちで、縦断では駅が地平に届かない（国後島の一菱内）
+    hy = s['route']['hybrid']; gs = json.load(open(gseg_file(b))) if os.path.exists(gseg_file(b)) else {}
+    env = hybrid_env(s, route_file(s)); gmap = json.loads(env.get('GMAP', '{}')); changed = False
+    for a_, b_ in probs:
+        k = f'{a_}|{b_}'; cur = gs.get(k, hy.get('GSEG', {}).get(k, gmap.get(k, float(env['GDEF']))))
+        if cur - 0.001 >= 0.010: gs[k] = round(cur - 0.001, 4); changed = True
+    if not changed: print(f'  問題が残る駅間 {["・".join(x) for x in probs]}（勾配はこれ以上下げないので、ここで止める）'); return False
+    json.dump(gs, open(gseg_file(b), 'w'), ensure_ascii=False)
+    print(f'  問題が残る駅間 {["・".join(x) for x in probs]}：探す勾配を 1‰ 下げて（{gs}）探索からやり直す', flush=True); return True
 
 
 # --- 系統 -------------------------------------------------------------------------------------------------------------
@@ -257,7 +269,7 @@ for i in order:
         print(f'== {i}')
         if not all(os.path.exists(f) for f in (route_file(s), f'fit_{i}.json', f'height_spec_{i}.json', f'height_spec_{i}_free.json')): print('  未計算（経路・線形・高さの指定表のどれかがない）'); continue
         make_spec(s); continue
-    for _pass in range(3):   # 自動の探索：探す駅間が増えたらハッシュを付け直して、もう 1 回（最大 3 回）
+    for _pass in range(5):   # 自動の探索：探す駅間が増えた・勾配を下げたらハッシュを付け直して、もう 1 回（最大 5 回）
         if not build_section(s): break
         H[i] = section_hash(s)
 if MARK:

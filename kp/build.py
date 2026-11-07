@@ -181,6 +181,15 @@ def hybrid_env(s, rf):
 # --- 区間 -------------------------------------------------------------------------------------------------------------
 H = {}    # 区間の id → 縦断までの結果を左右するもののハッシュ（系統の判定に使う）
 HR = {}; HF = {}   # 経路のハッシュ、線形（当てはめ・キロ程・地盤）のハッシュ
+# 停車場中心から分岐器（理論交点）までの最小距離（2026-11-08、国鉄の規定の調査。docs/junction.md）：
+#   JMIN ＝ (TRAIN ＋ JM_MARGIN) ÷ 2 ＋ JM_CLEAR。TRAIN はその駅に停まる最長の列車（支線と、端のつながる幹線の run.TRAIN の大きい方）。
+#   JM_MARGIN：有効長の列車長に対する余裕 20 m（国鉄 運転取扱基準規程 1972 第 20 条 標準 2「余裕距離 20mから35mまで」の下限）。
+#   JM_CLEAR：有効長の端（車両接触限界標＝軌道中心間隔 4 m の点）から分岐器の理論交点まで。N 番分岐器で 4N m、8 番で 32 m
+JM_MARGIN, JM_CLEAR = 20.0, 32.0
+def jmin_auto(s):
+    trains = [s['run']['TRAIN']] + [net.SEC[t_ or s['fit']['trunk']].get('run', {}).get('TRAIN', 0) for t_ in s['fit'].get('ends', {}).values() if (t_ or s['fit']['trunk']) in net.SEC]   # 古い手順の幹線（ipg）には run がない
+    return round((max(trains) + JM_MARGIN) / 2 + JM_CLEAR, 1)
+
 def section_hash(s):
     """段ごとのハッシュ（2026-11-07）：経路は駅の並びなど、線形はそれに fit・run と上位の線形を足したもの、縦断はそれに profile と
     上位の縦断を足したもの。縦断の規則だけを変えたとき、線形の当てはめをやり直さないため。それまでは表のどこを変えても全段をやり直していた"""
@@ -208,7 +217,7 @@ def build_section(s):
     fit_env = dict(VMAX=run['VMAX'], TILT=run['TILT'], TRAIN=run['TRAIN'])
     for w_, d_ in f.get('dir', {}).items(): fit_env[f'DIR_{w_}'] = d_   # 分かれる向きの指定（forward／backward。2026-11-07）
     for k_ in ('JMIN', 'GJ', 'JEXT'):   # 分岐器の候補の制限（fit.junction：停車場中心からの最小距離 m、本線の勾配の上限 ‰。2026-11-08）
-        if k_ in f.get('junction', {}): fit_env[k_] = f['junction'][k_]
+        if k_ in f.get('junction', {}): fit_env[k_] = jmin_auto(s) if k_ == 'JMIN' and f['junction'][k_] == 'auto' else f['junction'][k_]
     step(b, 'fit', hf, lambda: (sh(f'rm -f branch_{b}_cands.json'),
                                 sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', fit_env, f'ipb_{b}.log')))
     step(b, 'geo', hf, lambda: (sh(f'python3 fit2route.py {b}', {'ROUTE': rf}, f'geo_{b}.log'),

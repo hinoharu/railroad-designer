@@ -8,10 +8,10 @@
 - **いまの作業（2026-11-08）**：国後島の結果へのユーザーの判断（`docs/kunashiri.md`「ユーザーの判断」）を受けた直し。
   - 済み：国後空港線の分岐の向き（`fit.dir: backward`）。分岐器の規則（`docs/junction.md`）：規定の調査 → 規則 1〜4 → ユーザーの決定（案 3：両島の支線に分岐器の規則、全区間の構内を TRAIN ÷ 2 ＋ 72 m）→ 全区間を計算し直した（約 4 時間。結果は `junction.md` 5）。変更前の結果は `kp_var/before_junction/`（比較ページの案）。直した不具合：GJ が ipg につながる端で効いていなかった（`ipfit_branch.py` の縦断ファイルの名）。
   - 済み：会話の圧縮が二重にかかった件の調査と記録（`docs/history.md`、`docs/history_2026-11-08_summary.md`）。CLAUDE.md に「Compact Instructions」（要約は日本語）。再圧縮はしない（ユーザーの判断。Fable の安全装置が記録の分析を含む会話で止まる）。自動の圧縮の窓は 600k。
-  - **次**：PR を作って報告し「マージしてよいですか」と聞く（PR の本文に `junction.md` 5 と `scratchpad/compare_results.py` の表）。
+  - 済み：PR #2（2026-11-08 マージ、merge commit b980a87）。作業ブランチは main から作り直した。
   - 保留：一菱内の手前の峡谷の橋梁 113 m（一菱内駅を海岸側へ動かす案）。採用：遠音別線の千歳信号場。
   - 新しい課題：構内の長さと駅の高さの規則の競合（振別 −17 m・東爺爺 −12 m。棒線駅は構内を短くできる【未定】）。ipg・sanpu の構内は 110 m のまま。
-- このブランチ `ccr-d36bd1ce-cxlzpc` には PR #1 のあとのコミット（判断の記録、fit.dir、分岐器の規則、国後空港線の計算し直し）があり、まだ PR にしていない。
+- 作業ブランチ `ccr-d36bd1ce-cxlzpc` は PR #2 のマージ後に main から作り直した（未マージのコミットなし）。
 - 気づいたこと：`build.py --dry-run` で択捉島の多くの区間の geo（fit2route・ground）に済んだ印がなく、本番の build.py では走る（結果は同じはず。`--mark-existing` で印を付けられる）。
 
 ## 次にすること

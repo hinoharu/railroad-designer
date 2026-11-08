@@ -193,8 +193,12 @@ def restrict(lo, hi, tau, w):
             else: print(f'  {w}：幹線が駅（{name}）で終わっていて、停車場中心から {JMIN:.0f} m 離した所に分岐器を置けない。今までどおりの候補で続ける', flush=True); ok = cands
         else: print(f'  {w}：停車場中心（{name}）から {JMIN:.0f} m 以上離れた候補 {len(ok)}（{len(cands)} のうち）', flush=True)
         cands = ok
-    if GJ > 0 and os.path.exists(f'design_f{tid}.json'):
-        d_ = json.load(open(f'design_f{tid}.json')); ds_ = np.array(d_['s']); dz_ = np.array(d_['z'])
+    # 幹線の縦断（駅地平化）は tables/net.py の design_files で引く（古い手順の ipg は design_fipgh_gs.json。design_f{tid}.json を直接
+    # 探していて ipg につながる端で GJ が効いていなかった。2026-11-08）
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tables')); import net as _net
+    dfile_ = _net.design_files(tid)[1] if tid in _net.SEC else f'design_f{tid}.json'
+    if GJ > 0 and os.path.exists(dfile_):
+        d_ = json.load(open(dfile_)); ds_ = np.array(d_['s']); dz_ = np.array(d_['z'])
         def grade(sf):
             sg = ground_of(sf); z1 = float(np.interp(sg - 50, ds_, dz_)); z2 = float(np.interp(sg + 50, ds_, dz_)); return (z2 - z1) / 100 * 1000
         ok = [s_ for s_ in cands if abs(grade(s_)) <= GJ + 1e-9]

@@ -82,23 +82,28 @@ for gid, name, t, route, grade, cause in (
 # 分岐器の規則の前（2026-11-08、ユーザーの指定：変更前の結果を比較できるように保持する）。kp_var/before_junction は、分岐器の位置の制限
 # （停車場中心からの最小距離 JMIN・本線の勾配の上限 GJ・端の勾配を幹線に合わせる）と、構内の長さ（±110 m → TRAIN ÷ 2 ＋ 72 m）を入れる前の
 # kp/ の写し（docs/junction.md）。古い手順の区間（ipg・sanpu）以外の全区間について、既にある群には案として足し、ない区間は新しく群を作る
-BJ_DIR = "before_junction"; BJ_NAME = "分岐器の規則の前（2026-11-08）："
-BJ_NOTE = "分岐器の位置の制限なし（作図の支線が駅の点から出ていると停車場中心が選ばれる）、構内は停車場中心 ±110 m"
+# 同じく、面的な探索（devline3、2026-11-08）を入れる前の結果 kp_var/before_devline3（PR #2 のマージ時点の写し）も案として並べる。
+# 「全区間に共通の、前の版」は (フォルダ, 案の名前の頭, 備考, 採用の案に足す備考) の表で増やす。古い順に並べる
+SNAPSHOTS = [
+    ("before_junction", "bj", "分岐器の規則の前（2026-11-08）：", "分岐器の位置の制限なし（作図の支線が駅の点から出ていると停車場中心が選ばれる）、構内は停車場中心 ±110 m", "分岐器の規則と構内の長さを入れて計算し直した"),
+    ("before_devline3", "bd", "面的な探索の前（2026-11-08、PR #2）：", "地形からの探索は devline2（作図の線の帯の中を、縦断を固定して距離ごとの動的計画法で探す）", "面的な探索（devline3、A*）で地形から探し直した"),
+]
 sys.path.insert(0, str(KP / "tables")); import net  # noqa: E402
-if (VAR / BJ_DIR).exists():
+for SDIR, SUF, SNAME, SNOTE, ANOTE in SNAPSHOTS:
+    if not (VAR / SDIR).exists(): continue
     by_t = {g["t"]: g for g in GROUPS}
     for s in net.SECTIONS:
-        if s["method"] != "branch" or not (VAR / BJ_DIR / f"fit_{s['id']}.json").exists(): continue
+        if s["method"] != "branch" or not (VAR / SDIR / f"fit_{s['id']}.json").exists(): continue
         g = by_t.get(s["id"])
         if g:
             a = next(v for v in g["variants"] if v["dir"] is None)
-            g["variants"].insert(g["variants"].index(a), dict(a, id=s["id"] + "_bj", dir=BJ_DIR, name=BJ_NAME + a["name"].replace("採用：", ""), note=BJ_NOTE))
-            a["note"] = (a["note"] + "。" if a["note"] else "") + "分岐器の規則と構内の長さを入れて計算し直した"
+            g["variants"].insert(g["variants"].index(a), dict(a, id=s["id"] + "_" + SUF, dir=SDIR, name=SNAME + a["name"].replace("採用：", ""), note=SNOTE))
+            a["note"] = ANOTE
         else:
             grade = f"{s['profile']['GCAP'] * 1000:g}‰"
             GROUPS.append({"id": s["id"], "name": s["name"], "t": s["id"], "route": s["route"]["file"], "variants": [
-                {"id": s["id"] + "_bj", "dir": BJ_DIR, "name": BJ_NAME + "それまでの線", "grade": grade, "plan": "元の折れ線（地形から探した駅間を含む）", "note": BJ_NOTE},
-                {"id": s["id"] + "_j", "dir": None, "name": "採用：分岐器の規則と構内の長さを入れた線", "grade": grade, "plan": "同上", "note": "docs/junction.md"}]})
+                {"id": s["id"] + "_" + SUF, "dir": SDIR, "name": SNAME + "それまでの線", "grade": grade, "plan": "元の折れ線（地形から探した駅間を含む）", "note": SNOTE},
+                {"id": s["id"] + "_new", "dir": None, "name": "採用：いまの計算の結果", "grade": grade, "plan": "同上", "note": ANOTE}]})
 SYSTEM_GROUP = {"id": "kyuko", "name": "急行 蘂取→丹根萌の性能", "variants": [
     {"id": "K1", "name": "キハ283系相当の性能（それまでの計算）", "car": "1 両 48 t に 365 kW", "len": 122},
     {"id": "K2", "name": "DD51形 単機＋客車 5 両", "car": "2,200 PS（レール 1,130 kW）、約 295 t", "len": 122},
@@ -143,7 +148,7 @@ def main():
             if (base / "infeasible").exists():   # the profile could not be solved under the grade (kp/variants.sh): kept as a result
                 g_ = float((base / "infeasible").read_text().strip()) * 1000
                 note += f"{'。' if note else ''}{g_:.0f}‰ では縦断が解けない（条件をすべて満たす高さがない）。表示の縦断は 25‰ で計算したもの"
-            vs.append({k: v[k] for k in ("id", "name", "grade", "plan")} | {"note": note, "adopted": v["dir"] is None, "metrics": m, "section": sec})
+            vs.append({k: v[k] for k in ("id", "name", "grade", "plan")} | {"note": note, "adopted": v["dir"] is None, "snapshot": v["dir"] if any(v["dir"] == x[0] for x in SNAPSHOTS) else None, "metrics": m, "section": sec})
             print(v["id"], m["length_km"], "km", "範囲外", m["out_gs"])
         groups.append({"id": g0["id"], "name": g0["name"], "kind": "section", "variants": vs})
     # the express with three performances (kp_var/K1..K3: keito2 files on the adopted alignments)
@@ -172,7 +177,9 @@ def main():
         print(v["id"], y["run_min"], "分", vs[-1]["metrics"])
     groups.append({"id": "kyuko", "name": SYSTEM_GROUP["name"], "kind": "system", "variants": vs})
     out = {"source": "架空路線の案（claude-workspace eki-radar/fiction/kp_var と kp）", "license": "— （架空。テスト版と手元のビルドだけ）",
-           "note": "案の比較（2026-11-05）。将来、採用した線形以外は別のページ（アーカイブ）に移す", "flat_range": FLAT, "groups": groups}
+           "note": "案の比較（2026-11-05）。将来、採用した線形以外は別のページ（アーカイブ）に移す", "flat_range": FLAT, "groups": groups,
+           # 全区間に共通の前の版（地図に重ねて今の結果と比べる。2026-11-08、ユーザーの指定）
+           "snapshots": [{"id": d, "name": n.rstrip("：")} for d, _, n, _, _ in SNAPSHOTS if (VAR / d).exists()]}
     p = ROOT / "data" / "fiction_variants.json"
     p.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(p, round(p.stat().st_size / 1024), "KB")

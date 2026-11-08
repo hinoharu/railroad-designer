@@ -115,6 +115,8 @@
       </div>
       <div id="sum"></div>
       <div id="opts"></div>
+      <!-- 前の版を重ねる（2026-11-08、ユーザーの指定：今の最終版と新しいやり方の結果を地図で比べる）：全区間の表示と系統の表示で、前の版の線を細く重ねる -->
+      <div class="row"><label>前の版を重ねる <select id="snapSel" autocomplete="off"><option value="">なし</option><option value="?">読み込む…</option></select></label></div>
     </div>
     <!-- the comparison of the variants (2026-11-05). Later the variants that were not adopted move to a separate archive page (the user) -->
     <div id="cmpBox" hidden><table id="cmp"></table></div>
@@ -385,6 +387,7 @@
       L.polyline(ol, { color: "#555", weight: 1.5, dashArray: "4 4", interactive: false }).addTo(origL);
       for (const p of ol) L.circleMarker(p, { radius: 2.5, color: "#333", weight: 1, fillColor: "#fff", fillOpacity: 1, interactive: false }).addTo(vertL);
     }
+    drawSnapshot();
     if (sel < 0) {
       for (const S of D.secs) drawLine(S, () => ONE_COLOR, false);
       for (const S of D.secs) drawStations(S, false);
@@ -408,6 +411,23 @@
     if (g.kind === "section") cmpViews.forEach((W, k) => { if (k !== cmpV) drawLine(W, () => CMP_COLORS[k % CMP_COLORS.length], true); });
     drawLine(V, (s) => g.kind === "system" && opt.color ? BANDS[bandOf(at(V.lim, V.dx, s))][1] : CMP_COLORS[cmpV % CMP_COLORS.length], false);
     drawStations(V, false);
+  }
+  // 前の版の線を細く重ねる（2026-11-08）。案のデータ（CMP）の、その版の案の線形を全区間ぶん描く。今の線の下に描く
+  const SNAP_COLOR = "#c2255c";
+  function drawSnapshot() {
+    if (!opt.snap || !CMP) return;
+    for (const g of CMP.groups) {
+      if (g.kind !== "section") continue;
+      for (const v of g.variants) if (v.snapshot === opt.snap) { const P = prepSec(v.section, -1); P.struct = opt.flat ? P.structAlt : P.structBase; drawLine(P, () => SNAP_COLOR, true); }
+    }
+  }
+  async function snapSelect(val) {
+    if (val === "?") {   // 読み込んでから版の一覧を出し、最初の版を選ぶ
+      if (!CMP) { $("msg").hidden = false; $("msg").textContent = "前の版を読み込んでいます…"; try { CMP = await loadVariants(); } catch (e) { $("msg").textContent = "読み込めませんでした（" + e.message + "）"; return; } $("msg").hidden = true; }
+      val = (CMP.snapshots || [])[0]?.id || "";
+    }
+    if (CMP) $("snapSel").innerHTML = '<option value="">なし</option>' + (CMP.snapshots || []).map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+    $("snapSel").value = val; opt.snap = val || null; saveOpt(); drawMap();
   }
   function toggles() {
     if (opt.orig) origL.addTo(map); else origL.remove();
@@ -799,6 +819,8 @@
     $("opts").innerHTML = OPTS.map(([k, t]) => `<label><input type="checkbox" id="o_${k}" autocomplete="off"${opt[k] ? " checked" : ""}> ${t}</label>`).join("");
     for (const [k] of OPTS) $("o_" + k).onchange = (e) => { opt[k] = e.target.checked; saveOpt(); if (k === "color" || k === "others") drawMap(); else { toggles(); drawGeo(); } };
     // ［駅地平化］: it replaces the profiles of all the sections, so it sits apart from the display options, next to the window buttons
+    $("snapSel").onchange = (e) => snapSelect(e.target.value);
+    if (opt.snap) snapSelect("?").then(() => { if (CMP && CMP.snapshots.some((s) => s.id === opt.snap)) { $("snapSel").value = opt.snap; drawMap(); } });   // 前回の選択を戻す
     $("o_flat").checked = !!opt.flat;
     $("o_flat").onchange = (e) => { opt.flat = e.target.checked; saveOpt(); applyFlat(); if (cmpOn) useCmp(cmpG, cmpV); else useSel(sel); };
     // one fold (2026-11-04, the user's choice, after two nested folds): closed, every setting is hidden (the window buttons, ［駅地平化］,

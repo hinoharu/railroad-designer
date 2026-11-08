@@ -192,10 +192,11 @@ JM_MARGIN, JM_CLEAR = 20.0, 32.0
 JM_TAIL, JM_OUTER = 10.0, 20.0
 # 構内の勾配の上限と縦曲線（2026-11-08、ユーザーの判断。docs/vertical_curve.md 4・junction.md 2 の冒頭・thresholds.md）：構内は水平と決め打ちせず、
 # 規定で許される勾配までの駅があるものとする。分岐器のある停車場（行き違い駅・分岐駅・信号場）は停止区域の 5‰、棒線駅は留置・解結しない区域の 10‰。
-# 停車場の種類は tables/station_yard.json（セーブの線路の配置から station_yard.py が作る。表にない停車場は「分岐器あり」）。
+# 棒線駅はオプションの入力 tables/station_yard.json の plain_stations（なければ全停車場を行き違い駅＝分岐器ありとみなす。駅の点だけで計算できることが基本。ユーザーの方針）。
 # 縦曲線（半径 VC_R）が構内に食い込まないよう、構内の勾配の区間を接線長の最悪の値 T ＝ VC_R × (構内の上限 ＋ 線の上限 GCAP) ÷ 2 だけ延ばす（design3.py）
 YARD_G = {'棒線': 0.010, '分岐器あり': 0.005}; VC_R = 3000.0
-YARD_RULE = sha(YARD_G, VC_R, file_hash(os.path.join(net.HERE, 'station_yard.json')))
+PLAIN_STATIONS = net.load('station_yard.json').get('plain_stations', []) if os.path.exists(os.path.join(net.HERE, 'station_yard.json')) else []
+YARD_RULE = sha(YARD_G, VC_R, 'const', PLAIN_STATIONS)   # 'const'：構内は 1 つの勾配（design3.py の変更の印）
 def yard_half(s): return round(s['run']['TRAIN'] / 2 + JM_MARGIN / 2 + JM_CLEAR + JM_TAIL + JM_OUTER, 1)
 def jmin_auto(s):
     trains = [s['run']['TRAIN']] + [net.SEC[t_ or s['fit']['trunk']].get('run', {}).get('TRAIN', 0) for t_ in s['fit'].get('ends', {}).values() if (t_ or s['fit']['trunk']) in net.SEC]   # 古い手順の幹線（ipg）には run がない
@@ -237,7 +238,8 @@ def build_section(s):
     env = {'GCAP': pf['GCAP']}
     if 'KYAKU25_ADD' in pf: env['KYAKU25_ADD'] = json.dumps(pf['KYAKU25_ADD'], ensure_ascii=False)
     if 'STN_HALF' in pf: env['STN_HALF'] = yard_half(s) if pf['STN_HALF'] == 'auto' else pf['STN_HALF']   # 構内の半分の長さ m（2026-11-08。"auto"：TRAIN ÷ 2 ＋ 72）
-    env['YARD_G'] = json.dumps(YARD_G, ensure_ascii=False); env['VC_R'] = str(VC_R)   # 構内の勾配の上限（種類ごと。停車場の種類は design3.py が tables/station_yard.json を読む）と縦曲線の半径（2026-11-08）
+    env['YARD_G'] = json.dumps(YARD_G, ensure_ascii=False); env['VC_R'] = str(VC_R)   # 構内の勾配の上限（種類ごと）と縦曲線の半径（2026-11-08）
+    env['PLAIN_STATIONS'] = json.dumps([n for n in PLAIN_STATIONS if n in s['route']['stops']], ensure_ascii=False)   # この区間の棒線駅（オプション）
     env.update(pf.get('rules', {}))   # 縦断の規則の値（橋梁の高さの境 BRIDGE_H1・H2・SPAN・W_BH2、駅の深さ DEPTH_MAX・EXIT_R。2026-11-07、国後島。説明は tables/README.md）
     costs = f"costs_{pf.get('costs', 'single')}.json"
     sufs = ('',) if pf.get('only_gs') else ('_free', '')   # only_gs：駅地平化だけ（高さ指定なしは作らない。2026-11-07、ユーザー）

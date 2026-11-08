@@ -1,5 +1,6 @@
 # セーブの線路のマスから、駅ごとに「ホームに面する線路の本数」と「ホームの近くの分岐器のマスの数」を数え、棒線駅（分岐器なし・1 線）を分ける。
-# 使い方：cd kp; python3 station_yard.py tables/saves/rails_etorofu.json tables/saves/rails_kunashiri.json → tables/station_yard.json（停車場の種類の表）
+# 使い方：cd kp; python3 station_yard.py tables/saves/rails_etorofu.json tables/saves/rails_kunashiri.json → tables/station_yard.json（棒線駅の一覧。オプションの入力）
+# これは FreeTrain のセーブという 1 つのデータ源のための道具で、計算の本体（build.py・design3.py）は一覧を受け取るだけ（データ源ごとの特別な入口は作らない。2026-11-08、ユーザーの方針）
 # 線路のマスは save_rails.py がセーブ（freetrain-saves の 択捉島90x21_004re3_20260929…・国後島003_540x1584_20261025…）から取り出したもの。1 マス ≈ 110 m。
 # 規則：信号場は行き違いのためにあるので、セーブに分岐器がなくても「分岐器あり」（2026-11-08、ユーザー。新白糠信号場だけが該当）。表にない停車場は「分岐器あり」（安全側）
 import sys, json, re, os, collections
@@ -65,4 +66,7 @@ for f in glob.glob(os.path.join(KP, 'fit_*.json')):
     for w, j in json.load(open(f)).get('junctions', {}).items(): br.add(j['station'])
 print('分岐駅（支線がつながる停車場）のうち棒線と判定：', [r[1] for r in uniq if r[1] in br and kind(r) == '棒線'], '／分岐駅', len(br & {r[1] for r in uniq}))
 print('ホームのマスが見つからない：', [r[1] for r in uniq if r[3] == 0])
-json.dump({r[1]: {'save_name': r[2], 'platform_cells': r[3], 'tracks': r[4], 'junctions': r[5], 'kind': kind(r)} for r in uniq}, open(os.path.join(KP, 'tables', 'station_yard.json'), 'w'), ensure_ascii=False, indent=0)
+ev = {r[1]: {'save_name': r[2], 'platform_cells': r[3], 'tracks': r[4], 'junctions': r[5]} for r in uniq}
+json.dump({"_about": "棒線駅の一覧（オプションの入力。2026-11-08、ユーザーの方針：駅の点だけで計算できることが基本で、棒線駅の指定は任意。指定のない停車場はすべて行き違い駅（分岐器あり）とみなす）",
+           "_source": "FreeTrain のセーブの線路の配置から station_yard.py で読み取った（ホームに面する線路 1 本・ホームから 6 マス以内に分岐器なし。信号場は除く）。別のデータ源では手で書くか省く",
+           "plain_stations": sorted(r[1] for r in uniq if kind(r) == '棒線'), "_evidence": ev}, open(os.path.join(KP, 'tables', 'station_yard.json'), 'w'), ensure_ascii=False, indent=1)

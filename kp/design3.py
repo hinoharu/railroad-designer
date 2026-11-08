@@ -88,7 +88,7 @@ def lp(sn, gn, lim, state, Pn, tangn):
     c = np.concatenate([np.zeros(nz), np.where(state == 0, 1.0, np.where(state == 2, W_BH, 0.0)), np.full(nu, MU), np.full(n - 1, NU1), np.full(n - 1, NU2),
                         np.tile([W_FLAT_UP, W_FLAT_CUT], len(FL)), np.full(nsl, W_SLACK), np.full(nb2, W_BH2)])
     rows = []; b = []
-    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2 + 2 * len(END_G), N)); r = 0
+    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2 + 2 * len(END_G) + 2 * (n - 2), N)); r = 0
     for i in range(n):
         if state[i] == 2:   # 橋梁の高さの費用：w ≥ z − g（高さ 1 m あたり W_BH）
             A[r, i] = 1; A[r, nz + i] = -1; b.append(gn[i]); r += 1
@@ -102,6 +102,10 @@ def lp(sn, gn, lim, state, Pn, tangn):
         j = nz + nw + k - 1
         A[r, k - 1] = 1; A[r, k] = -2; A[r, k + 1] = 1; A[r, j] = -1; b.append(0); r += 1
         A[r, k - 1] = -1; A[r, k] = 2; A[r, k + 1] = -1; A[r, j] = -1; b.append(0); r += 1
+    for k in range(n - 2):   # 構内（lim ＜ GMAX の続く節点）は 1 つの勾配にする（2026-11-08）：節点ごとに ±上限の間で勾配を変えると、構内の中に大きな勾配変化点ができるため
+        if lim[k] < GMAX and lim[k + 1] < GMAX:
+            A[r, k] = 1; A[r, k + 1] = -2; A[r, k + 2] = 1; b.append(0); r += 1
+            A[r, k] = -1; A[r, k + 1] = 2; A[r, k + 2] = -1; b.append(0); r += 1
     for k in range(n - 1):   # |z[k+1] − z[k]| ≤ lim·ds + e1 + e2（e1：15〜20‰ の分、e2：20〜25‰ の分）
         d = lim[k] * (sn[k + 1] - sn[k]); j1 = nz + nw + nu + k; j2 = j1 + (n - 1)
         A[r, k + 1] = 1; A[r, k] = -1; A[r, j1] = -1; A[r, j2] = -1; b.append(d); r += 1
@@ -175,13 +179,12 @@ if __name__ == "__main__":
     PD = json.load(open('costs_double.json')); PD = dict(PD, c_abutment=ABUT_M * PD["c_bridge"])
     g, z, sn, zn = formation_lp(s, r["ground"], r["stations"])          # 出発点：いまの決め方
     lim = np.full(len(sn) - 1, GMAX)
-    # 構内の勾配の上限（2026-11-08、ユーザーの判断。docs/vertical_curve.md 4・junction.md 2）：停車場の種類（tables/station_yard.json：棒線・分岐器あり）ごとに
-    # YARD_G（JSON {種類: 上限}。表にない停車場は「分岐器あり」）。YARD_G がなければ水平（それまでの決め方）。
+    # 構内の勾配の上限（2026-11-08、ユーザーの判断。docs/vertical_curve.md 4・junction.md 2）：YARD_G（JSON {"棒線": 上限, "分岐器あり": 上限}）。
+    # 棒線駅はオプションの PLAIN_STATIONS（JSON の駅名の一覧）。指定のない停車場は行き違い駅（分岐器あり）。YARD_G がなければ水平（それまでの決め方）。
     # 縦曲線が構内に食い込まないよう、上限の区間を接線長の最悪の値 VC_R × (上限 ＋ GCAP) ÷ 2 だけ両側に延ばす
-    YARD_G = json.loads(_os.environ.get('YARD_G', '{}')); VC_R = float(_os.environ.get('VC_R', '0'))
-    YARD_KIND = json.load(open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'tables', 'station_yard.json'))) if YARD_G else {}
+    YARD_G = json.loads(_os.environ.get('YARD_G', '{}')); VC_R = float(_os.environ.get('VC_R', '0')); PLAIN = set(json.loads(_os.environ.get('PLAIN_STATIONS', '[]')))
     for name, c in r["stations"]:
-        yg = YARD_G.get(YARD_KIND.get(name, {}).get('kind', '分岐器あり'), 0.0) if YARD_G else 0.0; ext = VC_R * (yg + GCAP) / 2
+        yg = YARD_G.get('棒線' if name in PLAIN else '分岐器あり', 0.0) if YARD_G else 0.0; ext = VC_R * (yg + GCAP) / 2
         for k in range(len(sn) - 1):
             if sn[k + 1] > c - STN_HALF - ext and sn[k] < c + STN_HALF + ext: lim[k] = min(lim[k], yg)
     gn = np.array([np.median(g[(s >= x - NODE / 2) & (s <= x + NODE / 2)]) for x in sn])

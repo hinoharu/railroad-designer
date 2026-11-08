@@ -10,7 +10,7 @@
  },
  "built_with": {
   "repository": "hinoharu/railroad-designer",
-  "commit": "87e816f（入力表か結果に未コミットの変更あり）"
+  "commit": "50d811b（入力表か結果に未コミットの変更あり）"
  },
  "source": {
   "drawing": "作図した路線・駅（地理院地図で作図。駅レーダーサイトの data/fiction_src。この書き出しの駅の名前・読み・路線名はそれに合わせた）",
@@ -676,62 +676,62 @@
     ],
     [
      "戸狩臼",
-     8132
+     8150
     ],
     [
      "浮老",
-     13939
+     13956
     ],
     [
      "背卸",
-     19045
+     19081
     ],
     [
      "牧読井",
-     24892
+     24916
     ],
     [
      "去家",
-     31539
+     31551
     ],
     [
      "背祖曽",
-     38938
+     37678
     ],
     [
      "応仁萌",
-     44948
+     43717
     ],
     [
      "四谷",
-     47789
+     46567
     ],
     [
      "渡刈",
-     54822
+     53669
     ],
     [
      "東留茶留",
-     64623
+     63466
     ],
     [
      "乙知志",
-     71622
+     70463
     ],
     [
      "磯谷",
-     80867
+     79716
     ],
     [
      "新指臼",
-     89355
+     88182
     ],
     [
      "沼田",
-     100115
+     98980
     ]
    ],
-   "length_m": 100115,
+   "length_m": 98980,
    "lines": [
     {
      "line": "茂世路線",
@@ -758,20 +758,20 @@
    "profile": {
     "free": {
      "file": "design_fmoyoro_free.json",
-     "max_grade_permille": 23.4,
-     "tunnel_m": 32500.0,
-     "bridge_m": 30640.0
+     "max_grade_permille": 21.3,
+     "tunnel_m": 32140.0,
+     "bridge_m": 29320.0
     },
     "gs": {
      "file": "design_fmoyoro.json",
      "max_grade_permille": 35.0,
-     "tunnel_m": 31480.0,
-     "bridge_m": 22320.0
+     "tunnel_m": 31940.0,
+     "bridge_m": 21640.0
     }
    },
    "polyline": {
-    "points": 298,
-    "max_deviation_m": 9.75
+    "points": 302,
+    "max_deviation_m": 9.98
    }
   },
   {
@@ -865,22 +865,22 @@
     ],
     [
      "特掟",
-     6725
+     6724
     ],
     [
      "美云別",
-     10477
+     10475
     ],
     [
      "樺里信号場",
-     14559
+     14566
     ],
     [
      "単冠山口",
-     27630
+     26596
     ]
    ],
-   "length_m": 27630,
+   "length_m": 26596,
    "lines": [
     {
      "line": "単冠山麓線",
@@ -909,19 +909,19 @@
     "free": {
      "file": "design_fsanroku_n_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 6640.0,
-     "bridge_m": 1040.0
+     "tunnel_m": 6400.0,
+     "bridge_m": 1740.0
     },
     "gs": {
      "file": "design_fsanroku_n.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 3400.0,
-     "bridge_m": 2340.0
+     "tunnel_m": 2420.0,
+     "bridge_m": 3420.0
     }
    },
    "polyline": {
     "points": 114,
-    "max_deviation_m": 9.97
+    "max_deviation_m": 9.94
    }
   },
   {
@@ -944,26 +944,26 @@
     ],
     [
      "西映",
-     8945
+     8966
     ],
     [
      "上伏古信号場",
-     12357
+     12168
     ],
     [
      "仲芭蕉",
-     21697
+     21497
     ],
     [
      "来季萌",
-     27165
+     26956
     ],
     [
      "長生内",
-     29743
+     29719
     ]
    ],
-   "length_m": 29743,
+   "length_m": 29719,
    "lines": [
     {
      "line": "単冠山麓線",
@@ -986,19 +986,19 @@
     "free": {
      "file": "design_fsanroku_s_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 13220.0,
-     "bridge_m": 2280.0
+     "tunnel_m": 14060.0,
+     "bridge_m": 3760.0
     },
     "gs": {
      "file": "design_fsanroku_s.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 7340.0,
-     "bridge_m": 3020.0
+     "tunnel_m": 8700.0,
+     "bridge_m": 1980.0
     }
    },
    "polyline": {
-    "points": 108,
-    "max_deviation_m": 9.63
+    "points": 112,
+    "max_deviation_m": 9.58
    }
   },
   {
@@ -1025,14 +1025,14 @@
     ],
     [
      "冬知里信号場",
-     6640
+     6620
     ],
     [
      "塘路",
-     12176
+     12158
     ]
    ],
-   "length_m": 12176,
+   "length_m": 12158,
    "lines": [
     {
      "line": "茂世路線(冬知里支線)",
@@ -1055,8 +1055,8 @@
     "free": {
      "file": "design_ftoshi_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 760.0,
-     "bridge_m": 3760.0
+     "tunnel_m": 580.0,
+     "bridge_m": 4300.0
     },
     "gs": {
      "file": "design_ftoshi.json",
@@ -1114,10 +1114,10 @@
     ],
     [
      "新指臼",
-     42157
+     42150
     ]
    ],
-   "length_m": 42157,
+   "length_m": 42150,
    "lines": [
     {
      "line": "小田萌線",
@@ -1140,8 +1140,8 @@
     "free": {
      "file": "design_fotamoi_free.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 8780.0,
-     "bridge_m": 11540.0
+     "tunnel_m": 8680.0,
+     "bridge_m": 11680.0
     },
     "gs": {
      "file": "design_fotamoi.json",
@@ -1179,34 +1179,34 @@
     ],
     [
      "良宇仁",
-     5338
+     5346
     ],
     [
      "睡名",
-     13624
+     14090
     ],
     [
      "長根",
-     25171
+     25577
     ],
     [
      "天幕",
-     31392
+     31767
     ],
     [
      "上去家",
-     40295
+     41331
     ],
     [
      "中去家信号場",
-     44226
+     45272
     ],
     [
      "背祖曽",
-     49659
+     50727
     ]
    ],
-   "length_m": 49659,
+   "length_m": 50727,
    "lines": [
     {
      "line": "背蘂線",
@@ -1229,19 +1229,19 @@
     "free": {
      "file": "design_fsesibe_free.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 18480.0,
-     "bridge_m": 9640.0
+     "tunnel_m": 21420.0,
+     "bridge_m": 11600.0
     },
     "gs": {
      "file": "design_fsesibe.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 10420.0,
-     "bridge_m": 8520.0
+     "tunnel_m": 17740.0,
+     "bridge_m": 9460.0
     }
    },
    "polyline": {
-    "points": 249,
-    "max_deviation_m": 9.99
+    "points": 268,
+    "max_deviation_m": 9.94
    }
   },
   {
@@ -1702,10 +1702,10 @@
     ],
     [
      "北乙",
-     8373
+     8364
     ]
    ],
-   "length_m": 8373,
+   "length_m": 8364,
    "lines": [
     {
      "line": "乙知志線",
@@ -1728,19 +1728,19 @@
     "free": {
      "file": "design_fotoshi_free.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 1500.0,
+     "tunnel_m": 1520.0,
      "bridge_m": 0.0
     },
     "gs": {
      "file": "design_fotoshi.json",
-     "max_grade_permille": 24.9,
+     "max_grade_permille": 23.4,
      "tunnel_m": 0.0,
-     "bridge_m": 1500.0
+     "bridge_m": 1480.0
     }
    },
    "polyline": {
-    "points": 35,
-    "max_deviation_m": 10.0
+    "points": 34,
+    "max_deviation_m": 9.85
    }
   },
   {
@@ -2319,8 +2319,8 @@
    "TILT": 0,
    "TRAIN": 170,
    "run_min": {
-    "free": 151.6,
-    "gs": 153.8
+    "free": 151.9,
+    "gs": 153.7
    },
    "note": "茂世路線 → 蘂取線（沼田〜南留別）→ 特急の経路（南留別〜類平）→ 蘂取線（類平 → 択捉六甲、逆向き）→ 特急の経路（分岐器 → 択捉六甲）。ダイヤ a.oud2 の特急（上下 16 本ずつ）"
   },
@@ -2412,8 +2412,8 @@
    "TILT": 1,
    "TRAIN": 160,
    "run_min": {
-    "free": 92.2,
-    "gs": 92.3
+    "free": 92.1,
+    "gs": 92.2
    },
    "note": "酪別線 → 特急の経路（蘂取→塘路。塘路で折り返し：冬知里支線は塘路の手前で蘂取の側を向いて分かれる）→ 冬知里支線（塘路→四谷、逆向き）→ 茂世路線（四谷→新指臼）→ 小田萌線（新指臼→年萌、逆向き）→ 蘂取線（分岐器→年萌）。ダイヤ a.oud2 の特急（上下 16 本ずつ）"
   },
@@ -2463,8 +2463,8 @@
    "TILT": 0,
    "TRAIN": 140,
    "run_min": {
-    "free": 196.9,
-    "gs": 198.8
+    "free": 198.2,
+    "gs": 199.8
    },
    "note": "背蘂線 → 茂世路線（背祖曽 → 沼田）→ 蘂取線（沼田 → 南留別）→ 特急の経路（南留別 → 択捉六甲の先の分岐器）→ 丹根萌線。ダイヤ a.oud2 の急行（上下 4 本ずつ）。標後〜蘂取は回送（特急の経路の上）"
   },
@@ -2509,8 +2509,8 @@
    "TILT": 0,
    "TRAIN": 120,
    "run_min": {
-    "free": 120.0,
-    "gs": 122.6
+    "free": 119.5,
+    "gs": 121.4
    },
    "note": "茂世路線 → 蘂取線（沼田〜南留別）→ 特急の経路（南留別〜類平の先の分岐器）→ 蘂取線（類平 → 西単冠、逆向き）→ 択捉空港線。ダイヤ a.oud2 の快速（上下 14 本ずつ）"
   },
@@ -2572,8 +2572,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 48.6,
-    "gs": 48.8
+    "free": 47.7,
+    "gs": 48.1
    },
    "note": "単冠山麓線の普通（入里節 → 単冠山口で折り返し → 長生内）。ダイヤ a.oud2 ではダイヤ作成ソフトの都合で入里節〜単冠山口と単冠山口〜長生内に分けてあるが、1 列車（ユーザーの説明、2026-11-06）。キハ201系 4 両。信号場は通過"
   },
@@ -2669,8 +2669,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 40.8,
-    "gs": 41.2
+    "free": 41.1,
+    "gs": 41.3
    },
    "note": "ダイヤ a.oud2 の普通（上下 15 本ずつ）。セーブの「野斗路線 山麓乗入」キハ40形 4 両（ユーザー、11-06：キハ40 の想定。出力の大小は考えていない）。車両の設定は低速。速度の区分は参考で、線路の規格が低めなので最高速度 85 km/h（ユーザー、11-06）"
   },
@@ -2700,7 +2700,7 @@
    "TRAIN": 80,
    "run_min": {
     "free": 27.7,
-    "gs": 30.0
+    "gs": 30.1
    },
    "note": "ダイヤ a.oud2 の普通（上下 17 本ずつ）。セーブの「寄別線 普通」キハ40形 4 両"
   },
@@ -2738,8 +2738,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 97.2,
-    "gs": 103.2
+    "free": 98.5,
+    "gs": 104.4
    },
    "note": "ダイヤ a.oud2 の普通（上下 12 本ずつ。ほかに四谷〜北乙が 2 本ずつ）。乙知志線の名前の編成はセーブにない。背蘂線を通るので「背蘂線 普通」（キハ40形 4 両）として扱う"
   },

@@ -10,7 +10,7 @@
  },
  "built_with": {
   "repository": "hinoharu/railroad-designer",
-  "commit": "87e816f（入力表か結果に未コミットの変更あり）"
+  "commit": "50d811b（入力表か結果に未コミットの変更あり）"
  },
  "source": {
   "drawing": "作図した路線・駅（地理院地図で作図。駅レーダーサイトの data/fiction_src。この書き出しの駅の名前・読み・路線名はそれに合わせた）",
@@ -201,7 +201,7 @@
     }
    },
    "polyline": {
-    "points": 381,
+    "points": 382,
     "max_deviation_m": 9.99
    }
   },
@@ -225,7 +225,7 @@
     ],
     [
      "樽別",
-     4070
+     4071
     ],
     [
      "善平古丹",
@@ -237,54 +237,54 @@
     ],
     [
      "米戸賀",
-     13850
+     13851
     ],
     [
      "軽別",
-     19351
+     19352
     ],
     [
      "斜里苅別信号場",
-     22433
+     22424
     ],
     [
      "一菱内",
-     28015
+     28295
     ],
     [
      "鸚居温泉",
-     35775
+     35546
     ],
     [
      "植尻",
-     39614
+     39385
     ],
     [
      "小田富",
-     43842
+     43613
     ],
     [
      "芦里",
-     48409
+     48181
     ],
     [
      "秩苅別",
-     50277
+     50049
     ],
     [
      "島登",
-     53914
+     53686
     ],
     [
      "遣岱",
-     58278
+     58050
     ],
     [
      "仁岸寄",
-     67639
+     67425
     ]
    ],
-   "length_m": 67639,
+   "length_m": 67425,
    "lines": [
     {
      "line": "国後北線",
@@ -313,24 +313,24 @@
      ]
     ]
    },
-   "min_radius_m": 220,
+   "min_radius_m": 240,
    "profile": {
     "free": {
      "file": "design_fkita_w.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 12860.0,
-     "bridge_m": 6640.0
+     "tunnel_m": 15320.0,
+     "bridge_m": 3600.0
     },
     "gs": {
      "file": "design_fkita_w.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 12860.0,
-     "bridge_m": 6640.0
+     "tunnel_m": 15320.0,
+     "bridge_m": 3600.0
     }
    },
    "polyline": {
-    "points": 211,
-    "max_deviation_m": 9.85
+    "points": 217,
+    "max_deviation_m": 9.83
    }
   },
   {
@@ -357,10 +357,10 @@
     ],
     [
      "古釜布",
-     5569
+     5570
     ]
    ],
-   "length_m": 5569,
+   "length_m": 5570,
    "lines": [
     {
      "line": "国後北線",
@@ -387,20 +387,20 @@
    "profile": {
     "free": {
      "file": "design_fkofu.json",
-     "max_grade_permille": 5.5,
+     "max_grade_permille": 5.4,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     },
     "gs": {
      "file": "design_fkofu.json",
-     "max_grade_permille": 5.5,
+     "max_grade_permille": 5.4,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     }
    },
    "polyline": {
     "points": 11,
-    "max_deviation_m": 8.96
+    "max_deviation_m": 8.94
    }
   },
   {
@@ -427,78 +427,78 @@
     ],
     [
      "止音別",
-     12761
+     12763
     ],
     [
      "南利寄",
-     21205
+     21240
     ],
     [
      "利寄",
-     25460
+     25217
     ],
     [
      "璃瑠篠信号場",
-     26610
+     26387
     ],
     [
      "知牽牛",
-     28511
+     28288
     ],
     [
      "翻内",
-     40447
+     40257
     ],
     [
      "国後蘂取",
-     45357
+     45168
     ],
     [
      "散尺別",
-     48206
+     48018
     ],
     [
      "留遠知",
-     52186
+     51998
     ],
     [
      "知東",
-     58623
+     58456
     ],
     [
      "止嬰賀",
-     67544
+     67389
     ],
     [
      "硫老",
-     69578
+     69414
     ],
     [
      "落石",
-     71803
+     71640
     ],
     [
      "遠音別",
-     83209
+     83019
     ],
     [
      "島別",
-     84627
+     84427
     ],
     [
      "小田別",
-     87892
+     87684
     ],
     [
      "美禄",
-     96382
+     96178
     ],
     [
      "白糠泊",
-     98708
+     98507
     ]
    ],
-   "length_m": 98708,
+   "length_m": 98507,
    "lines": [
     {
      "line": null,
@@ -540,20 +540,20 @@
    "profile": {
     "free": {
      "file": "design_fkita_e.json",
-     "max_grade_permille": 33.1,
+     "max_grade_permille": 33.3,
      "tunnel_m": 47960.0,
-     "bridge_m": 8000.0
+     "bridge_m": 7660.0
     },
     "gs": {
      "file": "design_fkita_e.json",
-     "max_grade_permille": 33.1,
+     "max_grade_permille": 33.3,
      "tunnel_m": 47960.0,
-     "bridge_m": 8000.0
+     "bridge_m": 7660.0
     }
    },
    "polyline": {
-    "points": 214,
-    "max_deviation_m": 9.94
+    "points": 220,
+    "max_deviation_m": 9.87
    }
   },
   {
@@ -848,26 +848,26 @@
     ],
     [
      "新白糠信号場",
-     2420
+     1730
     ],
     [
      "南白糠",
-     3710
+     3090
     ],
     [
      "笛島",
-     4820
+     6969
     ],
     [
      "東笛島",
-     7629
+     9519
     ],
     [
      "歌分",
-     11393
+     13251
     ]
    ],
-   "length_m": 11393,
+   "length_m": 13251,
    "lines": [
     {
      "line": "笛島線",
@@ -885,24 +885,24 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 170,
+   "min_radius_m": 210,
    "profile": {
     "free": {
      "file": "design_ffueshima.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 2160.0,
-     "bridge_m": 2620.0
+     "tunnel_m": 2900.0,
+     "bridge_m": 3740.0
     },
     "gs": {
      "file": "design_ffueshima.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 2160.0,
-     "bridge_m": 2620.0
+     "tunnel_m": 2900.0,
+     "bridge_m": 3740.0
     }
    },
    "polyline": {
-    "points": 58,
-    "max_deviation_m": 9.69
+    "points": 75,
+    "max_deviation_m": 9.61
    }
   },
   {
@@ -929,22 +929,22 @@
     ],
     [
      "渡海別",
-     6603
+     6594
     ],
     [
      "東爺爺",
-     12683
+     12794
     ],
     [
      "音笏",
-     17013
+     19133
     ],
     [
      "遠音別",
-     20205
+     22337
     ]
    ],
-   "length_m": 20205,
+   "length_m": 22337,
    "lines": [
     {
      "line": "爺爺線",
@@ -962,24 +962,24 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 270,
+   "min_radius_m": 280,
    "profile": {
     "free": {
      "file": "design_fchacha.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 380.0,
-     "bridge_m": 260.0
+     "tunnel_m": 1800.0,
+     "bridge_m": 2440.0
     },
     "gs": {
      "file": "design_fchacha.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 380.0,
-     "bridge_m": 260.0
+     "tunnel_m": 1800.0,
+     "bridge_m": 2440.0
     }
    },
    "polyline": {
-    "points": 82,
-    "max_deviation_m": 9.94
+    "points": 83,
+    "max_deviation_m": 10.0
    }
   },
   {
@@ -1006,26 +1006,26 @@
     ],
     [
      "底吼",
-     13646
+     15332
     ],
     [
      "円山",
-     17106
+     18731
     ],
     [
      "上遠根別",
-     21768
+     23401
     ],
     [
      "千歳信号場",
-     28071
+     29712
     ],
     [
      "国後蘂取",
-     39124
+     40775
     ]
    ],
-   "length_m": 39124,
+   "length_m": 43419,
    "lines": [
     {
      "line": "遠音別線",
@@ -1043,24 +1043,24 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 240,
+   "min_radius_m": 250,
    "profile": {
     "free": {
      "file": "design_fonne.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 17260.0,
-     "bridge_m": 2340.0
+     "tunnel_m": 15480.0,
+     "bridge_m": 6500.0
     },
     "gs": {
      "file": "design_fonne.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 17260.0,
-     "bridge_m": 2340.0
+     "tunnel_m": 15480.0,
+     "bridge_m": 6500.0
     }
    },
    "polyline": {
-    "points": 160,
-    "max_deviation_m": 9.98
+    "points": 193,
+    "max_deviation_m": 9.97
    }
   },
   {
@@ -1091,10 +1091,10 @@
     ],
     [
      "南利寄",
-     6877
+     7019
     ]
    ],
-   "length_m": 6877,
+   "length_m": 7019,
    "lines": [
     {
      "line": "岸内線",
@@ -1112,24 +1112,24 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 210,
+   "min_radius_m": 160,
    "profile": {
     "free": {
      "file": "design_fkishi.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 740.0,
+     "tunnel_m": 1040.0,
      "bridge_m": 540.0
     },
     "gs": {
      "file": "design_fkishi.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 740.0,
+     "tunnel_m": 1040.0,
      "bridge_m": 540.0
     }
    },
    "polyline": {
-    "points": 30,
-    "max_deviation_m": 9.54
+    "points": 32,
+    "max_deviation_m": 9.17
    }
   },
   {
@@ -1156,26 +1156,26 @@
     ],
     [
      "上留夜別",
-     6398
+     5927
     ],
     [
      "瀬生",
-     12137
+     11385
     ],
     [
      "浦雲泊",
-     20579
+     19806
     ],
     [
      "竜知志",
-     25722
+     24947
     ],
     [
      "岸内",
-     27754
+     26999
     ]
    ],
-   "length_m": 27754,
+   "length_m": 26999,
    "lines": [
     {
      "line": "瀬生線",
@@ -1193,24 +1193,24 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 160,
+   "min_radius_m": 170,
    "profile": {
     "free": {
      "file": "design_fseoi.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 5320.0,
-     "bridge_m": 7860.0
+     "tunnel_m": 5160.0,
+     "bridge_m": 6540.0
     },
     "gs": {
      "file": "design_fseoi.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 5320.0,
-     "bridge_m": 7860.0
+     "tunnel_m": 5160.0,
+     "bridge_m": 6540.0
     }
    },
    "polyline": {
-    "points": 126,
-    "max_deviation_m": 9.42
+    "points": 119,
+    "max_deviation_m": 9.97
    }
   }
  ],
@@ -1521,8 +1521,8 @@
    "TILT": 1,
    "TRAIN": 160,
    "run_min": {
-    "free": 113.5,
-    "gs": 113.5
+    "free": 113.3,
+    "gs": 113.3
    },
    "note": "南線 安渡移矢→白糠泊 → 北線 東側（逆向き）→ 古釜布支線 → 古釜布で折り返し → 北線 西側（逆向き）→ 国後泊。テンプレのダイヤの特急（上下 17 本ずつ）"
   },
@@ -1587,8 +1587,8 @@
    "TILT": 0,
    "TRAIN": 130,
    "run_min": {
-    "free": 76.2,
-    "gs": 76.2
+    "free": 76.9,
+    "gs": 76.9
    },
    "note": "テンプレのダイヤの特急 国後空港→岡布（上下 18 本ずつ）と、岡布→止嬰賀（✈特急。上下 18 本ずつ）を 1 本として扱う"
   },
@@ -1626,8 +1626,8 @@
    "TILT": 0,
    "TRAIN": 160,
    "run_min": {
-    "free": 103.9,
-    "gs": 103.9
+    "free": 104.0,
+    "gs": 104.0
    },
    "note": "テンプレのダイヤでは軽別〜白糠泊と白糠泊〜遠音別に分かれているが、白糠泊で折り返す 1 本の列車（ユーザー、2026-11-07。白糠泊がループの切れ目）。上下 17〜18 本ずつ"
   },
@@ -1715,8 +1715,8 @@
    "TILT": 0,
    "TRAIN": 130,
    "run_min": {
-    "free": 176.1,
-    "gs": 176.1
+    "free": 184.1,
+    "gs": 184.1
    },
    "note": "テンプレのダイヤの臨時快速（上下 15 本ずつ）。古い特急型気動車を使った快速（ユーザー、2026-11-07）"
   },
@@ -1761,8 +1761,8 @@
    "TILT": 0,
    "TRAIN": 130,
    "run_min": {
-    "free": 82.0,
-    "gs": 82.0
+    "free": 82.9,
+    "gs": 82.9
    },
    "note": "テンプレのダイヤの普通（上下 18 本ずつ）。北線 東側の中間が非電化なので気動車"
   },
@@ -1805,8 +1805,8 @@
    "TILT": 0,
    "TRAIN": 130,
    "run_min": {
-    "free": 66.3,
-    "gs": 66.3
+    "free": 67.0,
+    "gs": 67.0
    },
    "note": "テンプレのダイヤの普通（上下 18 本ずつ）。植尻〜仁岸寄が非電化なので気動車"
   },
@@ -1894,8 +1894,8 @@
    "TILT": 0,
    "TRAIN": 120,
    "run_min": {
-    "free": 90.1,
-    "gs": 90.1
+    "free": 90.6,
+    "gs": 90.6
    },
    "note": "テンプレのダイヤの普通（上下 17 本ずつ）"
   },
@@ -1969,8 +1969,8 @@
    "TILT": 0,
    "TRAIN": 85,
    "run_min": {
-    "free": 56.8,
-    "gs": 56.8
+    "free": 57.0,
+    "gs": 57.0
    },
    "note": "テンプレのダイヤの普通○（上下 16〜17 本ずつ）"
   },
@@ -2002,8 +2002,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 36.4,
-    "gs": 36.4
+    "free": 38.5,
+    "gs": 38.5
    },
    "note": "テンプレのダイヤの普通（上下 18 本ずつ）"
   },
@@ -2032,8 +2032,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 40.1,
-    "gs": 40.1
+    "free": 42.8,
+    "gs": 42.8
    },
    "note": "テンプレのダイヤの普通（上下 17〜18 本ずつ）"
   },
@@ -2061,8 +2061,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 27.1,
-    "gs": 27.1
+    "free": 25.6,
+    "gs": 25.6
    },
    "note": "テンプレのダイヤの普通（上下 19 本ずつ）。竜知志は通過"
   },
@@ -2089,8 +2089,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 18.7,
-    "gs": 18.7
+    "free": 19.0,
+    "gs": 19.0
    },
    "note": "テンプレのダイヤの普通（上下 17 本ずつ）。朧瀬別信号場は通過"
   },
@@ -2202,8 +2202,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 17.0,
-    "gs": 17.0
+    "free": 18.2,
+    "gs": 18.2
    },
    "note": "テンプレのダイヤの普通（上下 17 本ずつ）。新白糠信号場は通過"
   }

@@ -30,7 +30,7 @@ def _pop(keys, vals, n):
 
 @njit(cache=True)
 def astar(G, sea, m_lo, m_hi, dline, dgoal, CM, M0, nz, DZ, GMAX, C_TRACK, LAMBDA, BOUND, TURN, D16, LEN, KK,
-          start, sbi, sbj, zB, END_TOL, g, pred, closed, heap_cap):
+          start, sbi, sbj, zB, END_TOL, hb, hbtol, g, pred, closed, heap_cap):
     """A*。g・pred・closed は呼ぶ側が用意した配列（長さ N）。返り値：(費用, 終点の状態（なければ −1）, 展開した状態の数)"""
     ny, nx = G.shape; NH = 16
     keys = np.empty(heap_cap, np.float64); vals = np.empty(heap_cap, np.int64); n = 0
@@ -43,7 +43,9 @@ def astar(G, sea, m_lo, m_hi, dline, dgoal, CM, M0, nz, DZ, GMAX, C_TRACK, LAMBD
         if closed[p]: continue
         closed[p] = 1; n_exp += 1
         h = p % NH; q = p // NH; m = q % nz + M0; c = q // nz; i = c % nx; j = c // nx; gp = g[p]
-        if i == sbi and j == sbj and abs(m * DZ - zB) <= END_TOL: return gp, p, n_exp
+        if i == sbi and j == sbj and abs(m * DZ - zB) <= END_TOL:
+            if hb < 0 or min((h - hb) % 16, (hb - h) % 16) <= hbtol: return gp, p, n_exp   # 終点の向き（hb < 0 なら自由）
+            continue
         for dh in range(-TURN, TURN + 1):
             h2 = (h + dh) % 16; i2 = i + D16[h2, 0]; j2 = j + D16[h2, 1]
             if i2 < 0 or i2 >= nx or j2 < 0 or j2 >= ny or sea[j2, i2]: continue

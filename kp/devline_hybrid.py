@@ -42,6 +42,20 @@ def search(a, b, f, env, Kuse):
             if (K, relax) != steps[0]: print(f'  {a}→{b}（帯 {env.get("CORRIDOR", "0")}）：{"K=8000" if relax == 0 else "終点の向き ±45°" if relax == 1 else "終点の向き自由"} で見つけた', flush=True)
             return K, relax
     return Kuse, -1
+# 面的な探索（devline3.py、2026-11-08、ユーザーの提案）：帯 W の段階をなくし、1 回の A* で「建設費 ＋ 線路の費用 ＋ λ × 離れの面積」が最小の線を探す。
+# 作図の線が使える駅間では、作図の線に貼り付けた探索（λ を非常に大きく）と比べ、総費用が同じか高ければ作図の線をそのまま使う。
+# SEARCH=devline2 で今までの探索に戻せる（kp_var の案の比較）。λ を与えない（LAMBDA=None）ときは devline2 の段階的な探索のまま
+SEARCH = os.environ.get('SEARCH', 'devline3'); LAMBDA_FIX = 1000.0   # 作図の線に貼り付ける λ（離れ 1 m² に切土 1,000 m³ 分。離れない線だけが残る）
+C_TRACK = os.environ.get('C_TRACK', '100'); C_TRACK_F = float(C_TRACK)
+def search3(a, b, f, GS, lam, hb='draw'):
+    """devline3 で駅間 a→b を探す（λ＝lam）。見つからなければ終点の向きを ±45°、自由、と緩める（devline2 の search と同じ段）。戻り値：結果の辞書か None"""
+    for relax in (0, 1, 2):
+        e = dict(os.environ, GMAX=str(GS), MARGIN='3000', LAMBDA=str(lam), C_TRACK=C_TRACK, HB=hb if relax < 2 else '-1', HBTOL='1' if relax == 0 else '2')
+        subprocess.run(['python3', 'devline3.py', ROUTE, a, b, f], env=e, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        if os.path.exists(f):
+            if relax: print(f'  {a}→{b}（λ={lam:g}）：{"終点の向き ±45°" if relax == 1 else "終点の向き自由"} で見つけた', flush=True)
+            return json.load(open(f))
+    return None
 r = json.load(open(ROUTE)); names = [n for n, _ in r['stations']]; P = r['points']; V = r['vidx']
 pts, stations, vidx, computed, rows = [], [], [], [], []
 for k, (a, b) in enumerate(zip(names, names[1:])):
@@ -49,7 +63,22 @@ for k, (a, b) in enumerate(zip(names, names[1:])):
     G = GMAP.get((a, b), GDEF)
     za, zb = elev(*D[0]), elev(*D[-1]); need = 110 + abs(zb - za) / G
     use = D; how = '作図の線'
-    if need <= Ld and (a, b) in SEGS and LAMBDA is not None:   # 連続的な基準（問題の残る駅間）
+    if SEARCH == 'devline3' and LAMBDA is not None and (need > Ld or (a, b) in SEGS):   # 面的な探索（2026-11-08）
+        GS = GSEG.get((a, b), G); f = f"{PREFIX}d3_{a}_{b}_l{LAMBDA:g}.json"; ff = f"{PREFIX}d3_{a}_{b}_fix.json"
+        d3 = search3(a, b, f, GS, LAMBDA) if not os.path.exists(f) else json.load(open(f))
+        if d3 is None: raise SystemExit(f'{a}→{b}：面的な探索で経路が見つからない')
+        fix = None
+        if need <= Ld:   # 作図の線が勾配で足りる駅間：作図の線に貼り付けた探索と比べる
+            fix = search3(a, b, ff, GS, LAMBDA_FIX) if not os.path.exists(ff) else json.load(open(ff))
+        tot3 = d3['cost'] + C_TRACK_F * d3['length'] + LAMBDA * d3['dev_area']
+        totf = fix['cost'] + C_TRACK_F * fix['length'] if fix else None
+        if fix and totf <= tot3 * (1 + 1e-6):
+            how = f'作図の線（面的な探索でも離れない：総費用 {totf:.3g} ≤ {tot3:.3g}）'
+        else:
+            use = d3['points']; computed.append([a, b])
+            how = f'面的な探索の線（建設費 {d3["cost"]:.3g}、離れの面積 {d3["dev_area"]:.3g} m²、λ={LAMBDA:g}' + (f'。作図の線に貼り付けると {totf:.3g} ＞ {tot3:.3g}' if fix else '。作図の線は勾配で足りない') + '）'
+        print(f'{a}→{b}：{"要る長さ " + f"{need / 1000:.2f} km ＞ 作図 {Ld / 1000:.2f} km" if need > Ld else "問題の残る駅間"} → {how}（{d3["seconds"]:.1f} 秒）', flush=True)
+    elif need <= Ld and (a, b) in SEGS and LAMBDA is not None:   # 連続的な基準（問題の残る駅間。devline2）
         GS = GSEG.get((a, b), G); env0 = dict(os.environ, GMAX=str(GS), K='1500', MARGIN='3000', STATION_ONLY='0', HB='draw')
         f0 = f"{PREFIX}draw_{a}_{b}.json"
         if not os.path.exists(f0): subprocess.run(['python3', 'devline2.py', ROUTE, a, b, f0], env=dict(env0, CORRIDOR='0', EVAL_DRAW=f0), stdout=subprocess.DEVNULL, check=False)
@@ -74,7 +103,7 @@ for k, (a, b) in enumerate(zip(names, names[1:])):
             if cw is not None and cw <= c0 / R:
                 use = json.load(open(f))['points']; computed.append([a, b]); how = f'探した線（帯 {W} m、費用 {cw / c0:.0%}。段 {len(tried)}）'; break
         print(f'{a}→{b}：問題の残る駅間。元の折れ線の費用 {c0:.3g}、段ごと ' + '、'.join(f'帯 {W}・1/{R}：{cw:.3g}（{cw / c0:.0%}）' if cw is not None else f'帯 {W}：なし' for W, R, cw in tried) + f' → {how}', flush=True)
-    if need > Ld:
+    if need > Ld and not (SEARCH == 'devline3' and LAMBDA is not None):
         res = {}; Kuse = '1500'
         for W in [0] + WS:
             GS = GSEG.get((a, b), G); f = f"{PREFIX}{'dev4' if GS == G else 'dev7'}_{a}_{b}_{W}.json"

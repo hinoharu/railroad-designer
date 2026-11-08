@@ -76,6 +76,8 @@ D16 = [(1, 0), (2, 1), (1, 1), (1, 2), (0, 1), (-1, 2), (-1, 1), (-2, 1), (-1, 0
 LEN = [H * math.hypot(*d) for d in D16]; KK = [int(math.floor(GMAX * L / DZ + 1e-9)) for L in LEN]
 mA = int(round(zA / DZ)); ha = int(os.environ['HA']) if os.environ.get('HA') else heading(seg[min(3, len(seg) - 1)] - seg[0])
 start = node(sa[0], sa[1], mA, ha)
+# 終点の向き：HB（0..15、'draw' なら作図の向き、省略・-1 なら自由）と許容 HBTOL（16 方向の刻み。1＝±22.5°）。devline2 と同じ
+_hb = os.environ.get('HB', '-1'); hb = heading(seg[-1] - seg[max(0, len(seg) - 4)]) if _hb == 'draw' else int(_hb); HBTOL = int(os.environ.get('HBTOL', '1'))
 print(f'{A}→{B}：作図 {Ldraw / 1000:.2f} km、駅の地盤 {zA:.0f} → {zB:.0f} m、格子 {nx}×{ny}（{H:.0f} m）、高さの階級 {nz}（{DZ:.2f} m）、状態 {N:,}、'
       f'{MODE}、C_TRACK {C_TRACK:g}、λ {LAMBDA:g}', flush=True)
 
@@ -90,7 +92,7 @@ def astar():
         if p in done: continue
         done.add(p); n_exp += 1
         i, j, m, h = decode(p); gp = g[p]
-        if i == sb[0] and j == sb[1] and abs(m * DZ - zB) <= END_TOL: return gp, p, pred, n_exp
+        if i == sb[0] and j == sb[1] and abs(m * DZ - zB) <= END_TOL and (hb < 0 or min((h - hb) % 16, (hb - h) % 16) <= HBTOL): return gp, p, pred, n_exp
         for dh in range(-TURN, TURN + 1):
             h2 = (h + dh) % 16; dx, dy = D16[h2]; i2, j2 = i + dx, j + dy
             if not (0 <= i2 < nx and 0 <= j2 < ny) or seal[j2][i2]: continue
@@ -114,7 +116,7 @@ if MODE == 'astar':   # numba で変換した A*（astar_core.py）。MODE=pytho
     import astar_core
     g_ = np.full(N, np.inf); pred_ = np.full(N, -1, np.int64); closed_ = np.zeros(N, np.uint8)
     c, goal, n_exp = astar_core.astar(G, sea, m_lo, m_hi, DLINE, DGOAL, CM, M0, nz, DZ, GMAX, C_TRACK, LAMBDA, BOUND, TURN,
-                                      np.array(D16, np.int64), np.array(LEN), np.array(KK, np.int64), start, sb[0], sb[1], zB, END_TOL, g_, pred_, closed_, 60_000_000)
+                                      np.array(D16, np.int64), np.array(LEN), np.array(KK, np.int64), start, sb[0], sb[1], zB, END_TOL, hb, HBTOL, g_, pred_, closed_, 60_000_000)
     print(f'  A*（numba）：展開した状態 {n_exp:,}（{time.time() - t0:.1f} 秒）', flush=True)
     if goal == -2: raise SystemExit(f'{A}→{B}：待ち行列があふれた')
     if goal < 0: raise SystemExit(f'{A}→{B}：経路が見つからない（駅 B の高さ ±{END_TOL} m に届く状態がない）')
@@ -168,6 +170,6 @@ xy[0], xy[-1] = seg[0], seg[-1]; L = float(np.hypot(*np.diff(xy, axis=0).T).sum(
 print(f'  見つけた経路：{L / 1000:.2f} km（作図より {L / 1000 - Ldraw / 1000:+.2f} km）、建設費 {cost_dev2:.3g}（線路の費用と離れの費用込み {c:.3g}、離れの面積 {dev_area:.3g} m²）、'
       f'地盤−線路 {hs.min():.0f}〜{hs.max():.0f} m、最急 {gr.max() * 1000:.1f}‰、点 {len(xy)}、{time.time() - t0:.1f} 秒', flush=True)
 json.dump({'from': A, 'to': B, 'method': 'devline3', 'mode': MODE, 'points': [list(to_ll(x, y)) for x, y in xy], 'z': z.tolist(), 'h': hs.tolist(), 'length': L, 'cost': cost_dev2,
-           'cost_total': float(c), 'dev_area': dev_area, 'heading_end': int(dec[-1][3]), 'heading_start': int(ha),
+           'cost_total': float(c), 'dev_area': dev_area, 'heading_end': int(dec[-1][3]), 'heading_start': int(ha), 'HB': hb, 'HBTOL': HBTOL,
            'GMAX': GMAX, 'H': H, 'DZ': DZ, 'MARGIN': MARGIN, 'END_TOL': END_TOL, 'C_TRACK': C_TRACK, 'LAMBDA': LAMBDA, 'DEV_FREE': DEV_FREE, 'TURN': TURN, 'seconds': time.time() - t0},
           open(out, 'w'), ensure_ascii=False)

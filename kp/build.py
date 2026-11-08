@@ -173,7 +173,7 @@ def hybrid_env(s, rf):
         if os.path.exists(segs_file(b)): env['SEGS'] = json.dumps(json.load(open(segs_file(b))), ensure_ascii=False)
         if os.path.exists(gseg_file(b)): hy = dict(hy, GSEG={**hy.get('GSEG', {}), **json.load(open(gseg_file(b)))})
         if 'STAGES' in hy: env['STAGES'] = json.dumps(hy['STAGES'])
-        if 'LAMBDA' in hy: env['LAMBDA'] = hy['LAMBDA']   # 連続的な基準（離れ 1 m² の重み）。与えなければ STAGES の段階的な基準
+    if 'LAMBDA' in hy: env['LAMBDA'] = hy['LAMBDA']   # 連続的な基準（離れ 1 m² の重み。面的な探索 devline3 を使う印）。与えなければ STAGES の段階的な基準。auto でない区間にも渡す（2026-11-08：auto の中にあって択捉島の 4 区間に渡らなかった）
     if gmap: env['GMAP'] = json.dumps(gmap, ensure_ascii=False)
     if 'GSEG' in hy: env['GSEG'] = json.dumps(hy['GSEG'], ensure_ascii=False)
     return env

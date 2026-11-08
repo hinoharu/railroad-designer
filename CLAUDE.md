@@ -25,7 +25,7 @@ Claude Code が作業前に読む説明書です。変更の前に全体を読�
 | `kp_var/` | 案の比較の計算の結果（`V256` は前の版の 10 区間。ユーザーの指定で永続的に残す） |
 | `data/fiction.json` | 作図から作った路線・駅（駅レーダーサイトの写し）。経路の探索 `kp/path.py` が読む |
 | `page/` | 確認用ページ（GitHub Pages で公開）：`align.html`、データ `data/fiction_align.json`・`fiction_variants.json`、データを作るスクリプト `scripts/` |
-| `docs/` | 仕様と判断の経緯（`README.md` 目的と順番と決定、`align.md` 線形・縦断・走行、`kunashiri.md` 国後島の決定と結果、`exchange.md` 駅レーダーサイトとの受け渡しの形、`junction.md` 分岐器の位置と勾配の規則、`thresholds.md` しきい値の台帳、`history.md`、`inventory/` 棚卸し） |
+| `docs/` | 仕様と判断の経緯（`README.md` 目的と順番と決定、`align.md` 線形・縦断・走行、`kunashiri.md` 国後島の決定と結果、`exchange.md` 駅レーダーサイトとの受け渡しの形、`junction.md` 分岐器の位置と勾配の規則、`vertical_curve.md` 縦曲線の規定と扱いの案、`thresholds.md` しきい値の台帳、`history.md`、`inventory/` 棚卸し） |
 | `.claude/` | 応答が英語になったら指摘する hook（`wording_reminder.py`） |
 | `.github/workflows/pages.yml` | `page/` を GitHub Pages に公開する |
 

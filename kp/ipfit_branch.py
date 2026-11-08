@@ -15,6 +15,10 @@ import numpy as np
 from multiprocessing import Pool
 from scipy.spatial import cKDTree
 import ipfit_all as F
+SWEEP_STOP = os.environ.get('SWEEP_STOP', '1') != '0'   # なめ直しで何も変わらなければ止める（結果は同じ。2026-11-08）
+JSCAN = os.environ.get('JSCAN', 'coarse')   # 分岐器の候補：full＝10 m 刻みを全部。coarse＝100 m 刻み → 最良の周り ±100 m を 10 m 刻み（2026-11-08）
+FAST = os.environ.get('FAST', '1') != '0'   # 機械語の版（ipfit_fast.py）を使う（2026-11-08）。FAST=0 で元のまま
+if FAST: import ipfit_fast as _X
 NAME, ROUTE, TRUNK = sys.argv[1], sys.argv[2], sys.argv[3]
 # 端ごとに、つながる上位の線を替えられる（「start=fit_x.json」の形。両端が別々の線につながる線：冬知里支線・小田萌線。2026-11-04）
 ENDS = [a.split('=')[0] for a in sys.argv[4:] if a.split('=')[0] in ('start', 'end')] or ['end']
@@ -95,6 +99,7 @@ def solve(core, js, je, sweeps=F.SWEEPS):
     if je is not None:
         J, h = je; ag = max(10.0, float((J - Q[-1]) @ h)); Q = Q + [J - h * ag, J]
     Q = np.array([q for k, q in enumerate(Q) if k == 0 or np.hypot(*(q - Q[k - 1])) > 0.5])
+    if FAST: _X.set_polyline(Q)   # 元の折れ線（線分への距離を測る。線分を格子に登録する）
     dense = [Q[0]]
     for p_, q_ in zip(Q, Q[1:]):
         n = max(1, int(np.hypot(*(q_ - p_)) / 2)); dense += [p_ + (q_ - p_) * u for u in np.linspace(0, 1, n + 1)[1:]]
@@ -155,6 +160,7 @@ def solve(core, js, je, sweeps=F.SWEEPS):
     except SystemExit as e: solve.why = '半径を選べない：' + str(e); return None
     with Pool(4) as pool:
         for sw in range(sweeps):
+            changed = 0
             for cls in range(5):
                 ws = wlist(V_)
                 ids = [i for i in range(1, len(V_) - 1) if i % 5 == cls and not fixed[i]]
@@ -162,9 +168,12 @@ def solve(core, js, je, sweeps=F.SWEEPS):
                 for k, J in ws:
                     if k % 5 == cls: res.append(best_move_w((V_, Rs, k, J, (V_[k] - J) / np.hypot(*(V_[k] - J)))))
                 for i, r_ in res:
-                    if len(r_) == 4 and (r_[1] or r_[2]): V_[i] = V_[i] + np.array([r_[1], r_[2]])
-                    if len(r_) == 4: Rs[i - 1] = r_[3]
+                    if len(r_) == 4 and (r_[1] or r_[2]): V_[i] = V_[i] + np.array([r_[1], r_[2]]); changed += 1
+                    if len(r_) == 4:
+                        if Rs[i - 1] != r_[3]: changed += 1
+                        Rs[i - 1] = r_[3]
             V_, Rs, fixed, nrem, nmer = F.topology(V_, Rs, fixed)
+            if SWEEP_STOP and changed == 0 and nrem == 0 and nmer == 0: break   # 何も変わらなければ、残りのなめ直しは同じ結果なので止める（2026-11-08）
     try: Rs = F.choose_radii(V_)
     except SystemExit as e: solve.why = '半径を選べない（後）：' + str(e); return None
     cost, mx = F.local_cost(V_, Rs, 0, len(V_) - 1, True)
@@ -211,6 +220,7 @@ def station_cut(which):
     vs = sorted(set(F.r['vidx']))
     return vs[1] if which == 'start' else vs[-2]
 
+if FAST: _X.install()
 if __name__ == '__main__':
     t0 = time.time(); fn = f'branch_{NAME}_cands.json'
     done = json.load(open(fn)) if os.path.exists(fn) else {}
@@ -224,7 +234,27 @@ if __name__ == '__main__':
         print(f'{NAME}・{w}：幹線のキロ程 {lo:.0f}〜{hi:.0f} m、支線は幹線の{"左" if sig > 0 else "右"}側、幹線のキロ程が{"増える" if tau > 0 else "減る"}向きにつながる', flush=True)
         cut = station_cut(w)
         cands, near_st = restrict(lo, hi, tau, w); info[w] = info[w] + (near_st,)
-        for sj in cands:
+        if JSCAN == 'coarse' and len(cands) > 20:   # 100 m 刻みで見てから、最良の周り ±100 m を 10 m 刻みで（候補の費用は位置に対して滑らか）
+            coarse = cands[::10] + ([cands[-1]] if cands[-1] not in cands[::10] else [])
+            print(f'  {w}：候補 {len(cands)} のうち、まず 100 m 刻みの {len(coarse)} を解く', flush=True)
+        else: coarse = None
+        for sj in (coarse if coarse else cands) + (['refine'] if coarse else []):
+            if sj == 'refine':   # 粗い段の最良の周りを細かく
+                ok0 = [v for k, v in done.items() if k.startswith(w + ':') and v['cost'] is not None and any(abs(v['sj'] - s_) < 0.5 for s_ in coarse)]
+                if not ok0: break
+                b0 = min(ok0, key=lambda v: v['cost'])['sj']; fine = [s_ for s_ in cands if abs(s_ - b0) <= 100 + 0.5 and s_ not in coarse]
+                print(f'  {w}：粗い段の最良 {b0:.0f} m の周りの {len(fine)} を解く', flush=True); cands = coarse + fine
+                for sj in fine:
+                    key = f'{w}:{sj:.0f}'
+                    if key not in done:
+                        J, h = junction(sj, tau, sig, w)
+                        if w == 'end': r_ = solve(list(range(cut, hi_core + 1)), None, (J, h))
+                        else: r_ = solve(list(range(lo_core, cut + 1)), (J, -h), None)
+                        done[key] = {'sj': float(sj), 'cost': r_['cost'], 'maxdev': r_['maxdev']} if r_ else {'sj': float(sj), 'cost': None, 'why': getattr(solve, 'why', '')}
+                        json.dump(done, open(fn, 'w'))
+                    v = done[key]
+                    print(f'  {w} {sj:.0f} m：' + (f'費用 {v["cost"]:.0f}、ずれの最大 {v["maxdev"]:.1f} m' if v['cost'] is not None else '曲線が入らない：' + v.get('why', '')) + f'（{time.time() - t0:.0f} 秒）', flush=True)
+                break
             key = f'{w}:{sj:.0f}'
             if key not in done:
                 J, h = junction(sj, tau, sig, w)

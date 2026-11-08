@@ -56,7 +56,12 @@ for sid, s in net.SEC.items():
         d = D[tid]; sn, zn = np.array(d['sn']), np.array(d['zn']); g = np.diff(zn) / np.diff(sn) * 1000; di = np.diff(g)
         idx = np.where(np.abs(di) >= TH)[0] + 1
         if not len(idx): junc.append((sid, w, tid, 0, 0, 0)); continue
-        k = idx[np.argmin(np.abs(sn[idx] - j['s']))]; t = R * abs(di[k - 1]) / 1000 / 2; dist = abs(sn[k] - j['s'])
+        # 分岐点の s は幹線の線形の上の距離程。縦断の節点 sn は地形の上の距離程なので、route_f<幹線>.json（地形）と fit_<幹線>.json（線形）の点ごとの対応で変換する（ipfit_branch の ground_of と同じ）
+        js = j['s']
+        if os.path.exists(f'route_f{tid}.json'):
+            rs = np.array(json.load(open(f'route_f{tid}.json'))['s']); fs = np.array(json.load(open(f'fit_{tid}.json'))['s'])
+            if len(rs) == len(fs): js = float(np.interp(j['s'], fs, rs))
+        k = idx[np.argmin(np.abs(sn[idx] - js))]; t = R * abs(di[k - 1]) / 1000 / 2; dist = abs(sn[k] - js)
         junc.append((sid, w, tid, dist, t, abs(di[k - 1])))
 print(f'縦曲線の半径 R = {R:.0f} m、勾配の変化 {TH}‰ 未満は無視。区間 {len(rows)}、節点 {nodes_total}')
 print('区間 | 節点 | 変化点 | うち ≥10‰ | 最大 Δi ‰ | 最大 T m | 隣と重なる')

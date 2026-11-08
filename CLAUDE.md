@@ -42,7 +42,7 @@ cd ..
 python3 page/scripts/fiction_align.py kp      # 確認用ページのデータ page/data/fiction_align.json を作る
 python3 page/scripts/fiction_variants.py kp   # 案の比較のデータ page/data/fiction_variants.json を作る（kp_var を読む）
 ```
-- 必要なもの：Python 3（NumPy・SciPy）。地形の標高は国土地理院の標高タイル（DEM10B、`cyberjapandata.gsi.go.jp`）を取得する。
+- 必要なもの：Python 3（NumPy・SciPy・numba。numba は面的な探索 `kp/devline3.py` の A* を機械語に変換するため。2026-11-08、ユーザーの了承。環境の設定スクリプトで `pip install numba`）。地形の標高は国土地理院の標高タイル（DEM10B、`cyberjapandata.gsi.go.jp`）を取得する。
 - 長い計算（地形からの探索、全区間の作り直し）は 1 時間を超えることがある。裏で動かし、済んだ印で再開する。
 
 ## 作業のルール

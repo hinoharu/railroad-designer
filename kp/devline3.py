@@ -25,7 +25,7 @@ t0 = time.time()
 GMAX = float(os.environ.get('GMAX', '0.015')); H = float(os.environ.get('H', '100')); MARGIN = float(os.environ.get('MARGIN', '3000'))
 DZ = float(os.environ.get('DZ', str(GMAX * H))); END_TOL = float(os.environ.get('END_TOL', '10')); C_TRACK = float(os.environ.get('C_TRACK', '100'))
 ZLO = float(os.environ.get('ZLO', '100')); ZHI = float(os.environ.get('ZHI', '100'))   # 線路の高さの範囲：地盤 − ZLO（深いトンネル）〜 地盤 ＋ ZHI（高い橋梁）
-TURN = int(os.environ.get('TURN', '1')); MODE = os.environ.get('MODE', 'astar')
+TURN = int(os.environ.get('TURN', '1')); MODE = os.environ.get('MODE', 'astar')   # astar（numba）／python（純 Python の A*）／dijkstra（scipy の全探索）
 LAMBDA = float(os.environ.get('LAMBDA', '0')); DEV_FREE = float(os.environ.get('DEV_FREE', '30')); BOUND = float(os.environ.get('BOUND', 'inf'))
 P = json.load(open('costs_single.json'))
 W_BH = float(os.environ.get('W_BH', '1.0')); BRIDGE_H1 = float(os.environ.get('BRIDGE_H1', '0')); W_BH2 = float(os.environ.get('W_BH2', '100'))
@@ -110,7 +110,17 @@ def astar():
                     g[p2] = c2; pred[p2] = p; heapq.heappush(pq, (c2 + hgoal, p2))
     return None, None, pred, n_exp
 
-if MODE == 'astar':
+if MODE == 'astar':   # numba で変換した A*（astar_core.py）。MODE=python なら純 Python の同じ A*（確認用）
+    import astar_core
+    g_ = np.full(N, np.inf); pred_ = np.full(N, -1, np.int64); closed_ = np.zeros(N, np.uint8)
+    c, goal, n_exp = astar_core.astar(G, sea, m_lo, m_hi, DLINE, DGOAL, CM, M0, nz, DZ, GMAX, C_TRACK, LAMBDA, BOUND, TURN,
+                                      np.array(D16, np.int64), np.array(LEN), np.array(KK, np.int64), start, sb[0], sb[1], zB, END_TOL, g_, pred_, closed_, 60_000_000)
+    print(f'  A*（numba）：展開した状態 {n_exp:,}（{time.time() - t0:.1f} 秒）', flush=True)
+    if goal == -2: raise SystemExit(f'{A}→{B}：待ち行列があふれた')
+    if goal < 0: raise SystemExit(f'{A}→{B}：経路が見つからない（駅 B の高さ ±{END_TOL} m に届く状態がない）')
+    path = []; n = goal
+    while n != -1: path.append(n); n = pred_[n]
+elif MODE == 'python':
     c, goal, pred, n_exp = astar()
     print(f'  A*：展開した状態 {n_exp:,}（{time.time() - t0:.1f} 秒）', flush=True)
     if c is None: raise SystemExit(f'{A}→{B}：経路が見つからない（駅 B の高さ ±{END_TOL} m に届く状態がない）')

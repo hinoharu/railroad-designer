@@ -10,7 +10,7 @@
  },
  "built_with": {
   "repository": "hinoharu/railroad-designer",
-  "commit": "1789bd5（入力表か結果に未コミットの変更あり）"
+  "commit": "32ed7a2（入力表か結果に未コミットの変更あり）"
  },
  "source": {
   "drawing": "作図した路線・駅（地理院地図で作図。駅レーダーサイトの data/fiction_src。この書き出しの駅の名前・読み・路線名はそれに合わせた）",
@@ -190,14 +190,14 @@
     "free": {
      "file": "design_fminami.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 15340.0,
-     "bridge_m": 11560.0
+     "tunnel_m": 14780.0,
+     "bridge_m": 11220.0
     },
     "gs": {
      "file": "design_fminami.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 15340.0,
-     "bridge_m": 11560.0
+     "tunnel_m": 14780.0,
+     "bridge_m": 11220.0
     }
    },
    "polyline": {
@@ -318,14 +318,14 @@
     "free": {
      "file": "design_fkita_w.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 15300.0,
-     "bridge_m": 3800.0
+     "tunnel_m": 15360.0,
+     "bridge_m": 4080.0
     },
     "gs": {
      "file": "design_fkita_w.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 15300.0,
-     "bridge_m": 3800.0
+     "tunnel_m": 15360.0,
+     "bridge_m": 4080.0
     }
    },
    "polyline": {
@@ -387,13 +387,13 @@
    "profile": {
     "free": {
      "file": "design_fkofu.json",
-     "max_grade_permille": 5.5,
+     "max_grade_permille": 5.7,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     },
     "gs": {
      "file": "design_fkofu.json",
-     "max_grade_permille": 5.5,
+     "max_grade_permille": 5.7,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     }
@@ -541,14 +541,14 @@
     "free": {
      "file": "design_fkita_e.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 47800.0,
-     "bridge_m": 8060.0
+     "tunnel_m": 47860.0,
+     "bridge_m": 7860.0
     },
     "gs": {
      "file": "design_fkita_e.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 47800.0,
-     "bridge_m": 8060.0
+     "tunnel_m": 47860.0,
+     "bridge_m": 7860.0
     }
    },
    "polyline": {
@@ -606,13 +606,13 @@
     "free": {
      "file": "design_fkuko_k.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 1700.0,
+     "tunnel_m": 1620.0,
      "bridge_m": 1380.0
     },
     "gs": {
      "file": "design_fkuko_k.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 1700.0,
+     "tunnel_m": 1620.0,
      "bridge_m": 1380.0
     }
    },
@@ -679,14 +679,14 @@
     "free": {
      "file": "design_ftofutsu.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 560.0,
-     "bridge_m": 1960.0
+     "tunnel_m": 580.0,
+     "bridge_m": 2140.0
     },
     "gs": {
      "file": "design_ftofutsu.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 560.0,
-     "bridge_m": 1960.0
+     "tunnel_m": 580.0,
+     "bridge_m": 2140.0
     }
    },
    "polyline": {
@@ -890,14 +890,14 @@
     "free": {
      "file": "design_ffueshima.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 4120.0,
-     "bridge_m": 2720.0
+     "tunnel_m": 3900.0,
+     "bridge_m": 2700.0
     },
     "gs": {
      "file": "design_ffueshima.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 4120.0,
-     "bridge_m": 2720.0
+     "tunnel_m": 3900.0,
+     "bridge_m": 2700.0
     }
    },
    "polyline": {
@@ -1048,14 +1048,14 @@
     "free": {
      "file": "design_fonne.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 15240.0,
-     "bridge_m": 6960.0
+     "tunnel_m": 15700.0,
+     "bridge_m": 7020.0
     },
     "gs": {
      "file": "design_fonne.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 15240.0,
-     "bridge_m": 6960.0
+     "tunnel_m": 15700.0,
+     "bridge_m": 7020.0
     }
    },
    "polyline": {
@@ -1116,14 +1116,14 @@
    "profile": {
     "free": {
      "file": "design_fkishi.json",
-     "max_grade_permille": 15.0,
-     "tunnel_m": 1040.0,
+     "max_grade_permille": 15.3,
+     "tunnel_m": 1100.0,
      "bridge_m": 380.0
     },
     "gs": {
      "file": "design_fkishi.json",
-     "max_grade_permille": 15.0,
-     "tunnel_m": 1040.0,
+     "max_grade_permille": 15.3,
+     "tunnel_m": 1100.0,
      "bridge_m": 380.0
     }
    },
@@ -1198,14 +1198,14 @@
     "free": {
      "file": "design_fseoi.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 4460.0,
-     "bridge_m": 7680.0
+     "tunnel_m": 4320.0,
+     "bridge_m": 8660.0
     },
     "gs": {
      "file": "design_fseoi.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 4460.0,
-     "bridge_m": 7680.0
+     "tunnel_m": 4320.0,
+     "bridge_m": 8660.0
     }
    },
    "polyline": {
@@ -1521,8 +1521,8 @@
    "TILT": 1,
    "TRAIN": 160,
    "run_min": {
-    "free": 114.1,
-    "gs": 114.1
+    "free": 113.8,
+    "gs": 113.8
    },
    "note": "南線 安渡移矢→白糠泊 → 北線 東側（逆向き）→ 古釜布支線 → 古釜布で折り返し → 北線 西側（逆向き）→ 国後泊。テンプレのダイヤの特急（上下 17 本ずつ）"
   },
@@ -1552,8 +1552,8 @@
    "TILT": 0,
    "TRAIN": 170,
    "run_min": {
-    "free": 77.8,
-    "gs": 77.8
+    "free": 77.7,
+    "gs": 77.7
    },
    "note": "テンプレのダイヤの特急（上下 16 本ずつ）"
   },
@@ -1587,8 +1587,8 @@
    "TILT": 0,
    "TRAIN": 130,
    "run_min": {
-    "free": 77.8,
-    "gs": 77.8
+    "free": 77.5,
+    "gs": 77.5
    },
    "note": "テンプレのダイヤの特急 国後空港→岡布（上下 18 本ずつ）と、岡布→止嬰賀（✈特急。上下 18 本ずつ）を 1 本として扱う"
   },
@@ -1626,8 +1626,8 @@
    "TILT": 0,
    "TRAIN": 160,
    "run_min": {
-    "free": 104.1,
-    "gs": 104.1
+    "free": 104.0,
+    "gs": 104.0
    },
    "note": "テンプレのダイヤでは軽別〜白糠泊と白糠泊〜遠音別に分かれているが、白糠泊で折り返す 1 本の列車（ユーザー、2026-11-07。白糠泊がループの切れ目）。上下 17〜18 本ずつ"
   },
@@ -1669,8 +1669,8 @@
    "TILT": 0,
    "TRAIN": 120,
    "run_min": {
-    "free": 81.1,
-    "gs": 81.1
+    "free": 81.0,
+    "gs": 81.0
    },
    "note": "テンプレのダイヤの ✈快速（国後空港〜白糠泊 上下 17 本ずつ）と快速（白糠泊〜安渡移矢 上下 18〜19 本ずつ）を 1 本として扱う"
   },
@@ -1715,8 +1715,8 @@
    "TILT": 0,
    "TRAIN": 130,
    "run_min": {
-    "free": 226.1,
-    "gs": 226.1
+    "free": 236.8,
+    "gs": 236.8
    },
    "note": "テンプレのダイヤの臨時快速（上下 15 本ずつ）。古い特急型気動車を使った快速（ユーザー、2026-11-07）"
   },
@@ -1969,8 +1969,8 @@
    "TILT": 0,
    "TRAIN": 85,
    "run_min": {
-    "free": 57.0,
-    "gs": 57.0
+    "free": 56.6,
+    "gs": 56.6
    },
    "note": "テンプレのダイヤの普通○（上下 16〜17 本ずつ）"
   },
@@ -2002,8 +2002,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 38.4,
-    "gs": 38.4
+    "free": 38.3,
+    "gs": 38.3
    },
    "note": "テンプレのダイヤの普通（上下 18 本ずつ）"
   },
@@ -2032,8 +2032,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 42.7,
-    "gs": 42.7
+    "free": 42.6,
+    "gs": 42.6
    },
    "note": "テンプレのダイヤの普通（上下 17〜18 本ずつ）"
   },
@@ -2089,8 +2089,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 19.1,
-    "gs": 19.1
+    "free": 19.0,
+    "gs": 19.0
    },
    "note": "テンプレのダイヤの普通（上下 17 本ずつ）。朧瀬別信号場は通過"
   },

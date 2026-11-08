@@ -1,7 +1,7 @@
 # 縦曲線の調査：今の縦断（design3 の結果、節点 100 m の区分線形）の勾配変化点を全区間で機械的に数える。
 # 使い方：cd kp; python3 check_vcurve.py [R（既定 3000 m）]。結果の読み方と規定は docs/vertical_curve.md
 # 調べること：(a) 変化量 Δi の分布と、必要な縦曲線の長さ L = R·Δi、接線長 T = L/2。(b) 隣り合う変化点の間に縦曲線が収まるか（T_k + T_k+1 ≤ 節点の間隔）。
-# (c) 駅の構内（水平区間）の端で縦曲線が構内に食い込む長さ。(d) 分岐器（支線の fit.junctions）が幹線の縦曲線の中に入るか。(e) 変化点が緩和曲線の中か。
+# (c) 駅の構内（停車場中心 ± STN_HALF）の端の外の最初の勾配変化点の縦曲線が構内に食い込む長さ。(d) 分岐器（支線の fit.junctions）が幹線の縦曲線の中に入るか。(e) 変化点が緩和曲線の中か。
 import sys, json, os, numpy as np
 sys.path.insert(0, 'tables'); import net
 R = float(sys.argv[1]) if len(sys.argv) > 1 else 3000.0
@@ -29,14 +29,13 @@ for sid, s in net.SEC.items():
     half = yard_half(s); fit = json.load(open(f'fit_{sid}.json')) if os.path.exists(f'fit_{sid}.json') else None
     for name, s0 in d['stations']:
         for side in (-1, 1):
-            # 構内の端から外へ向かって最初の勾配 ≠ 0 の節点間
-            ks = [k for k in range(len(g)) if (side > 0 and sn[k] >= s0 + half - 1e-6) or (side < 0 and sn[k + 1] <= s0 - half + 1e-6)]
-            if side < 0: ks = ks[::-1]
-            k0 = next((k for k in ks if abs(g[k]) >= TH), None)
-            if k0 is None: continue
-            node = sn[k0] if side > 0 else sn[k0 + 1]; gy = abs(g[k0]); t = R * gy / 1000 / 2
-            gap = abs(node - (s0 + side * half)); intr = max(0.0, t - gap)
-            yard.append((sid, name, '後' if side > 0 else '前', gy, t, gap, intr))
+            # 構内の端（停車場中心 ± half）から外へ向かって最初の勾配変化点（構内の勾配 → 線の勾配）。構内に勾配を認めるので、勾配 ≠ 0 ではなく変化点で見る
+            ks = [k for k in idx if (side > 0 and sn[k] >= s0 + half - 1e-6) or (side < 0 and sn[k] <= s0 - half + 1e-6)]
+            if not ks: continue
+            k0 = min(ks) if side > 0 else max(ks)
+            dik = abs(di[k0 - 1]); t = R * dik / 1000 / 2
+            gap = abs(sn[k0] - (s0 + side * half)); intr = max(0.0, t - gap)
+            yard.append((sid, name, '後' if side > 0 else '前', dik, t, gap, intr))
     # (e) 緩和曲線の中の変化点（fit の elements_flat と同じ距離程と仮定）
     if fit:
         els = fit['elements_flat']
@@ -64,8 +63,8 @@ print('区間 | 節点 | 変化点 | うち ≥10‰ | 最大 Δi ‰ | 最大 T
 for r in rows: print(' | '.join(str(x if not isinstance(x, float) else round(x, 1)) for x in r))
 a = np.array(all_di); print(f'\n変化点 {len(a)}：Δi の分布（‰）：<5 {int((a<5).sum())}、5〜10 {int(((a>=5)&(a<10)).sum())}、10〜20 {int(((a>=10)&(a<20)).sum())}、20〜30 {int(((a>=20)&(a<30)).sum())}、≥30 {int((a>=30).sum())}、最大 {a.max():.1f}')
 print(f'必要な縦曲線の長さ L = R·Δi：最大 {R*a.max()/1000:.0f} m、≥10‰ の変化点の L の合計 {R*a[a>=10].sum()/1000/1000:.1f} km。隣の変化点と縦曲線が重なる所 {gap_bad}')
-y = [r for r in yard if r[6] > 0]; print(f'\n駅の構内の端 {len(yard)} か所（{len(set((r[0],r[1]) for r in yard))} 駅）：縦曲線が構内に食い込む所 {len(y)}、食い込みの最大 {max((r[6] for r in yard), default=0):.1f} m、構内の端の勾配の分布（‰）：≤10 {sum(1 for r in yard if r[3]<=10)}、10〜15 {sum(1 for r in yard if 10<r[3]<=15)}、15〜20 {sum(1 for r in yard if 15<r[3]<=20)}、>20 {sum(1 for r in yard if r[3]>20)}')
-for r in sorted(yard, key=lambda r: -r[6])[:12]: print(f'  {r[0]} {r[1]} {r[2]}：勾配 {r[3]:.1f}‰、T {r[4]:.1f} m、端から変化点まで {r[5]:.0f} m、食い込み {r[6]:.1f} m')
+y = [r for r in yard if r[6] > 0]; print(f'\n駅の構内の端 {len(yard)} か所（{len(set((r[0],r[1]) for r in yard))} 駅）：縦曲線が構内に食い込む所 {len(y)}、食い込みの最大 {max((r[6] for r in yard), default=0):.1f} m、構内の端の変化量 Δi の分布（‰）：≤10 {sum(1 for r in yard if r[3]<=10)}、10〜15 {sum(1 for r in yard if 10<r[3]<=15)}、15〜20 {sum(1 for r in yard if 15<r[3]<=20)}、>20 {sum(1 for r in yard if r[3]>20)}')
+for r in sorted(yard, key=lambda r: -r[6])[:12]: print(f'  {r[0]} {r[1]} {r[2]}：Δi {r[3]:.1f}‰、T {r[4]:.1f} m、端から変化点まで {r[5]:.0f} m、食い込み {r[6]:.1f} m')
 jb = [r for r in junc if r[3] is not None and r[3] < r[4]]; print(f'\n分岐器 {len(junc)}：幹線の縦曲線の中に入る所 {len(jb)}')
 for r in junc: print(f'  {r[0]} {r[1]} 幹線 {r[2]}：最寄りの変化点まで {r[3] if r[3] is None else round(r[3])} m、その T {r[4] if r[4] is None else round(r[4],1)} m（Δi {r[5] if r[5] is None else round(r[5],1)}‰）{"← 中" if r in jb else ""}')
 print(f'\n緩和曲線の中の変化点 {sum(1 for r in trans if r[3]=="T")}、半径 800 m 以下の円曲線の中の変化点 {sum(1 for r in trans if r[3]!="T")}（≥10‰：{sum(1 for r in trans if r[2]>=10)}）')

@@ -1,0 +1,1297 @@
+{
+"蘂取": {
+"save_name": "蘂取",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 27,
+"kind": "分岐器あり"
+},
+"乙今牛": {
+"save_name": "乙今牛",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"浜中": {
+"save_name": "浜中",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 12,
+"kind": "分岐器あり"
+},
+"瀬石温泉": {
+"save_name": "瀬石温泉",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"紗那": {
+"save_name": "紗那",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 17,
+"kind": "分岐器あり"
+},
+"南留別": {
+"save_name": "南留別",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 16,
+"kind": "分岐器あり"
+},
+"類平": {
+"save_name": "類平",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 12,
+"kind": "分岐器あり"
+},
+"振別": {
+"save_name": "振別",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 11,
+"kind": "分岐器あり"
+},
+"老門": {
+"save_name": "老門",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 9,
+"kind": "分岐器あり"
+},
+"択捉神居古潭": {
+"save_name": "択捉神居古潭",
+"platform_cells": 46,
+"tracks": 2,
+"junctions": 15,
+"kind": "分岐器あり"
+},
+"満前": {
+"save_name": "満前",
+"platform_cells": 28,
+"tracks": 1,
+"junctions": 10,
+"kind": "分岐器あり"
+},
+"択捉六甲": {
+"save_name": "択捉六甲",
+"platform_cells": 48,
+"tracks": 2,
+"junctions": 26,
+"kind": "分岐器あり"
+},
+"両牛": {
+"save_name": "両牛",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"兵至平": {
+"save_name": "兵至平",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"大岬": {
+"save_name": "大岬",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"散布": {
+"save_name": "散布",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"散布渓": {
+"save_name": "散布渓",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"紗万部": {
+"save_name": "紗万部",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"南散布": {
+"save_name": "南散布",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"乳萌": {
+"save_name": "乳萌",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"別飛仮乗降場": {
+"save_name": "別飛（仮）",
+"platform_cells": 3,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"方真辺信号場": {
+"save_name": "方真辺（信）",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"得茂別": {
+"save_name": "得茂別",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 8,
+"kind": "分岐器あり"
+},
+"御所釜別信号場": {
+"save_name": "御所釜別(信)",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"目名問": {
+"save_name": "目名問",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"十五夜萌": {
+"save_name": "十五夜萌",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"入里節": {
+"save_name": "入里節",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 14,
+"kind": "分岐器あり"
+},
+"背野津": {
+"save_name": "背野津",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"野塚": {
+"save_name": "野塚",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"具夜": {
+"save_name": "具夜",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"碓": {
+"save_name": "碓",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"西単冠": {
+"save_name": "西単冠",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 10,
+"kind": "分岐器あり"
+},
+"黒木内": {
+"save_name": "黒木内",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"年萌": {
+"save_name": "年萌",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 19,
+"kind": "分岐器あり"
+},
+"羅臼川": {
+"save_name": "羅臼川",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"留紗那": {
+"save_name": "留紗那",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"三股信号場": {
+"save_name": "三股（信）",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"沼田": {
+"save_name": "沼田",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 16,
+"kind": "分岐器あり"
+},
+"摺鉢山": {
+"save_name": "摺鉢山",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"大小": {
+"save_name": "大小",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"奧留別": {
+"save_name": "奧留別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"茂世路": {
+"save_name": "茂世路",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 11,
+"kind": "分岐器あり"
+},
+"戸狩臼": {
+"save_name": "戸狩臼",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"浮老": {
+"save_name": "浮老",
+"platform_cells": 20,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"背卸": {
+"save_name": "背卸",
+"platform_cells": 14,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"牧読井": {
+"save_name": "牧読井",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"去家": {
+"save_name": "去家",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"背祖曽": {
+"save_name": "背祖曽",
+"platform_cells": 28,
+"tracks": 1,
+"junctions": 9,
+"kind": "分岐器あり"
+},
+"応仁萌": {
+"save_name": "応仁萌",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"四谷": {
+"save_name": "四谷",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 14,
+"kind": "分岐器あり"
+},
+"渡刈": {
+"save_name": "渡刈",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"東留茶留": {
+"save_name": "東留茶留",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"乙知志": {
+"save_name": "乙知志",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"磯谷": {
+"save_name": "磯谷",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"新指臼": {
+"save_name": "新指臼",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 18,
+"kind": "分岐器あり"
+},
+"酪別": {
+"save_name": "酪別",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"恵師": {
+"save_name": "恵師",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"裡縫山信号場": {
+"save_name": "裡縫山（信）",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"御処": {
+"save_name": "御処",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"新幌萌信号場": {
+"save_name": "新幌萌（信）",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"散別": {
+"save_name": "散別",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"敏音別信号場": {
+"save_name": "敏音別（信）",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"冬知里信号場": {
+"save_name": "冬知里（信）",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"塘路": {
+"save_name": "塘路",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 12,
+"kind": "分岐器あり"
+},
+"良宇仁": {
+"save_name": "良宇仁",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"睡名": {
+"save_name": "睡名",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"長根": {
+"save_name": "長根",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"天幕": {
+"save_name": "天幕",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"上去家": {
+"save_name": "上去家",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"中去家信号場": {
+"save_name": "中去家（信）",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"丹根萌": {
+"save_name": "丹根萌",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"択捉空港": {
+"save_name": "択捉空港",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"植別": {
+"save_name": "植別",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"特掟": {
+"save_name": "特掟",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"美云別": {
+"save_name": "美云別",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"樺里信号場": {
+"save_name": "樺里（信）",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"単冠山口": {
+"save_name": "単冠山口",
+"platform_cells": 30,
+"tracks": 1,
+"junctions": 8,
+"kind": "分岐器あり"
+},
+"西映": {
+"save_name": "西映",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"上伏古信号場": {
+"save_name": "上伏古（信）",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"仲芭蕉": {
+"save_name": "仲芭蕉",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 8,
+"kind": "分岐器あり"
+},
+"来季萌": {
+"save_name": "来季萌",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"長生内": {
+"save_name": "長生内",
+"platform_cells": 34,
+"tracks": 1,
+"junctions": 9,
+"kind": "分岐器あり"
+},
+"奧羅臼": {
+"save_name": "奧羅臼",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"内保": {
+"save_name": "内保",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 1,
+"kind": "分岐器あり"
+},
+"散布泊": {
+"save_name": "散布泊",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"阿登佐岳": {
+"save_name": "阿登佐岳",
+"platform_cells": 8,
+"tracks": 1,
+"junctions": 1,
+"kind": "分岐器あり"
+},
+"賢萌": {
+"save_name": "賢萌",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"野斗路": {
+"save_name": "野斗路",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"焼沼": {
+"save_name": "焼沼",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"鬼門": {
+"save_name": "鬼門",
+"platform_cells": 3,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"寄別": {
+"save_name": "寄別",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"択捉原": {
+"save_name": "択捉原",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"北乙": {
+"save_name": "北乙",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"萌消": {
+"save_name": "萌消",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"安渡移矢岬": {
+"save_name": "安渡移矢岬",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"安渡移矢": {
+"save_name": "安渡移矢",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"洞揺瀬": {
+"save_name": "洞揺瀬",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"白糠泊": {
+"save_name": "白糠泊",
+"platform_cells": 64,
+"tracks": 1,
+"junctions": 35,
+"kind": "分岐器あり"
+},
+"終化計": {
+"save_name": "終化計",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 1,
+"kind": "分岐器あり"
+},
+"平牛": {
+"save_name": "平牛",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"渓臼": {
+"save_name": "渓臼",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"岡布": {
+"save_name": "岡布",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 12,
+"kind": "分岐器あり"
+},
+"沙流釜布": {
+"save_name": "沙流釜布",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"上野塚": {
+"save_name": "上野塚",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"御狩場": {
+"save_name": "御狩場",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"留夜別": {
+"save_name": "留夜別",
+"platform_cells": 38,
+"tracks": 2,
+"junctions": 17,
+"kind": "分岐器あり"
+},
+"原井": {
+"save_name": "原井",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"狗頭": {
+"save_name": "狗頭",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"岸内": {
+"save_name": "岸内",
+"platform_cells": 56,
+"tracks": 1,
+"junctions": 22,
+"kind": "分岐器あり"
+},
+"千国": {
+"save_name": "千国",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"沖津臼": {
+"save_name": "沖津臼",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"絹飼": {
+"save_name": "絹飼",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"近布内": {
+"save_name": "近布内",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"板蘂": {
+"save_name": "板蘂",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"古釜布": {
+"save_name": "古釜布",
+"platform_cells": 64,
+"tracks": 1,
+"junctions": 24,
+"kind": "分岐器あり"
+},
+"西釜布": {
+"save_name": "西釜布",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"岩吉": {
+"save_name": "岩吉",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"狩士別": {
+"save_name": "狩士別",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 26,
+"kind": "分岐器あり"
+},
+"鬼無里": {
+"save_name": "鬼無里",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"尾路久根": {
+"save_name": "尾路久根",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 16,
+"kind": "分岐器あり"
+},
+"智婦泊": {
+"save_name": "智婦泊",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"稚遣幼": {
+"save_name": "稚遣幼",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"白幡別": {
+"save_name": "白幡別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"国後泊": {
+"save_name": "国後泊",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 17,
+"kind": "分岐器あり"
+},
+"樽別": {
+"save_name": "樽別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"善平古丹": {
+"save_name": "善平古丹",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 22,
+"kind": "分岐器あり"
+},
+"嬰頃牛": {
+"save_name": "嬰頃牛",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"米戸賀": {
+"save_name": "米戸賀",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"軽別": {
+"save_name": "軽別",
+"platform_cells": 48,
+"tracks": 1,
+"junctions": 17,
+"kind": "分岐器あり"
+},
+"斜里苅別信号場": {
+"save_name": "斜里苅別(信)",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"一菱内": {
+"save_name": "一菱内",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"鸚居温泉": {
+"save_name": "鸚居温泉",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"植尻": {
+"save_name": "植尻",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"小田富": {
+"save_name": "小田富",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"芦里": {
+"save_name": "芦里",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"秩苅別": {
+"save_name": "秩苅別",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"島登": {
+"save_name": "島登",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"遣岱": {
+"save_name": "遣岱",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 3,
+"kind": "分岐器あり"
+},
+"仁岸寄": {
+"save_name": "仁岸寄",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"奔別": {
+"save_name": "奔別",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"止音別": {
+"save_name": "止音別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"南利寄": {
+"save_name": "南利寄",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 14,
+"kind": "分岐器あり"
+},
+"利寄": {
+"save_name": "利寄",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 9,
+"kind": "分岐器あり"
+},
+"璃瑠篠信号場": {
+"save_name": "璃瑠篠（信）",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 4,
+"kind": "分岐器あり"
+},
+"知牽牛": {
+"save_name": "知牽牛",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"翻内": {
+"save_name": "翻内",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"国後蘂取": {
+"save_name": "国後蘂取",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 8,
+"kind": "分岐器あり"
+},
+"散尺別": {
+"save_name": "散尺別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"留遠知": {
+"save_name": "留遠知",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"知東": {
+"save_name": "知東",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"止嬰賀": {
+"save_name": "止嬰賀",
+"platform_cells": 24,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"硫老": {
+"save_name": "硫老",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"落石": {
+"save_name": "落石",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"遠音別": {
+"save_name": "遠音別",
+"platform_cells": 40,
+"tracks": 1,
+"junctions": 30,
+"kind": "分岐器あり"
+},
+"島別": {
+"save_name": "島別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"小田別": {
+"save_name": "小田別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"美禄": {
+"save_name": "美禄",
+"platform_cells": 24,
+"tracks": 2,
+"junctions": 1,
+"kind": "分岐器あり"
+},
+"渡海別": {
+"save_name": "渡海別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"東爺爺": {
+"save_name": "東爺爺",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"音笏": {
+"save_name": "音笏",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"底吼": {
+"save_name": "底吼",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"円山": {
+"save_name": "円山",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"上遠根別": {
+"save_name": "上遠根別",
+"platform_cells": 30,
+"tracks": 1,
+"junctions": 13,
+"kind": "分岐器あり"
+},
+"千歳信号場": {
+"save_name": "千歳（信）",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"朧瀬別信号場": {
+"save_name": "朧瀬別（信）",
+"platform_cells": 16,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"上留夜別": {
+"save_name": "上留夜別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"瀬生": {
+"save_name": "瀬生",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"浦雲泊": {
+"save_name": "浦雲泊",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"竜知志": {
+"save_name": "竜知志",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"稚婦": {
+"save_name": "稚婦",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"国後空港": {
+"save_name": "国後空港",
+"platform_cells": 32,
+"tracks": 1,
+"junctions": 6,
+"kind": "分岐器あり"
+},
+"背辛": {
+"save_name": "背辛",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"鹿士別信号場": {
+"save_name": "鹿士別（信）",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"茶嵐岸": {
+"save_name": "茶嵐岸",
+"platform_cells": 4,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"東沸湖": {
+"save_name": "東沸湖",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 1,
+"kind": "分岐器あり"
+},
+"乳呑路": {
+"save_name": "乳呑路",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"稚奮別": {
+"save_name": "稚奮別",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"平浮泊": {
+"save_name": "平浮泊",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"千笛狩": {
+"save_name": "千笛狩",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 2,
+"kind": "分岐器あり"
+},
+"計呂萌": {
+"save_name": "計呂萌",
+"platform_cells": 12,
+"tracks": 1,
+"junctions": 1,
+"kind": "分岐器あり"
+},
+"新白糠信号場": {
+"save_name": "新白糠(信)",
+"platform_cells": 0,
+"tracks": 1,
+"junctions": 0,
+"kind": "分岐器あり"
+},
+"南白糠": {
+"save_name": "南白糠",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"笛島": {
+"save_name": "笛島",
+"platform_cells": 18,
+"tracks": 1,
+"junctions": 5,
+"kind": "分岐器あり"
+},
+"東笛島": {
+"save_name": "東笛島",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+},
+"歌分": {
+"save_name": "歌分",
+"platform_cells": 6,
+"tracks": 1,
+"junctions": 0,
+"kind": "棒線"
+}
+}

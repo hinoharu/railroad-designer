@@ -5,7 +5,7 @@
 #     トンネルの節点は「地盤−施工基面 ≥ 断面の高さ＋最小の土かぶり」、橋梁の節点は「施工基面−地盤 ≥ 橋梁の最低の高さ」を守る
 #     （守れないときは、大きな罰則の付いたゆとりで受ける）。勾配の変化の少なさ（MU）と、15‰ を超える上りの罰則（NU）はいままでどおり
 #  3. 1 と 2 を 3 回くり返す
-# 仮定：駅の構内（前後 110 m）は、トンネルを認め、高架（橋梁）は費用を 2 倍にする。橋台は橋梁の 75 m 分（高架から下ろしてまた上げる
+# 仮定：駅の構内（STN_HALF）は、トンネルを認め、高架（橋梁）は費用を 2 倍にする。構内の勾配は YARD_GRADE（停車場ごとの上限。2026-11-08）。橋台は橋梁の 75 m 分（高架から下ろしてまた上げる
 #       短い地上区間を避けるため。根拠のない仮の値）
 # 使い方：python3 design3.py ground_f名前.json costs_名前.json 出力.json
 import json, math, sys
@@ -128,8 +128,8 @@ def lp(sn, gn, lim, state, Pn, tangn):
     A = csr_matrix(A[:r]); b = np.array(b)
     def kyaku(k): return any(a_ <= sn[k + 1] and sn[k] <= b_ for a_, b_ in KYAKU)
     def kyaku25(k): return any(a_ <= sn[k + 1] and sn[k] <= b_ for a_, b_ in KYAKU25)
-    ub_e = [(0, 0 if (lim[k] == 0 or kyaku(k)) else (G2 - G1) * (sn[k + 1] - sn[k])) for k in range(n - 1)] + \
-           [(0, 0 if (lim[k] == 0 or kyaku(k)) else ((min(GCAP, 0.025) if kyaku25(k) else GCAP) - G2) * (sn[k + 1] - sn[k])) for k in range(n - 1)]
+    ub_e = [(0, 0 if (lim[k] < GMAX or kyaku(k)) else (G2 - G1) * (sn[k + 1] - sn[k])) for k in range(n - 1)] + \
+           [(0, 0 if (lim[k] < GMAX or kyaku(k)) else ((min(GCAP, 0.025) if kyaku25(k) else GCAP) - G2) * (sn[k + 1] - sn[k])) for k in range(n - 1)]   # 構内（lim ＜ GMAX）では 15‰ 超のゆとりを使わない
     if FLAT_MODE == 'lex':
         # 駅ありき（2026-11-04、ユーザーの判断）：第 1 段で地平（FLAT_IN）からの離れの合計を最小にし（工事費は見ない。守るべき条件のゆとりも同じ重み）、
         # 第 2 段でその離れを超えない範囲で工事費を最小にする。罰則の数値を使わない
@@ -175,9 +175,15 @@ if __name__ == "__main__":
     PD = json.load(open('costs_double.json')); PD = dict(PD, c_abutment=ABUT_M * PD["c_bridge"])
     g, z, sn, zn = formation_lp(s, r["ground"], r["stations"])          # 出発点：いまの決め方
     lim = np.full(len(sn) - 1, GMAX)
-    for _, c in r["stations"]:
+    # 構内の勾配の上限（2026-11-08、ユーザーの判断。docs/vertical_curve.md 4・junction.md 2）：停車場の種類（tables/station_yard.json：棒線・分岐器あり）ごとに
+    # YARD_G（JSON {種類: 上限}。表にない停車場は「分岐器あり」）。YARD_G がなければ水平（それまでの決め方）。
+    # 縦曲線が構内に食い込まないよう、上限の区間を接線長の最悪の値 VC_R × (上限 ＋ GCAP) ÷ 2 だけ両側に延ばす
+    YARD_G = json.loads(_os.environ.get('YARD_G', '{}')); VC_R = float(_os.environ.get('VC_R', '0'))
+    YARD_KIND = json.load(open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'tables', 'station_yard.json'))) if YARD_G else {}
+    for name, c in r["stations"]:
+        yg = YARD_G.get(YARD_KIND.get(name, {}).get('kind', '分岐器あり'), 0.0) if YARD_G else 0.0; ext = VC_R * (yg + GCAP) / 2
         for k in range(len(sn) - 1):
-            if sn[k + 1] > c - STN_HALF and sn[k] < c + STN_HALF: lim[k] = 0.0
+            if sn[k + 1] > c - STN_HALF - ext and sn[k] < c + STN_HALF + ext: lim[k] = min(lim[k], yg)
     gn = np.array([np.median(g[(s >= x - NODE / 2) & (s <= x + NODE / 2)]) for x in sn])
     st_pos = dict(r["stations"]); KYAKU[:] = [(st_pos[a_], st_pos[b_]) for a_, b_ in KYAKU_ST if a_ in st_pos and b_ in st_pos]; KYAKU25[:] = [(st_pos[a_], st_pos[b_]) for a_, b_ in KYAKU25_ST if a_ in st_pos and b_ in st_pos]   # この線にある区間だけ（支線の計算、2026-11-04）
     stops = [c for n_, c in r["stations"] if n_ in r["stops"]]

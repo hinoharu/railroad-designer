@@ -63,6 +63,7 @@ KYAKU = []
 # 駅の高さの指定（2026-11-03、ユーザーの指定）：停車場中心の施工基面を、その地点の地盤からの高さの範囲 [下, 上]（m）に置く。
 # 地平駅は [-2, 2]（地盤の高さを 0 として上下 2 m ずつ、幅 4 m）。駅の一部がトンネル・橋梁に入るのは構わない。
 STN_H = []
+END_G = []   # (節点の番号 0 か n−1, 勾配) 端の勾配の指定（高さの指定の JSON の start_g・end_g。2026-11-08）
 # 橋梁の高さの費用（費用の表の c_bridge_h は 0：資料がない）。高さに費用がないと、高架を低く抑える理由がなく、勾配の変化の少なさだけで
 # 高い所を通る（標後〜瀬石温泉で高さ 20〜29 m）。仮に、高さ 1 m あたり浅い土工 1 m 分の費用とする（根拠の記録なし。2026-11-03）
 W_BH = float(__import__('os').environ.get('W_BH', '1.0'))   # (節点の番号, 下限の標高, 上限の標高)
@@ -74,6 +75,9 @@ W_BH2 = float(_os.environ.get('W_BH2', '100'))   # 境を超える高さ 1 m あ
 # 駅の深さ（2026-11-07、ユーザーの判断）：停車場中心の施工基面 z ≥（中心から EXIT_R 以内の地盤の最低の標高）− DEPTH_MAX。
 # 「深さ 40 m まで。100〜200 m の水平移動で地表に出られるなら不問」を 1 本の条件にした。DEPTH_MAX を 0 にすると切
 DEPTH_MAX = float(_os.environ.get('DEPTH_MAX', '0')); EXIT_R = float(_os.environ.get('EXIT_R', '200'))
+# 駅の構内（停車場中心の両側で水平にする長さ、m。design.py の STN_HALF 110 が既定）。2026-11-08、分岐器の規則（docs/junction.md 2.④）：
+# build.py が入力表 profile.STN_HALF（"auto" なら TRAIN ÷ 2 ＋ 72 m）から渡す。構内の端の分岐器（JMIN）とその外方 20 m まで水平にするため
+STN_HALF = float(_os.environ.get('STN_HALF', STN_HALF))
 BRIDGE_THR = None   # 節点ごとの境（lp の前に決める）
 def lp(sn, gn, lim, state, Pn, tangn):
     """Pn・tangn：節点ごとの費用の表と土工の接線（単線と複線を区間ごとに使い分ける。2026-11-04）"""
@@ -84,7 +88,7 @@ def lp(sn, gn, lim, state, Pn, tangn):
     c = np.concatenate([np.zeros(nz), np.where(state == 0, 1.0, np.where(state == 2, W_BH, 0.0)), np.full(nu, MU), np.full(n - 1, NU1), np.full(n - 1, NU2),
                         np.tile([W_FLAT_UP, W_FLAT_CUT], len(FL)), np.full(nsl, W_SLACK), np.full(nb2, W_BH2)])
     rows = []; b = []
-    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2, N)); r = 0
+    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2 + 2 * len(END_G), N)); r = 0
     for i in range(n):
         if state[i] == 2:   # 橋梁の高さの費用：w ≥ z − g（高さ 1 m あたり W_BH）
             A[r, i] = 1; A[r, nz + i] = -1; b.append(gn[i]); r += 1
@@ -109,6 +113,10 @@ def lp(sn, gn, lim, state, Pn, tangn):
         elif state[i] == 2:  # 橋梁：z − g ≥ 最低の高さ   →  −z − sl ≤ −g − hmin
             A[r, i] = -1; A[r, sl] = -1; b.append(-gn[i] - Pn[i]["b_min_height"]); r += 1
     fi = 0
+    for k, gk in END_G:   # 端の勾配（2026-11-08）：z[k+1] − z[k] ＝ gk·Δs（端のゆとりで受ける）。支線の端を幹線の分岐点の勾配に合わせる
+        k0, k1 = (0, 1) if k == 0 else (n - 2, n - 1); sl = nz + nw + nu + ne + nf + k; d_ = gk * (sn[k1] - sn[k0])
+        A[r, k1] = 1; A[r, k0] = -1; A[r, sl] = -1; b.append(d_); r += 1
+        A[r, k1] = -1; A[r, k0] = 1; A[r, sl] = -1; b.append(-d_); r += 1
     for k, lo_, hi_, flat in STN_H:   # 駅の高さ：lo ≤ z ≤ hi（守れないときはゆとりで受ける）。地平駅は準地平の分 a_up・a_dn を足して受ける
         sl = nz + nw + nu + ne + nf + k
         A[r, k] = 1; A[r, sl] = -1
@@ -196,6 +204,9 @@ if __name__ == "__main__":
             k = int(np.argmin(np.abs(sn - c))); gmin = float(np.nanmin(g[np.abs(s - c) <= EXIT_R]))
             STN_H.append((k, gmin - DEPTH_MAX, 1e4, False))
     if 'start_z' in spec: STN_H.append((0, spec['start_z'], spec['start_z'], False))   # 始点も幹線につながる線（両端の分岐、2026-11-04）
+    # 端の勾配（2026-11-08、ユーザーの指摘：古釜布支線が本線の 15‰ の途中から 0‰ で分かれていた）：幹線の分岐点の勾配に合わせる
+    if 'end_g' in spec: END_G.append((len(sn) - 1, float(spec['end_g'])))
+    if 'start_g' in spec: END_G.append((0, float(spec['start_g'])))
     # 高架にする区間：駅と駅の間の指定（両端の駅の構内 110 m と、地平から橋梁の最低の高さへ上がる長さ (2 + 3) m ÷ 25‰ = 200 m を除く）と、湿地
     force_B = np.zeros(len(s), bool)
     ramp = STN_HALF + (2 + P['b_min_height']) / GCAP

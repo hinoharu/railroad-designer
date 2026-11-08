@@ -25,7 +25,7 @@ Claude Code が作業前に読む説明書です。変更の前に全体を読�
 | `kp_var/` | 案の比較の計算の結果（`V256` は前の版の 10 区間。ユーザーの指定で永続的に残す） |
 | `data/fiction.json` | 作図から作った路線・駅（駅レーダーサイトの写し）。経路の探索 `kp/path.py` が読む |
 | `page/` | 確認用ページ（GitHub Pages で公開）：`align.html`、データ `data/fiction_align.json`・`fiction_variants.json`、データを作るスクリプト `scripts/` |
-| `docs/` | 仕様と判断の経緯（`README.md` 目的と順番と決定、`align.md` 線形・縦断・走行、`kunashiri.md` 国後島の決定と結果、`exchange.md` 駅レーダーサイトとの受け渡しの形、`thresholds.md` しきい値の台帳、`history.md`、`inventory/` 棚卸し） |
+| `docs/` | 仕様と判断の経緯（`README.md` 目的と順番と決定、`align.md` 線形・縦断・走行、`kunashiri.md` 国後島の決定と結果、`exchange.md` 駅レーダーサイトとの受け渡しの形、`junction.md` 分岐器の位置と勾配の規則、`thresholds.md` しきい値の台帳、`history.md`、`inventory/` 棚卸し） |
 | `.claude/` | 応答が英語になったら指摘する hook（`wording_reminder.py`） |
 | `.github/workflows/pages.yml` | `page/` を GitHub Pages に公開する |
 
@@ -61,6 +61,9 @@ python3 page/scripts/fiction_variants.py kp   # 案の比較のデータ page/da
 3. コミット（日本語のメッセージ）→ プッシュ → PR を作り、内容と確認結果を報告して「マージしてよいですか」と聞く。
 4. **マージはユーザーが「マージして」と言った PR だけ**（承認はその PR 限り）。マージは merge commit で。
 5. 作業の状況・判断の経緯は `HANDOFF.md` にこまめに書く。「いまの状況」は 3,000 字以内、終わったことは `docs/history.md` へ。
+
+## Compact Instructions
+会話の圧縮（自動・手動とも）で作る要約は、見出し・本文・引用のすべてを日本語で書く（英語の定型の見出しを使わない）。
 
 ## 圧縮のあと・新しいセッションの始めの見返し
 1. `HANDOFF.md` の「いまの状況」。

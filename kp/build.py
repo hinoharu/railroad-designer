@@ -112,6 +112,9 @@ def make_spec(s):
             sec = j['trunk'][4:-5]; fp = json.load(open(f'fit_{sec}.json')); rp = json.load(open(f'route_f{sec}.json'))
             d = json.load(open(net.design_files(sec)[k]))
             sj = float(np.interp(j['s'], fp['s'], rp['s'])); sp[w + '_z'] = float(np.interp(sj, d['s'], d['z']))
+            if j.get('tau') is not None and s['fit'].get('junction', {}).get('match_grade', True):   # 端の勾配＝幹線の分岐点の勾配（±50 m）× 向き τ（2026-11-08）
+                g_ = (float(np.interp(sj + 50, d['s'], d['z'])) - float(np.interp(sj - 50, d['s'], d['z']))) / 100.0
+                sp[w + '_g'] = round(j['tau'] * g_, 6)
         if 'start_z_from' in pf:
             d = json.load(open(net.design_files(pf['start_z_from'])[k])); sp['start_z'] = d['z'][-1]
             sp['note_start'] = f"始点の施工基面を {pf['start_z_from']} の終点に合わせる（スイッチバック駅）"
@@ -178,6 +181,20 @@ def hybrid_env(s, rf):
 # --- 区間 -------------------------------------------------------------------------------------------------------------
 H = {}    # 区間の id → 縦断までの結果を左右するもののハッシュ（系統の判定に使う）
 HR = {}; HF = {}   # 経路のハッシュ、線形（当てはめ・キロ程・地盤）のハッシュ
+# 停車場中心から分岐器（理論交点）までの最小距離（2026-11-08、国鉄の規定の調査。docs/junction.md）：
+#   JMIN ＝ (TRAIN ＋ JM_MARGIN) ÷ 2 ＋ JM_CLEAR。TRAIN はその駅に停まる最長の列車（支線と、端のつながる幹線の run.TRAIN の大きい方）。
+#   JM_MARGIN：有効長の列車長に対する余裕 20 m（国鉄 運転取扱基準規程 1972 第 20 条 標準 2「余裕距離 20mから35mまで」の下限）。
+#   JM_CLEAR：有効長の端（車両接触限界標＝軌道中心間隔 4 m の点）から分岐器の理論交点まで。N 番分岐器で 4N m、8 番で 32 m
+JM_MARGIN, JM_CLEAR = 20.0, 32.0
+# 駅の構内の半分の長さ（停車場中心から、縦断を水平にする端まで。docs/junction.md 2.④）：構内の端の分岐器の理論交点 JMIN に、分岐器の後端まで
+# JM_TAIL と、建設規程第十五条③の最端の転轍器の外方 JM_OUTER を足す。YARD_HALF ＝ (TRAIN ＋ 20) ÷ 2 ＋ 32 ＋ 10 ＋ 20 ＝ TRAIN ÷ 2 ＋ 72 m。
+# 入力表 profile.STN_HALF が "auto" のときに使う（数値ならその値、書かなければ design.py の 110 m）
+JM_TAIL, JM_OUTER = 10.0, 20.0
+def yard_half(s): return round(s['run']['TRAIN'] / 2 + JM_MARGIN / 2 + JM_CLEAR + JM_TAIL + JM_OUTER, 1)
+def jmin_auto(s):
+    trains = [s['run']['TRAIN']] + [net.SEC[t_ or s['fit']['trunk']].get('run', {}).get('TRAIN', 0) for t_ in s['fit'].get('ends', {}).values() if (t_ or s['fit']['trunk']) in net.SEC]   # 古い手順の幹線（ipg）には run がない
+    return round((max(trains) + JM_MARGIN) / 2 + JM_CLEAR, 1)
+
 def section_hash(s):
     """段ごとのハッシュ（2026-11-07）：経路は駅の並びなど、線形はそれに fit・run と上位の線形を足したもの、縦断はそれに profile と
     上位の縦断を足したもの。縦断の規則だけを変えたとき、線形の当てはめをやり直さないため。それまでは表のどこを変えても全段をやり直していた"""
@@ -202,13 +219,18 @@ def build_section(s):
     if f.get('free'): ends = 'free'
     else: ends = ' '.join(w if not v else f'{w}=fit_{v}.json' for w, v in f['ends'].items())
     trunk = f'fit_{f["trunk"]}.json'
+    fit_env = dict(VMAX=run['VMAX'], TILT=run['TILT'], TRAIN=run['TRAIN'])
+    for w_, d_ in f.get('dir', {}).items(): fit_env[f'DIR_{w_}'] = d_   # 分かれる向きの指定（forward／backward。2026-11-07）
+    for k_ in ('JMIN', 'GJ', 'JEXT'):   # 分岐器の候補の制限（fit.junction：停車場中心からの最小距離 m、本線の勾配の上限 ‰。2026-11-08）
+        if k_ in f.get('junction', {}): fit_env[k_] = jmin_auto(s) if k_ == 'JMIN' and f['junction'][k_] == 'auto' else f['junction'][k_]
     step(b, 'fit', hf, lambda: (sh(f'rm -f branch_{b}_cands.json'),
-                                sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', dict(VMAX=run['VMAX'], TILT=run['TILT'], TRAIN=run['TRAIN']), f'ipb_{b}.log')))
+                                sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', fit_env, f'ipb_{b}.log')))
     step(b, 'geo', hf, lambda: (sh(f'python3 fit2route.py {b}', {'ROUTE': rf}, f'geo_{b}.log'),
                                 sh(f'python3 ground.py route_f{b}.json ground_f{b}.json', None, f'ground_{b}.log')))
     step(b, 'spec', h, lambda: make_spec(s))
     env = {'GCAP': pf['GCAP']}
     if 'KYAKU25_ADD' in pf: env['KYAKU25_ADD'] = json.dumps(pf['KYAKU25_ADD'], ensure_ascii=False)
+    if 'STN_HALF' in pf: env['STN_HALF'] = yard_half(s) if pf['STN_HALF'] == 'auto' else pf['STN_HALF']   # 構内の半分の長さ m（2026-11-08。"auto"：TRAIN ÷ 2 ＋ 72）
     env.update(pf.get('rules', {}))   # 縦断の規則の値（橋梁の高さの境 BRIDGE_H1・H2・SPAN・W_BH2、駅の深さ DEPTH_MAX・EXIT_R。2026-11-07、国後島。説明は tables/README.md）
     costs = f"costs_{pf.get('costs', 'single')}.json"
     sufs = ('',) if pf.get('only_gs') else ('_free', '')   # only_gs：駅地平化だけ（高さ指定なしは作らない。2026-11-07、ユーザー）

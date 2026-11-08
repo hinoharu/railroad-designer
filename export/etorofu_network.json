@@ -10,7 +10,7 @@
  },
  "built_with": {
   "repository": "hinoharu/railroad-designer",
-  "commit": "4213f41（入力表か結果に未コミットの変更あり）"
+  "commit": "87e816f（入力表か結果に未コミットの変更あり）"
  },
  "source": {
   "drawing": "作図した路線・駅（地理院地図で作図。駅レーダーサイトの data/fiction_src。この書き出しの駅の名前・読み・路線名はそれに合わせた）",
@@ -270,7 +270,7 @@
     }
    },
    "polyline": {
-    "points": 715,
+    "points": 714,
     "max_deviation_m": 9.97
    }
   },
@@ -375,66 +375,66 @@
     ],
     [
      "方真辺信号場",
-     12005
+     11864
     ],
     [
      "得茂別",
-     17822
+     17682
     ],
     [
      "御所釜別信号場",
-     22535
+     22404
     ],
     [
      "目名問",
-     26639
+     26499
     ],
     [
      "十五夜萌",
-     31694
+     31553
     ],
     [
      "入里節",
-     36776
+     36646
     ],
     [
      "背野津",
-     44468
+     44327
     ],
     [
      "野塚",
-     48997
+     48857
     ],
     [
      "具夜",
-     56214
+     56084
     ],
     [
      "碓",
-     66571
+     66431
     ],
     [
      "西単冠",
-     70849
+     70719
     ],
     [
      "黒木内",
-     74942
+     74802
     ],
     [
      "年萌",
-     86871
+     86730
     ],
     [
      "羅臼川",
-     91146
+     91006
     ],
     [
      "類平",
-     98022
+     98370
     ]
    ],
-   "length_m": 98022,
+   "length_m": 98370,
    "lines": [
     {
      "line": "蘂取線",
@@ -462,19 +462,19 @@
     "free": {
      "file": "design_fshibw_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 17620.0,
-     "bridge_m": 11800.0
+     "tunnel_m": 17820.0,
+     "bridge_m": 12220.0
     },
     "gs": {
      "file": "design_fshibw.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 19360.0,
-     "bridge_m": 7680.0
+     "tunnel_m": 18440.0,
+     "bridge_m": 8460.0
     }
    },
    "polyline": {
     "points": 282,
-    "max_deviation_m": 9.97
+    "max_deviation_m": 9.78
    }
   },
   {
@@ -501,34 +501,34 @@
     ],
     [
      "留紗那",
-     2187
+     2067
     ],
     [
      "三股信号場",
-     11942
+     11822
     ],
     [
      "沼田",
-     18890
+     18770
     ],
     [
      "摺鉢山",
-     21300
+     21180
     ],
     [
      "大小",
-     33819
+     33699
     ],
     [
      "奧留別",
-     39230
+     39120
     ],
     [
      "南留別",
-     45305
+     45132
     ]
    ],
-   "length_m": 45305,
+   "length_m": 45132,
    "lines": [
     {
      "line": "蘂取線",
@@ -555,19 +555,19 @@
    "profile": {
     "free": {
      "file": "design_fshibr_free.json",
-     "max_grade_permille": 29.7,
-     "tunnel_m": 13320.0,
-     "bridge_m": 17620.0
+     "max_grade_permille": 32.3,
+     "tunnel_m": 13680.0,
+     "bridge_m": 17520.0
     },
     "gs": {
      "file": "design_fshibr.json",
      "max_grade_permille": 33.3,
-     "tunnel_m": 14140.0,
-     "bridge_m": 6420.0
+     "tunnel_m": 14540.0,
+     "bridge_m": 6660.0
     }
    },
    "polyline": {
-    "points": 119,
+    "points": 116,
     "max_deviation_m": 9.92
    }
   },
@@ -641,14 +641,14 @@
     "free": {
      "file": "design_frakki_free.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 5720.0,
-     "bridge_m": 6040.0
+     "tunnel_m": 6100.0,
+     "bridge_m": 5840.0
     },
     "gs": {
      "file": "design_frakki.json",
      "max_grade_permille": 25.0,
      "tunnel_m": 3320.0,
-     "bridge_m": 9080.0
+     "bridge_m": 9160.0
     }
    },
    "polyline": {
@@ -728,10 +728,10 @@
     ],
     [
      "沼田",
-     100225
+     100115
     ]
    ],
-   "length_m": 100225,
+   "length_m": 100115,
    "lines": [
     {
      "line": "茂世路線",
@@ -754,24 +754,24 @@
      ]
     ]
    },
-   "min_radius_m": 200,
+   "min_radius_m": 160,
    "profile": {
     "free": {
      "file": "design_fmoyoro_free.json",
-     "max_grade_permille": 20.0,
+     "max_grade_permille": 23.4,
      "tunnel_m": 32500.0,
-     "bridge_m": 30040.0
+     "bridge_m": 30640.0
     },
     "gs": {
      "file": "design_fmoyoro.json",
      "max_grade_permille": 35.0,
-     "tunnel_m": 31160.0,
-     "bridge_m": 21320.0
+     "tunnel_m": 31480.0,
+     "bridge_m": 22320.0
     }
    },
    "polyline": {
-    "points": 297,
-    "max_deviation_m": 9.89
+    "points": 298,
+    "max_deviation_m": 9.75
    }
   },
   {
@@ -794,14 +794,14 @@
     ],
     [
      "択捉空港",
-     4290
+     4110
     ],
     [
      "植別",
-     6983
+     6795
     ]
    ],
-   "length_m": 6983,
+   "length_m": 6795,
    "lines": [
     {
      "line": "択捉空港線",
@@ -841,8 +841,8 @@
     }
    },
    "polyline": {
-    "points": 26,
-    "max_deviation_m": 8.75
+    "points": 25,
+    "max_deviation_m": 9.92
    }
   },
   {
@@ -865,22 +865,22 @@
     ],
     [
      "特掟",
-     6825
+     6725
     ],
     [
      "美云別",
-     10577
+     10477
     ],
     [
      "樺里信号場",
-     14659
+     14559
     ],
     [
      "単冠山口",
-     27728
+     27630
     ]
    ],
-   "length_m": 27728,
+   "length_m": 27630,
    "lines": [
     {
      "line": "単冠山麓線",
@@ -904,12 +904,12 @@
     ],
     "double": []
    },
-   "min_radius_m": 350,
+   "min_radius_m": 320,
    "profile": {
     "free": {
      "file": "design_fsanroku_n_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 6000.0,
+     "tunnel_m": 6640.0,
      "bridge_m": 1040.0
     },
     "gs": {
@@ -921,7 +921,7 @@
    },
    "polyline": {
     "points": 114,
-    "max_deviation_m": 9.9
+    "max_deviation_m": 9.97
    }
   },
   {
@@ -960,10 +960,10 @@
     ],
     [
      "長生内",
-     29802
+     29743
     ]
    ],
-   "length_m": 29802,
+   "length_m": 29743,
    "lines": [
     {
      "line": "単冠山麓線",
@@ -986,19 +986,19 @@
     "free": {
      "file": "design_fsanroku_s_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 13000.0,
-     "bridge_m": 2200.0
+     "tunnel_m": 13220.0,
+     "bridge_m": 2280.0
     },
     "gs": {
      "file": "design_fsanroku_s.json",
      "max_grade_permille": 25.0,
      "tunnel_m": 7340.0,
-     "bridge_m": 2960.0
+     "bridge_m": 3020.0
     }
    },
    "polyline": {
-    "points": 110,
-    "max_deviation_m": 9.46
+    "points": 108,
+    "max_deviation_m": 9.63
    }
   },
   {
@@ -1021,18 +1021,18 @@
    "stations": [
     [
      "四谷",
-     10
+     0
     ],
     [
      "冬知里信号場",
-     6760
+     6640
     ],
     [
      "塘路",
-     12297
+     12176
     ]
    ],
-   "length_m": 12297,
+   "length_m": 12176,
    "lines": [
     {
      "line": "茂世路線(冬知里支線)",
@@ -1055,18 +1055,18 @@
     "free": {
      "file": "design_ftoshi_free.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 620.0,
-     "bridge_m": 4420.0
+     "tunnel_m": 760.0,
+     "bridge_m": 3760.0
     },
     "gs": {
      "file": "design_ftoshi.json",
      "max_grade_permille": 20.0,
-     "tunnel_m": 820.0,
-     "bridge_m": 2720.0
+     "tunnel_m": 780.0,
+     "bridge_m": 2760.0
     }
    },
    "polyline": {
-    "points": 46,
+    "points": 44,
     "max_deviation_m": 9.84
    }
   },
@@ -1094,30 +1094,30 @@
     ],
     [
      "焼沼",
-     4598
+     4618
     ],
     [
      "礼文尻",
-     10068
+     10088
     ],
     [
      "鞍掛",
-     15399
+     15409
     ],
     [
      "小田萌",
-     23879
+     23889
     ],
     [
      "襲士別信号場",
-     32696
+     32716
     ],
     [
      "新指臼",
-     42268
+     42157
     ]
    ],
-   "length_m": 42270,
+   "length_m": 42157,
    "lines": [
     {
      "line": "小田萌線",
@@ -1140,18 +1140,18 @@
     "free": {
      "file": "design_fotamoi_free.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 9200.0,
-     "bridge_m": 11640.0
+     "tunnel_m": 8780.0,
+     "bridge_m": 11540.0
     },
     "gs": {
      "file": "design_fotamoi.json",
-     "max_grade_permille": 18.0,
+     "max_grade_permille": 20.0,
      "tunnel_m": 14740.0,
-     "bridge_m": 5400.0
+     "bridge_m": 5340.0
     }
    },
    "polyline": {
-    "points": 111,
+    "points": 114,
     "max_deviation_m": 9.92
    }
   },
@@ -1203,10 +1203,10 @@
     ],
     [
      "背祖曽",
-     49814
+     49659
     ]
    ],
-   "length_m": 49814,
+   "length_m": 49659,
    "lines": [
     {
      "line": "背蘂線",
@@ -1229,18 +1229,18 @@
     "free": {
      "file": "design_fsesibe_free.json",
      "max_grade_permille": 25.0,
-     "tunnel_m": 18600.0,
+     "tunnel_m": 18480.0,
      "bridge_m": 9640.0
     },
     "gs": {
      "file": "design_fsesibe.json",
      "max_grade_permille": 25.0,
      "tunnel_m": 10420.0,
-     "bridge_m": 8600.0
+     "bridge_m": 8520.0
     }
    },
    "polyline": {
-    "points": 252,
+    "points": 249,
     "max_deviation_m": 9.99
    }
   },
@@ -1264,14 +1264,14 @@
     ],
     [
      "迂遠知信号場",
-     6960
+     6620
     ],
     [
      "丹根萌",
-     12548
+     12210
     ]
    ],
-   "length_m": 12548,
+   "length_m": 12210,
    "lines": [
     {
      "line": "丹根萌線",
@@ -1293,20 +1293,20 @@
    "profile": {
     "free": {
      "file": "design_ftanne_free.json",
-     "max_grade_permille": 17.3,
+     "max_grade_permille": 18.3,
      "tunnel_m": 0.0,
-     "bridge_m": 1300.0
+     "bridge_m": 1260.0
     },
     "gs": {
      "file": "design_ftanne.json",
-     "max_grade_permille": 17.3,
+     "max_grade_permille": 18.3,
      "tunnel_m": 0.0,
-     "bridge_m": 1300.0
+     "bridge_m": 1260.0
     }
    },
    "polyline": {
-    "points": 33,
-    "max_deviation_m": 8.55
+    "points": 30,
+    "max_deviation_m": 8.82
    }
   },
   {
@@ -1329,10 +1329,10 @@
     ],
     [
      "奧羅臼",
-     7971
+     7903
     ]
    ],
-   "length_m": 7971,
+   "length_m": 7903,
    "lines": [
     {
      "line": "振別線",
@@ -1350,24 +1350,24 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 260,
+   "min_radius_m": 280,
    "profile": {
     "free": {
      "file": "design_ffuru_free.json",
      "max_grade_permille": 15.0,
      "tunnel_m": 0.0,
-     "bridge_m": 620.0
+     "bridge_m": 760.0
     },
     "gs": {
      "file": "design_ffuru.json",
      "max_grade_permille": 15.0,
      "tunnel_m": 0.0,
-     "bridge_m": 620.0
+     "bridge_m": 760.0
     }
    },
    "polyline": {
-    "points": 23,
-    "max_deviation_m": 9.98
+    "points": 24,
+    "max_deviation_m": 8.7
    }
   },
   {
@@ -1390,10 +1390,10 @@
     ],
     [
      "内保",
-     4411
+     4342
     ]
    ],
-   "length_m": 4411,
+   "length_m": 4342,
    "lines": [
     {
      "line": "阿登佐線",
@@ -1415,20 +1415,20 @@
    "profile": {
     "free": {
      "file": "design_fatosa_w_free.json",
-     "max_grade_permille": 6.5,
+     "max_grade_permille": 4.3,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     },
     "gs": {
      "file": "design_fatosa_w.json",
-     "max_grade_permille": 6.5,
+     "max_grade_permille": 4.3,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     }
    },
    "polyline": {
-    "points": 8,
-    "max_deviation_m": 8.9
+    "points": 9,
+    "max_deviation_m": 9.04
    }
   },
   {
@@ -1451,10 +1451,10 @@
     ],
     [
      "散布泊",
-     5287
+     5254
     ]
    ],
-   "length_m": 5287,
+   "length_m": 5254,
    "lines": [
     {
      "line": "阿登佐線",
@@ -1488,8 +1488,8 @@
     }
    },
    "polyline": {
-    "points": 16,
-    "max_deviation_m": 9.62
+    "points": 15,
+    "max_deviation_m": 9.73
    }
   },
   {
@@ -1532,13 +1532,13 @@
    "profile": {
     "free": {
      "file": "design_fatosa_e2_free.json",
-     "max_grade_permille": 12.8,
+     "max_grade_permille": 13.0,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     },
     "gs": {
      "file": "design_fatosa_e2.json",
-     "max_grade_permille": 12.8,
+     "max_grade_permille": 13.0,
      "tunnel_m": 0.0,
      "bridge_m": 0.0
     }
@@ -1568,14 +1568,14 @@
     ],
     [
      "賢萌",
-     3860
+     3730
     ],
     [
      "野斗路",
-     6726
+     6599
     ]
    ],
-   "length_m": 6726,
+   "length_m": 6599,
    "lines": [
     {
      "line": "野斗路線",
@@ -1598,19 +1598,19 @@
     "free": {
      "file": "design_fnoto_free.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 1440.0,
-     "bridge_m": 0.0
+     "tunnel_m": 1420.0,
+     "bridge_m": 140.0
     },
     "gs": {
      "file": "design_fnoto.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 1440.0,
-     "bridge_m": 0.0
+     "tunnel_m": 1420.0,
+     "bridge_m": 140.0
     }
    },
    "polyline": {
-    "points": 24,
-    "max_deviation_m": 9.95
+    "points": 27,
+    "max_deviation_m": 9.98
    }
   },
   {
@@ -1633,14 +1633,14 @@
     ],
     [
      "鬼門",
-     3870
+     3750
     ],
     [
      "寄別",
-     9069
+     8943
     ]
    ],
-   "length_m": 9069,
+   "length_m": 8943,
    "lines": [
     {
      "line": "寄別線",
@@ -1663,18 +1663,18 @@
     "free": {
      "file": "design_fyorib_free.json",
      "max_grade_permille": 15.0,
-     "tunnel_m": 1020.0,
+     "tunnel_m": 1000.0,
      "bridge_m": 2560.0
     },
     "gs": {
      "file": "design_fyorib.json",
-     "max_grade_permille": 18.0,
-     "tunnel_m": 4260.0,
-     "bridge_m": 740.0
+     "max_grade_permille": 18.2,
+     "tunnel_m": 4320.0,
+     "bridge_m": 480.0
     }
    },
    "polyline": {
-    "points": 43,
+    "points": 44,
     "max_deviation_m": 9.95
    }
   },
@@ -1763,10 +1763,10 @@
     ],
     [
      "満前",
-     7400
+     7360
     ]
    ],
-   "length_m": 7404,
+   "length_m": 7360,
    "lines": [
     {
      "line": "萌消線",
@@ -1784,13 +1784,13 @@
     "costs": "single",
     "double": []
    },
-   "min_radius_m": 240,
+   "min_radius_m": 160,
    "profile": {
     "free": {
      "file": "design_fmoke_free.json",
      "max_grade_permille": 15.0,
      "tunnel_m": 0.0,
-     "bridge_m": 340.0
+     "bridge_m": 320.0
     },
     "gs": {
      "file": "design_fmoke.json",
@@ -1800,8 +1800,8 @@
     }
    },
    "polyline": {
-    "points": 22,
-    "max_deviation_m": 9.63
+    "points": 21,
+    "max_deviation_m": 7.78
    }
   }
  ],
@@ -2319,8 +2319,8 @@
    "TILT": 0,
    "TRAIN": 170,
    "run_min": {
-    "free": 151.1,
-    "gs": 153.4
+    "free": 151.6,
+    "gs": 153.8
    },
    "note": "茂世路線 → 蘂取線（沼田〜南留別）→ 特急の経路（南留別〜類平）→ 蘂取線（類平 → 択捉六甲、逆向き）→ 特急の経路（分岐器 → 択捉六甲）。ダイヤ a.oud2 の特急（上下 16 本ずつ）"
   },
@@ -2376,8 +2376,8 @@
    "TILT": 0,
    "TRAIN": 120,
    "run_min": {
-    "free": 177.4,
-    "gs": 178.1
+    "free": 177.5,
+    "gs": 178.2
    },
    "note": "特急の経路（蘂取〜紗那）→ 蘂取線（紗那〜南留別）→ 特急の経路（南留別〜類平）→ 蘂取線（類平 → 択捉六甲、逆向き）→ 特急の経路（分岐器 → 択捉六甲）。ダイヤ a.oud2 の普通（上下 16 本ずつ）"
   },
@@ -2412,8 +2412,8 @@
    "TILT": 1,
    "TRAIN": 160,
    "run_min": {
-    "free": 92.3,
-    "gs": 92.4
+    "free": 92.2,
+    "gs": 92.3
    },
    "note": "酪別線 → 特急の経路（蘂取→塘路。塘路で折り返し：冬知里支線は塘路の手前で蘂取の側を向いて分かれる）→ 冬知里支線（塘路→四谷、逆向き）→ 茂世路線（四谷→新指臼）→ 小田萌線（新指臼→年萌、逆向き）→ 蘂取線（分岐器→年萌）。ダイヤ a.oud2 の特急（上下 16 本ずつ）"
   },
@@ -2463,8 +2463,8 @@
    "TILT": 0,
    "TRAIN": 140,
    "run_min": {
-    "free": 196.5,
-    "gs": 198.7
+    "free": 196.9,
+    "gs": 198.8
    },
    "note": "背蘂線 → 茂世路線（背祖曽 → 沼田）→ 蘂取線（沼田 → 南留別）→ 特急の経路（南留別 → 択捉六甲の先の分岐器）→ 丹根萌線。ダイヤ a.oud2 の急行（上下 4 本ずつ）。標後〜蘂取は回送（特急の経路の上）"
   },
@@ -2509,8 +2509,8 @@
    "TILT": 0,
    "TRAIN": 120,
    "run_min": {
-    "free": 119.7,
-    "gs": 122.3
+    "free": 120.0,
+    "gs": 122.6
    },
    "note": "茂世路線 → 蘂取線（沼田〜南留別）→ 特急の経路（南留別〜類平の先の分岐器）→ 蘂取線（類平 → 西単冠、逆向き）→ 択捉空港線。ダイヤ a.oud2 の快速（上下 14 本ずつ）"
   },
@@ -2572,8 +2572,8 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 48.7,
-    "gs": 48.9
+    "free": 48.6,
+    "gs": 48.8
    },
    "note": "単冠山麓線の普通（入里節 → 単冠山口で折り返し → 長生内）。ダイヤ a.oud2 ではダイヤ作成ソフトの都合で入里節〜単冠山口と単冠山口〜長生内に分けてあるが、1 列車（ユーザーの説明、2026-11-06）。キハ201系 4 両。信号場は通過"
   },
@@ -2605,7 +2605,7 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 36.0,
+    "free": 35.9,
     "gs": 35.9
    },
    "note": "ダイヤ a.oud2 の普通（上下 16 本ずつ）。セーブの「振別線 普通（留別行）」キハ40形 4 両"
@@ -2738,7 +2738,7 @@
    "TILT": 0,
    "TRAIN": 80,
    "run_min": {
-    "free": 97.4,
+    "free": 97.2,
     "gs": 103.2
    },
    "note": "ダイヤ a.oud2 の普通（上下 12 本ずつ。ほかに四谷〜北乙が 2 本ずつ）。乙知志線の名前の編成はセーブにない。背蘂線を通るので「背蘂線 普通」（キハ40形 4 両）として扱う"
@@ -2764,8 +2764,8 @@
    "TILT": 0,
    "TRAIN": 60,
    "run_min": {
-    "free": 5.9,
-    "gs": 5.9
+    "free": 6.0,
+    "gs": 6.0
    },
    "note": "ダイヤ a.oud2 の普通（上下 8 本ずつ）。セーブの「萌消線 普通」キハ150形 3 両"
   }

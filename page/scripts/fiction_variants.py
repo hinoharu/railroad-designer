@@ -133,10 +133,12 @@ def main():
             g = dict(g0, t=v.get("t", g0["t"]), route=v.get("route", g0["route"]))   # 案ごとに範囲が違うとき（単冠山麓線の N1・N2）
             if not (base / f"fit_{g['t']}.json").exists() or not (base / f"design_f{g['t']}.json").exists():
                 print("skip（ない）", v["id"]); continue
+            # only_gs の区間（国後島）は高さ指定なしの縦断を作らない：古い design_f<id>_free.json が残っていても使わず、駅地平化を両方に使う（2026-11-08）
+            only_gs = g["t"] in net.SEC and net.SEC[g["t"]].get("profile", {}).get("only_gs")
+            free_f = f"design_f{g['t']}_free.json" if (base / f"design_f{g['t']}_free.json").exists() and not only_gs else None
             orig = json.load(open(KP / g["route"]))["points"]
-            sec = fa.section(g["id"], g["name"], g["t"], orig, design=f"design_f{g['t']}_free.json" if (base / f"design_f{g['t']}_free.json").exists() else None,
-                             alt=f"design_f{g['t']}.json", base=base)
-            m = metrics(base, g["t"], f"design_f{g['t']}_free.json" if (base / f"design_f{g['t']}_free.json").exists() else f"design_f{g['t']}.json", f"design_f{g['t']}.json")
+            sec = fa.section(g["id"], g["name"], g["t"], orig, design=free_f, alt=f"design_f{g['t']}.json", base=base)
+            m = metrics(base, g["t"], free_f or f"design_f{g['t']}.json", f"design_f{g['t']}.json")
             note = v["note"]
             if (base / "infeasible").exists():   # the profile could not be solved under the grade (kp/variants.sh): kept as a result
                 g_ = float((base / "infeasible").read_text().strip()) * 1000

@@ -5,12 +5,12 @@
 ## いまの状況（圧縮のあとはまずここを読む）
 - **始まり**：2026-11-07、駅レーダーサイト（`hinoharu/eki-radar-dev`）から分けて、このリポジトリを作った。それまでの記録は `docs/`（場所の対応表は `docs/README.md` の冒頭）。
 - **線**：択捉島は全線（区間 21・系統 15）。国後島も全線（区間 13・系統 20、`docs/kunashiri.md`）。PR #1（2026-11-08 マージ、merge commit 67a2d2a）で公開。確認用ページ `https://hinoharu.github.io/railroad-designer/`。
-- **いまの作業（2026-11-08）**：国後島の結果へのユーザーの判断（`docs/kunashiri.md`「ユーザーの判断」）を受けて直している。
-  - 済み：国後空港線の分岐の向き（`fit.dir: backward`、ずれ 238 → 53 m。系統 3 本の走行は計算し直していない）。
-  - 済み（値は未設定）：分岐器の規則の実装と規定の調査（`docs/junction.md`）。停車場中心からの最小距離 `fit.junction.JMIN: "auto"`（(TRAIN＋20)÷2＋32 m）、分岐点の本線の勾配の上限 `GJ`（案 10‰）、支線の端の勾配を幹線に合わせる `match_grade`（既定で有効）。入力表にはまだ書いていない。
-  - **ユーザーの決定（2026-11-08）：案 3**（両島の支線に分岐器の規則、全区間の構内の長さを TRAIN ÷ 2 ＋ 72 m に）。変更前の結果は `kp_var/before_junction/`（fit・route_f・design_f・curvelist_f・height_spec の写しと、系統の走行時間 `runs.json`）に保持し、比較ページに全区間の群として出す（`fiction_variants.py`）。入力表：全 branch 区間に `profile.STN_HALF: "auto"`、分岐のある 30 区間に `fit.junction: {JMIN: auto, GJ: 10}`。**計算中**（`cd kp && python3 build.py`。止まっても同じコマンドで再開。記録は作業用フォルダの build_junction.log）。終わったら：`page/scripts/fiction_align.py kp`・`fiction_variants.py kp` → ページの確認 → 分岐点の測り直し（junction.md 3 の表と同じ項目）→ `docs/kunashiri.md` の結果の表 → PR。
-  - （聞いていた質問の記録）この規則で計算し直す範囲（国後島の支線だけ／両島／構内の長さ（STN_HALF）も直す）。答えが来たら入力表の `fit.junction` に書き、`cd kp && python3 build.py` を裏で動かす（国後島の支線 約 1 時間、択捉島 約 1.5 時間。探索はやり直さない）→ `page/scripts/fiction_align.py kp` → ページの確認 → `docs/kunashiri.md` の結果の表 → PR。
+- **いまの作業（2026-11-08）**：国後島の結果へのユーザーの判断（`docs/kunashiri.md`「ユーザーの判断」）を受けた直し。
+  - 済み：国後空港線の分岐の向き（`fit.dir: backward`）。分岐器の規則（`docs/junction.md`）：規定の調査 → 規則 1〜4 → ユーザーの決定（案 3：両島の支線に分岐器の規則、全区間の構内を TRAIN ÷ 2 ＋ 72 m）→ 全区間を計算し直した（約 4 時間。結果は `junction.md` 5）。変更前の結果は `kp_var/before_junction/`（比較ページの案）。直した不具合：GJ が ipg につながる端で効いていなかった（`ipfit_branch.py` の縦断ファイルの名）。
+  - 済み：会話の圧縮が二重にかかった件の調査と記録（`docs/history.md`、`docs/history_2026-11-08_summary.md`）。CLAUDE.md に「Compact Instructions」（要約は日本語）。再圧縮はしない（ユーザーの判断。Fable の安全装置が記録の分析を含む会話で止まる）。自動の圧縮の窓は 600k。
+  - **次**：PR を作って報告し「マージしてよいですか」と聞く（PR の本文に `junction.md` 5 と `scratchpad/compare_results.py` の表）。
   - 保留：一菱内の手前の峡谷の橋梁 113 m（一菱内駅を海岸側へ動かす案）。採用：遠音別線の千歳信号場。
+  - 新しい課題：構内の長さと駅の高さの規則の競合（振別 −17 m・東爺爺 −12 m。棒線駅は構内を短くできる【未定】）。ipg・sanpu の構内は 110 m のまま。
 - このブランチ `ccr-d36bd1ce-cxlzpc` には PR #1 のあとのコミット（判断の記録、fit.dir、分岐器の規則、国後空港線の計算し直し）があり、まだ PR にしていない。
 - 気づいたこと：`build.py --dry-run` で択捉島の多くの区間の geo（fit2route・ground）に済んだ印がなく、本番の build.py では走る（結果は同じはず。`--mark-existing` で印を付けられる）。
 

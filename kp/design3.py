@@ -21,6 +21,8 @@ MU, NU = 30.0, 300.0; design2.MU, design2.NU = MU, NU   # pipe.sh（design2.py �
 import structdp
 
 YARD_BRIDGE = 2.0; ABUT_M = 75.0; W_SLACK = 1e4
+TRANS_K = []   # 緩和曲線の中の節点（勾配を変えない。2026-11-08）
+import re
 # 地平駅の高さ（2026-11-04、ユーザーの指定）：駅の高さ＝施工基面−地盤。厳密な地平 −2〜+2 m は罰則なし。準地平 −10〜−2 m（掘割：上を道路・構造物で
 # ふさげる深さまで）と +2〜+12 m（盛土・高架）は罰則付きで認め、高架の側を重くする。その外は W_SLACK（守れないときのゆとり）。
 # 罰則（高さ 1 m あたり）は勾配の罰則にそろえた仮の値（根拠の記録なし）：掘割 NU1＝100、高架 NU2＝300
@@ -88,7 +90,7 @@ def lp(sn, gn, lim, state, Pn, tangn):
     c = np.concatenate([np.zeros(nz), np.where(state == 0, 1.0, np.where(state == 2, W_BH, 0.0)), np.full(nu, MU), np.full(n - 1, NU1), np.full(n - 1, NU2),
                         np.tile([W_FLAT_UP, W_FLAT_CUT], len(FL)), np.full(nsl, W_SLACK), np.full(nb2, W_BH2)])
     rows = []; b = []
-    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2 + 2 * len(END_G) + 2 * (n - 2), N)); r = 0
+    A = lil_matrix((sum(len(q) for q in tangn) + n + 2 * nu + 2 * (n - 1) + n + 2 * len(STN_H) + nb2 + 2 * len(END_G) + 2 * (n - 2) + 2 * len(TRANS_K), N)); r = 0
     for i in range(n):
         if state[i] == 2:   # 橋梁の高さの費用：w ≥ z − g（高さ 1 m あたり W_BH）
             A[r, i] = 1; A[r, nz + i] = -1; b.append(gn[i]); r += 1
@@ -102,6 +104,10 @@ def lp(sn, gn, lim, state, Pn, tangn):
         j = nz + nw + k - 1
         A[r, k - 1] = 1; A[r, k] = -2; A[r, k + 1] = 1; A[r, j] = -1; b.append(0); r += 1
         A[r, k - 1] = -1; A[r, k] = 2; A[r, k + 1] = -1; A[r, j] = -1; b.append(0); r += 1
+    for k in TRANS_K:   # 緩和曲線の中の節点では勾配を変えない（縦曲線と緩和曲線の競合を避ける。解釈基準 Ⅲ－８ 2。2026-11-08、docs/vertical_curve.md 4.4）
+        if 1 <= k <= n - 2:
+            A[r, k - 1] = 1; A[r, k] = -2; A[r, k + 1] = 1; b.append(0); r += 1
+            A[r, k - 1] = -1; A[r, k] = 2; A[r, k + 1] = -1; b.append(0); r += 1
     for k in range(n - 2):   # 構内（lim ＜ GMAX の続く節点）は 1 つの勾配にする（2026-11-08）：節点ごとに ±上限の間で勾配を変えると、構内の中に大きな勾配変化点ができるため
         if lim[k] < GMAX and lim[k + 1] < GMAX:
             A[r, k] = 1; A[r, k + 1] = -2; A[r, k + 2] = 1; b.append(0); r += 1
@@ -178,6 +184,12 @@ if __name__ == "__main__":
     _spec0 = json.load(open(sys.argv[4])) if len(sys.argv) > 4 else {}
     PD = json.load(open('costs_double.json')); PD = dict(PD, c_abutment=ABUT_M * PD["c_bridge"])
     g, z, sn, zn = formation_lp(s, r["ground"], r["stations"])          # 出発点：いまの決め方
+    # 緩和曲線の範囲にある節点（fit_<id>.json の elements_flat の 'T'。距離程は線形の上のもので、地形の上の距離程と最大 30 m ほど違う）。VC_R > 0 のときだけ
+    _fit = re.sub(r'^ground_f(.*)\.json$', r'fit_\1.json', _os.path.basename(sys.argv[1]))
+    if float(_os.environ.get('VC_R', '0')) > 0 and _os.path.exists(_fit):
+        _els = [(a_, b_) for a_, b_, kind_, _p in json.load(open(_fit)).get('elements_flat', []) if kind_ == 'T']
+        TRANS_K[:] = [k for k in range(len(sn)) if any(a_ <= sn[k] <= b_ for a_, b_ in _els)]
+        print(f'  緩和曲線の中の節点 {len(TRANS_K)}（{len(sn)} のうち）：勾配を変えない', flush=True)
     lim = np.full(len(sn) - 1, GMAX)
     # 構内の勾配の上限（2026-11-08、ユーザーの判断。docs/vertical_curve.md 4・junction.md 2）：YARD_G（JSON {"棒線": 上限, "分岐器あり": 上限}）。
     # 棒線駅はオプションの PLAIN_STATIONS（JSON の駅名の一覧）。指定のない停車場は行き違い駅（分岐器あり）。YARD_G がなければ水平（それまでの決め方）。

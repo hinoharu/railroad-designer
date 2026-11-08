@@ -196,7 +196,7 @@ JM_TAIL, JM_OUTER = 10.0, 20.0
 # 縦曲線（半径 VC_R）が構内に食い込まないよう、構内の勾配の区間を接線長の最悪の値 T ＝ VC_R × (構内の上限 ＋ 線の上限 GCAP) ÷ 2 だけ延ばす（design3.py）
 YARD_G = {'棒線': 0.010, '分岐器あり': 0.005}; VC_R = 3000.0
 PLAIN_STATIONS = net.load('station_yard.json').get('plain_stations', []) if os.path.exists(os.path.join(net.HERE, 'station_yard.json')) else []
-YARD_RULE = sha(YARD_G, VC_R, 'const', PLAIN_STATIONS)   # 'const'：構内は 1 つの勾配（design3.py の変更の印）
+YARD_RULE = sha(YARD_G, VC_R, 'const', 'trans', PLAIN_STATIONS)   # 'const'：構内は 1 つの勾配、'trans'：緩和曲線の中で勾配を変えない（design3.py の変更の印）
 def yard_half(s): return round(s['run']['TRAIN'] / 2 + JM_MARGIN / 2 + JM_CLEAR + JM_TAIL + JM_OUTER, 1)
 def jmin_auto(s):
     trains = [s['run']['TRAIN']] + [net.SEC[t_ or s['fit']['trunk']].get('run', {}).get('TRAIN', 0) for t_ in s['fit'].get('ends', {}).values() if (t_ or s['fit']['trunk']) in net.SEC]   # 古い手順の幹線（ipg）には run がない
@@ -210,7 +210,7 @@ def section_hash(s):
     d = net.deps(s)
     HR[i] = sha(s['island'], s['route'])
     segs = file_hash(segs_file(i), gseg_file(i)) if s['route'].get('hybrid', {}).get('auto') else ''   # 自動の探索で探した駅間と下げた勾配（hyb_<id>_segs.json・_gseg.json）
-    HF[i] = sha(HR[i], s['fit'], s['run'], [HF[x] for x in d], segs)
+    HF[i] = sha(HR[i], s['fit'], s['run'], [HF[x] for x in d], segs, VC_R if s['fit'].get('junction') else '')   # 分岐器の規則に縦曲線の半径が入る（2026-11-08）
     H[i] = sha(HF[i], s['profile'], [H[x] for x in d], YARD_RULE)
     return H[i]
 
@@ -230,6 +230,7 @@ def build_section(s):
     for w_, d_ in f.get('dir', {}).items(): fit_env[f'DIR_{w_}'] = d_   # 分かれる向きの指定（forward／backward。2026-11-07）
     for k_ in ('JMIN', 'GJ', 'JEXT'):   # 分岐器の候補の制限（fit.junction：停車場中心からの最小距離 m、本線の勾配の上限 ‰。2026-11-08）
         if k_ in f.get('junction', {}): fit_env[k_] = jmin_auto(s) if k_ == 'JMIN' and f['junction'][k_] == 'auto' else f['junction'][k_]
+    if f.get('junction'): fit_env['VCR'] = str(VC_R)   # 分岐点を幹線の縦曲線の外に置く（2026-11-08、docs/vertical_curve.md 4.3）
     step(b, 'fit', hf, lambda: (sh(f'rm -f branch_{b}_cands.json'),
                                 sh(f'python3 ipfit_branch.py {b} {rf} {trunk} {ends}', fit_env, f'ipb_{b}.log')))
     step(b, 'geo', hf, lambda: (sh(f'python3 fit2route.py {b}', {'ROUTE': rf}, f'geo_{b}.log'),

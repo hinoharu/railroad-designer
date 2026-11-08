@@ -184,6 +184,9 @@ def solve(core, js, je, sweeps=F.SWEEPS):
 #   候補の範囲がすべて近すぎるときは、最小距離の所から JEXT（300 m）先まで 10 m 刻みで候補を延ばす。幹線が駅で終わっていて置けないときは今までどおり（注意を出す）
 # GJ：分岐点の本線の勾配の上限（‰）。超える候補は除く（残らなければ除かずに注意を出す）
 JMIN = float(os.environ.get('JMIN', '0')); GJ = float(os.environ.get('GJ', '0')); JEXT = float(os.environ.get('JEXT', '300'))
+# VCR：縦曲線の半径（m）。幹線の勾配変化点（変化 0.5‰ 以上）から接線長 T ＝ VCR × |Δi| ÷ 2 未満の候補は除く（縦曲線に分岐器を設けない。解釈基準 Ⅲ－１２(3)①。
+#   docs/vertical_curve.md 4.3。残らなければ除かずに注意を出す）。0 で切
+VCR = float(os.environ.get('VCR', '0'))
 def restrict(lo, hi, tau, w):
     """候補 sj の並びと、基準にした幹線の駅（名前、幹線のキロ程）"""
     TS = TR[w][0]; tid = TRUNKS[w][4:-5]
@@ -213,6 +216,14 @@ def restrict(lo, hi, tau, w):
         ok = [s_ for s_ in cands if abs(grade(s_)) <= GJ + 1e-9]
         if ok: print(f'  {w}：分岐点の本線の勾配が {GJ:.0f}‰ 以下の候補 {len(ok)}（{len(cands)} のうち）', flush=True); cands = ok
         else: print(f'  {w}：分岐点の本線の勾配が {GJ:.0f}‰ 以下の候補がない（最小 {min(abs(grade(s_)) for s_ in cands):.1f}‰）。除かずに続ける', flush=True)
+    if VCR > 0 and os.path.exists(dfile_):
+        d_ = json.load(open(dfile_)); sn_ = np.array(d_['sn']); zn_ = np.array(d_['zn']); g_ = np.diff(zn_) / np.diff(sn_) * 1000; di_ = np.diff(g_)
+        chg = [(sn_[k + 1], VCR * abs(di_[k]) / 1000 / 2) for k in range(len(di_)) if abs(di_[k]) >= 0.5]   # （変化点の位置, 接線長 T）
+        def clear(sf):
+            sg = ground_of(sf); return all(abs(sg - x_) >= t_ - 1e-9 for x_, t_ in chg)
+        ok = [s_ for s_ in cands if clear(s_)]
+        if ok: print(f'  {w}：幹線の縦曲線（R {VCR:.0f} m）の外の候補 {len(ok)}（{len(cands)} のうち）', flush=True); cands = ok
+        else: print(f'  {w}：幹線の縦曲線の外に候補がない。除かずに続ける', flush=True)
     return cands, (name, c)
 
 def station_cut(which):

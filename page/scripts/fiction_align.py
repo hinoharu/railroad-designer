@@ -10,6 +10,7 @@ only reads those results and writes them in a compact form.
   python3 scripts/fiction_align.py KP_DIR   # KP_DIR: the folder with fit_*.json, design_f*.json, curves_f*.json
 """
 import json, math, os, sys
+import numpy as np
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -27,6 +28,20 @@ def delta(vals, scale):
     return out
 
 
+VC_R = 3000.0   # 縦曲線の半径 m（表示の丸めだけ。設計の値は kp/build.py VC_R と docs/thresholds.md「構内の勾配と縦曲線」。2026-11-08）
+def vcurve(des, R=VC_R):
+    """縦断の施工基面 z（20 m ごと）に縦曲線を入れた高さ（m）。節点 sn・zn の勾配変化点ごとに、前後 T ＝ R × |Δi| ÷ 2 を放物線（半径 R の円曲線の近似）で丸める。
+    折れ線 z に、放物線と折れ線の差 (g2 − g1) × ((s − x + T)² ÷ (4T) − max(0, s − x)) を足すだけなので、丸めの外では変わらない（docs/vertical_curve.md 4.5）"""
+    if "sn" not in des or "zn" not in des: return list(des["z"])
+    s = np.asarray(des["s"], float); z = np.asarray(des["z"], float).copy(); sn = np.asarray(des["sn"], float); zn = np.asarray(des["zn"], float)
+    g = np.diff(zn) / np.diff(sn)
+    for k in range(1, len(sn) - 1):
+        d = g[k] - g[k - 1]
+        if abs(d) < 0.0005: continue   # 変化 0.5‰ 未満は数値のゆらぎ
+        T = R * abs(d) / 2; x = sn[k]; m = np.abs(s - x) <= T
+        z[m] += d * ((s[m] - x + T) ** 2 / (4 * T) - np.maximum(0.0, s[m] - x))
+    return list(z)
+
 def section(sid, name, t, orig_pts, skip_names=(), design=None, alt=None, base=None):
     """A section of the network (2026-11-04: "the alignment first"): its plan and profile, without any running.
     skip_names: stations that belong to the section it branches from (the junction station), not shown twice.
@@ -39,7 +54,7 @@ def section(sid, name, t, orig_pts, skip_names=(), design=None, alt=None, base=N
     A = fit["A"]
     alt_ = None
     if alt:   # the profile with all the stations at ground level (the switch on the page, 2026-11-04): formation and structures
-        da = json.load(open(B / alt)); alt_ = {"z": [round(q * 10) for q in da["z"]], "struct": da["struct"]}
+        da = json.load(open(B / alt)); alt_ = {"z": [round(q * 10) for q in vcurve(da)], "struct": da["struct"]}
     return {
         "alt": alt_,
         "id": sid, "name": name,
@@ -51,7 +66,7 @@ def section(sid, name, t, orig_pts, skip_names=(), design=None, alt=None, base=N
         # profile every 20 m: chainage (m), ground and formation (0.1 m), structure (B bridge, T tunnel, - earthwork)
         "ps": [round(q) for q in des["s"]],
         "ground": [None if g is None or (isinstance(g, float) and math.isnan(g)) else round(g * 10) for g in des["ground"]],
-        "z": [round(q * 10) for q in des["z"]], "struct": des["struct"],
+        "z": [round(q * 10) for q in vcurve(des)], "struct": des["struct"],   # 縦曲線で丸めた施工基面（表示だけ。2026-11-08）
         "stations": [[n, round(c), 0] for n, c in des["stations"] if n not in skip_names],
         "curves": [[round(c["s0"]), round(c["s1"]), round(c["R"]), c["dir"]] for c in lst],
         "elements": elements(fit, route),
@@ -77,7 +92,7 @@ def variant(name, t, lam, dlim):
         # profile every 20 m: chainage (m), ground and formation (0.1 m), structure (B bridge, T tunnel, - earthwork)
         "ps": [round(q) for q in des["s"]],
         "ground": [None if g is None or (isinstance(g, float) and math.isnan(g)) else round(g * 10) for g in des["ground"]],
-        "z": [round(q * 10) for q in des["z"]], "struct": des["struct"],
+        "z": [round(q * 10) for q in vcurve(des)], "struct": des["struct"],   # 縦曲線で丸めた施工基面（表示だけ。2026-11-08）
         # running every 10 m: the limit (km/h; the train's length kept clear of it) and the express's speed (km/h)
         "dx": 10, "lim": [round(q * 3.6) for q in vh], "v": [round(q * 3.6) for q in v],
         # the limit of the track itself (km/h; before the train's length), for the signs of the limit zones

@@ -140,7 +140,10 @@ def topology(V_, Rs, fixed):
             cr = lambda a, b: a[0] * b[1] - a[1] * b[0]
             if np.sign(cr(u1, u2)) == np.sign(cr(u2, u3)) and abs(cr(u1, u3)) > 1e-9:
                 t = np.linalg.solve(np.array([u1, -u3]).T, V_[i + 2] - V_[i - 1])
-                if t[0] > 0 and t[1] < 0:   # 交点が V[i-1] の前方、V[i+2] の手前にある（2026-11-03 に符号の誤りを直した）
+                # 前後の直線がほぼ平行だと、まとめた交点が何 km も先に飛ぶ（2026-11-08、背蘂線：10^14 m 先の点で直線の刻みの配列が作れず落ちた）。
+                # まとめた点までの距離が、前後の 4 点の間の長さの合計より遠ければまとめない
+                far = np.hypot(*(V_[i + 2] - V_[i - 1])) + np.hypot(*(V_[i] - V_[i - 1])) + np.hypot(*(V_[i + 2] - V_[i + 1]))
+                if t[0] > 0 and t[1] < 0 and t[0] <= far and -t[1] <= far:   # 交点が V[i-1] の前方、V[i+2] の手前にある（2026-11-03 に符号の誤りを直した）
                     X_ = V_[i - 1] + u1 * t[0]
                     hi3 = min(len(V_) - 1, i + 3); c0b, m0b = local_cost(V_, Rs, lo, hi3, True); limb = max(D, m0b) + 1e-6
                     V3 = np.vstack([V_[:i], [X_], V_[i + 2:]]); R3 = Rs[:i - 1] + [Rs[i - 1]] + Rs[i + 1:]; f3 = np.concatenate([fixed[:i], [False], fixed[i + 2:]])
